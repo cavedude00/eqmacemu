@@ -218,7 +218,7 @@ void Object::CreateSpawnPacket(APPLAYER* app)
 			co->unknown_12[i] = test_value2;
 		}*/
 
-		cout << "\nLoading a world object!\n";
+		//cout << "\nLoading a world object!\n";
 
 		co->itemid = 17005;
 	}

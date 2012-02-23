@@ -5637,136 +5637,6 @@ void Client::ProcessOP_ClassTrainSkill(APPLAYER* pApp)
 	return;
 }
 
-
-///////////////////////////////////////////////////////////////////////////
-
-void Client::Process_ClientConnection5(APPLAYER *app)
-{
-	if (app->opcode == 0xd840)
-	{
-		EQC::Common::PrintF(CP_CLIENT, "Enterzone complete (Login 5)\n");
-
-		//this->SendAppearancePacket(this->GetID(), 0x10, this->GetID(), false);
-		this->SendAppearancePacket(0, SAT_Camp, this->GetID(), false);
-		// With the code below, see how spawn_id of the spawnapperance struct is not being set? should this be as we are basicly into the zone?
-		// i updated the new code above to include the GetID() for the spawn ID. - Dark-Prince - 01/06/2008
-
-		//APPLAYER* outapp = new APPLAYER(OP_SpawnAppearance, sizeof(SpawnAppearance_Struct));
-		//memset(outapp->pBuffer, 0, outapp->size);
-		//SpawnAppearance_Struct* sa = (SpawnAppearance_Struct*)outapp->pBuffer;
-		//sa->type = 0x10;			// Is 0x10 used to set the player id?
-		//sa->parameter = GetID();	// Four bytes for this parameter...
-
-		APPLAYER* outapp = new APPLAYER;
-		// Inform the world about the client
-		CreateSpawnPacket(outapp);
-		entity_list.QueueClients(this, outapp, false);
-		safe_delete(outapp);//delete outapp;
-
-		outapp = new APPLAYER(0xd840,0);	// Unknown
-		QueuePacket(outapp);
-		safe_delete(outapp);//delete outapp;
-
-
-
-		// We are now fully connected and ready to play					
-		client_state = CLIENT_CONNECTED;
-
-		/*outapp = new APPLAYER(OP_Stamina, sizeof(Stamina_Struct));
-		Stamina_Struct* sta = (Stamina_Struct*)outapp->pBuffer;
-		sta->food = 0;
-		sta->water = 6000;
-		sta->fatigue = 50;
-		QueuePacket(outapp);
-		safe_delete(outapp);//delete outapp;*/
-
-		this->Handle_Connect5Guild();
-
-		// Quagmire - Setting GM flag
-		if (this->admin >= 80)
-		{
-			//PP GM flag doesn't work, setting it manually here.
-			if(this->pp.gm == 1)
-			{
-				this->SendAppearancePacket(this->GetID(), SAT_GM_Tag, 1, true);
-			}
-
-			this->DeletePetitionsFromClient();
-		}
-
-
-		this->position_timer->Start();
-		this->SetDuelTarget(0);
-		this->SetDueling(false);
-		this->UpdateWho(false);
-
-		this->isZoning = false;
-		this->isZoningZP = false;
-		this->usingSoftCodedZoneLine = false;
-
-		for(int i=0;i<15;i++)//Tazadar : this is to remove spells with timer<0 , it happens during long loading zone (i.e your timer goes under 0 while you are zoning and your client does not sent the buff fade request...)
-		{
-			//cout<<"duration of the buff number "<< (int)i << " = " << (int)pp.buffs[i].duration <<" level of the caster = "<<(int)pp.buffs[i].level <<" visable = " << (int)pp.buffs[i].visable <<" spell id = " <<(int)pp.buffs[i].spellid <<endl;
-			//cout<<"duration of the buff number one on the serv = " << (int)this->buffs[i].ticsremaining<<endl;
-			if(pp.buffs[i].spellid != 0 && pp.buffs[i].spellid != 0xFFFF)
-			{
-				Spell* spell = spells_handler.GetSpellPtr(pp.buffs[i].spellid);
-				//Yeahlight: Spell is about to fade or the spell is a levitation spell and we are zoning into a zone that has lev restrictions
-				if((int)pp.buffs[i].duration <= 0 || (spell && spell->IsLevitationSpell() && zone->GetLevCondition() == 0))
-				{
-					if(spell)
-					{
-						this->BuffFade(spell);
-					}
-				}
-			}
-		}
-
-		//Yeahlight: Remove specific effects upon zoning
-		BuffFadeByEffect(SE_Charm);
-		BuffFadeByEffect(SE_Illusion);
-		BuffFadeByEffect(SE_Fear);
-		BuffFadeByEffect(SE_Stun);
-		BuffFadeByEffect(SE_Mez);
-		BuffFadeByEffect(SE_BindSight);
-		BuffFadeByEffect(SE_VoiceGraft);
-		BuffFadeByEffect(SE_Sentinel);
-		BuffFadeByEffect(SE_ModelSize);
-		BuffFadeByEffect(SE_AddFaction);
-		BuffFadeByEffect(SE_SpinTarget);
-
-		//Yeahlight: Call the AC function to load the seperate AC variables
-		CalculateACBonuses();
-
-		//Yeahlight: Assign a size for the PC
-		size = GetDefaultSize();
-
-		//Yeahlight: Set current HP and mana
-		cur_hp = pp.cur_hp;
-		cur_mana = pp.mana;
-		SendHPUpdate();
-		SendManaUpdatePacket();
-	}
-	else if(app->opcode == 0x4721)
-	{
-		QueuePacket(app);//Cofruben
-	}
-	//Recycle packet until client is connected...
-	else if (app->opcode == OP_WearChange)
-	{
-		//QueuePacket(app);
-	}
-	else if (app->opcode == OP_SpawnAppearance)
-	{
-		QueuePacket(app);
-	}
-	else 
-	{
-		cout << "Unexpected packet during CLIENT_CONNECTING5: OpCode: 0x" << hex << setw(4) << setfill('0') << app->opcode << dec << ", size: " << app->size << endl;
-		DumpPacket(app);
-	}
-}
-
 void Client::Process_ClientDisconnected(APPLAYER *app)
 {
 	EQC::Common::PrintF(CP_CLIENT, "Client disconnected : %s\n", this->GetName());
@@ -6229,11 +6099,13 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 *******************************************************************/
 void Client::Process_ClientConnection3(APPLAYER *app)
 {
-	if (app->opcode == 0x5d40)
+	if (app->opcode == 0x5d40) // Here the client sends tha character name again
 	{
-		EQC::Common::PrintF(CP_CLIENT, "Login packet 3\n"); // Here the client sends tha character name again.. 
-		// not sure why, nothing else in this packet
-		SendInventoryItems();
+		EQC::Common::PrintF(CP_CLIENT, "Login packet 3\n");  
+
+		//Need to get items to work first
+
+		/*SendInventoryItems(); 
 
 		weapon1 = Database::Instance()->GetItem(pp.inventory[13]);
 		weapon2 = Database::Instance()->GetItem(pp.inventory[14]);
@@ -6242,7 +6114,7 @@ void Client::Process_ClientConnection3(APPLAYER *app)
 		if(IsBard())
 		{
 			UpdateInstrumentMod();
-		}
+		}*/
 
 		//Yeahlight: Now that we have our gear, let's calculate the max hp/mana
 		CalcBonuses(true, true);
@@ -6256,10 +6128,10 @@ void Client::Process_ClientConnection3(APPLAYER *app)
 	{
 		QueuePacket(app);
 	}
-	else if(app->opcode == 0x4841)
+	/*else if(app->opcode == 0x4841)
 	{
 		QueuePacket(app);
-	}
+	}*/
 	else {
 		cout << "Unexpected packet during CLIENT_CONNECTING3: OpCode: 0x" << hex << setw(4) << setfill('0') << app->opcode << dec << ", size: " << app->size << endl;
 		DumpPacket(app);
@@ -6268,10 +6140,13 @@ void Client::Process_ClientConnection3(APPLAYER *app)
 
 void Client::SendNewZone(NewZone_Struct newzone_data)
 {
-	APPLAYER* outapp = new APPLAYER(OP_NewZone, sizeof(NewZone_Struct));
-	memcpy(outapp->pBuffer, &newzone_data, outapp->size);
+	APPLAYER* outapp;
+	outapp = new APPLAYER(OP_NewZone, sizeof(NewZone_Struct));
+	memcpy(outapp->pBuffer, &zone->newzone_data, outapp->size);
+	NewZone_Struct* nza = (NewZone_Struct*)outapp->pBuffer;
+	strncpy(nza->char_name,this->GetName(),64);
 	QueuePacket(outapp);
-	safe_delete(outapp);//delete outapp;				
+	delete outapp;			
 }
 
 /******************************************************************
@@ -6284,45 +6159,32 @@ void Client::SendNewZone(NewZone_Struct newzone_data)
 void Client::Process_ClientConnection4(APPLAYER *app)
 {
 
-	if (app->opcode == 0x0a40)
+	if (app->opcode == 0x0a40) //0x0a40
 	{
 		EQC::Common::PrintF(CP_CLIENT, "Zhdr request (Login 4)\n"); // This packet was empty...
 
+		this->SendNewZone(zone->newzone_data); // Send zone header
+		
 		APPLAYER* outapp;
-		outapp = new APPLAYER(OP_NewZone, sizeof(NewZone_Struct));
-		memcpy(outapp->pBuffer, &zone->newzone_data, outapp->size);
-		NewZone_Struct* nza = (NewZone_Struct*)outapp->pBuffer;
-		strncpy(nza->char_name,this->GetName(),64);
+		outapp = new APPLAYER;
+		outapp->opcode = 0xd840; // Initiates Process_ClientConnection5
+		outapp->size = 0;
 		QueuePacket(outapp);
+		delete outapp;
 
-		//Tazadar: Send Bulk Spawns
+		//Send Bulk Spawns
 		entity_list.SendZoneSpawnsBulk(this);
 
+		// Doors and objects
 		this->Handle_Connect5GDoors();
 		this->Handle_Connect5Objects();
 
-						delete outapp;
-						outapp = new APPLAYER;
-						outapp->opcode = 0xd840; // Unknown
-						outapp->size = 0;
-						QueuePacket(outapp);
-						delete outapp;
-
-						outapp = new APPLAYER;
-						outapp->opcode = 0x0a40; // Unknown
-						outapp->size = 0;
-						QueuePacket(outapp);
-						delete outapp;
-
-						outapp = new APPLAYER;
-						outapp->opcode = 0x4841; // Unknown
-						outapp->size = 0;
-						QueuePacket(outapp);
-						delete outapp;
-
 		client_state = CLIENT_CONNECTING5;
 	}
-
+	else if (app->opcode == 0x4841) //0x4841
+	{
+		QueuePacket(app);
+	}
 	//Recycle packet until client is connected...
 	else if (app->opcode == OP_WearChange)
 	{
@@ -6331,6 +6193,135 @@ void Client::Process_ClientConnection4(APPLAYER *app)
 	else
 	{
 		cout << "Unexpected packet during CLIENT_CONNECTING4: OpCode: 0x" << hex << setw(4) << setfill('0') << app->opcode << dec << ", size: " << app->size << endl;
+		DumpPacket(app);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Client::Process_ClientConnection5(APPLAYER *app)
+{
+	if (app->opcode == 0xd840)
+	{
+		EQC::Common::PrintF(CP_CLIENT, "Enterzone complete (Login 5)\n");
+
+		//this->SendAppearancePacket(this->GetID(), 0x10, this->GetID(), false);
+		this->SendAppearancePacket(0, SAT_Camp, this->GetID(), false);
+		// With the code below, see how spawn_id of the spawnapperance struct is not being set? should this be as we are basicly into the zone?
+		// i updated the new code above to include the GetID() for the spawn ID. - Dark-Prince - 01/06/2008
+
+		//APPLAYER* outapp = new APPLAYER(OP_SpawnAppearance, sizeof(SpawnAppearance_Struct));
+		//memset(outapp->pBuffer, 0, outapp->size);
+		//SpawnAppearance_Struct* sa = (SpawnAppearance_Struct*)outapp->pBuffer;
+		//sa->type = 0x10;			// Is 0x10 used to set the player id?
+		//sa->parameter = GetID();	// Four bytes for this parameter...
+
+		APPLAYER* outapp = new APPLAYER;
+		// Inform the world about the client
+		CreateSpawnPacket(outapp);
+		entity_list.QueueClients(this, outapp, false);
+		safe_delete(outapp);//delete outapp;
+
+		outapp = new APPLAYER(0xd840,0);	// Unknown
+		QueuePacket(outapp);
+		safe_delete(outapp);//delete outapp;
+
+
+
+		// We are now fully connected and ready to play					
+		client_state = CLIENT_CONNECTED;
+
+		/*outapp = new APPLAYER(OP_Stamina, sizeof(Stamina_Struct));
+		Stamina_Struct* sta = (Stamina_Struct*)outapp->pBuffer;
+		sta->food = 0;
+		sta->water = 6000;
+		sta->fatigue = 50;
+		QueuePacket(outapp);
+		safe_delete(outapp);//delete outapp;*/
+
+		this->Handle_Connect5Guild();
+
+		// Quagmire - Setting GM flag
+		if (this->admin >= 80)
+		{
+			//PP GM flag doesn't work, setting it manually here.
+			if(this->pp.gm == 1)
+			{
+				this->SendAppearancePacket(this->GetID(), SAT_GM_Tag, 1, true);
+			}
+
+			this->DeletePetitionsFromClient();
+		}
+
+
+		this->position_timer->Start();
+		this->SetDuelTarget(0);
+		this->SetDueling(false);
+		this->UpdateWho(false);
+
+		this->isZoning = false;
+		this->isZoningZP = false;
+		this->usingSoftCodedZoneLine = false;
+
+		for(int i=0;i<15;i++)//Tazadar : this is to remove spells with timer<0 , it happens during long loading zone (i.e your timer goes under 0 while you are zoning and your client does not sent the buff fade request...)
+		{
+			//cout<<"duration of the buff number "<< (int)i << " = " << (int)pp.buffs[i].duration <<" level of the caster = "<<(int)pp.buffs[i].level <<" visable = " << (int)pp.buffs[i].visable <<" spell id = " <<(int)pp.buffs[i].spellid <<endl;
+			//cout<<"duration of the buff number one on the serv = " << (int)this->buffs[i].ticsremaining<<endl;
+			if(pp.buffs[i].spellid != 0 && pp.buffs[i].spellid != 0xFFFF)
+			{
+				Spell* spell = spells_handler.GetSpellPtr(pp.buffs[i].spellid);
+				//Yeahlight: Spell is about to fade or the spell is a levitation spell and we are zoning into a zone that has lev restrictions
+				if((int)pp.buffs[i].duration <= 0 || (spell && spell->IsLevitationSpell() && zone->GetLevCondition() == 0))
+				{
+					if(spell)
+					{
+						this->BuffFade(spell);
+					}
+				}
+			}
+		}
+
+		//Yeahlight: Remove specific effects upon zoning
+		BuffFadeByEffect(SE_Charm);
+		BuffFadeByEffect(SE_Illusion);
+		BuffFadeByEffect(SE_Fear);
+		BuffFadeByEffect(SE_Stun);
+		BuffFadeByEffect(SE_Mez);
+		BuffFadeByEffect(SE_BindSight);
+		BuffFadeByEffect(SE_VoiceGraft);
+		BuffFadeByEffect(SE_Sentinel);
+		BuffFadeByEffect(SE_ModelSize);
+		BuffFadeByEffect(SE_AddFaction);
+		BuffFadeByEffect(SE_SpinTarget);
+
+		//Yeahlight: Call the AC function to load the seperate AC variables
+		CalculateACBonuses();
+
+		//Yeahlight: Assign a size for the PC
+		size = GetDefaultSize();
+
+		//Yeahlight: Set current HP and mana
+		cur_hp = pp.cur_hp;
+		cur_mana = pp.mana;
+		SendHPUpdate();
+		SendManaUpdatePacket();
+	}
+	else if(app->opcode == 0x4721)
+	{
+		QueuePacket(app);//Cofruben
+	}
+	//Recycle packet until client is connected...
+	else if (app->opcode == OP_WearChange)
+	{
+		//QueuePacket(app);
+	}
+	else if (app->opcode == OP_SpawnAppearance)
+	{
+		QueuePacket(app);
+	}
+	else 
+	{
+		cout << "Unexpected packet during CLIENT_CONNECTING5: OpCode: 0x" << hex << setw(4) << setfill('0') << app->opcode << dec << ", size: " << app->size << endl;
 		DumpPacket(app);
 	}
 }
