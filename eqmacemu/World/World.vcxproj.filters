@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="World Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="World Sources\Network">
+      <UniqueIdentifier>{75eaa495-ddd1-4a05-91cf-e8a9677733a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World Sources\Database">
+      <UniqueIdentifier>{a244b205-245e-44a6-b48f-5ed487d1166c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World Headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="World Headers\Network">
+      <UniqueIdentifier>{f11368c8-996d-47e7-bd43-d97f372e16e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World Headers\Database">
+      <UniqueIdentifier>{76edb3ab-0424-4b8e-8b67-4fd20f8b8dd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Sources">
+      <UniqueIdentifier>{7e5a7adc-a5b3-480c-bea4-2bbf21e1fa67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Sources\Network">
+      <UniqueIdentifier>{cd640ec0-1063-4be8-9619-ae89d989379d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Sources\Database">
+      <UniqueIdentifier>{ced5f92a-ff4b-4dd1-a197-f427390061bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EQC">
+      <UniqueIdentifier>{f28f6f43-a77a-4dd0-b678-b62905358622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EQC\Headers">
+      <UniqueIdentifier>{09f69130-323e-4221-88e8-e10518b21937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EQC\Sources">
+      <UniqueIdentifier>{2ee11752-304f-440a-b8e1-c89297111ca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Headers">
+      <UniqueIdentifier>{660422da-59de-4f12-bda1-90231b7653d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Headers\Network">
+      <UniqueIdentifier>{6754f8c7-9cda-42af-9585-ea8d437c0a36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Headers\Database">
+      <UniqueIdentifier>{8eff9240-dc66-4f18-8ca8-450b5b0eaac2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Boat.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BoatsManager.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Client.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Client_Process.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ClientList.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\console.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\languages.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoginServer.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoginServer_process.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TimeOfDay.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\World.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WorldGuildManager.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WorldGuildManager_Packets.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WorldGuildManager_Process.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WorldGuildManager_ZoneProcess.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ZoneServer.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\zoneserver_process.cpp">
+      <Filter>World Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ClientNetwork.cpp">
+      <Filter>World Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ConsoleList.cpp">
+      <Filter>World Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\net.cpp">
+      <Filter>World Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WorldGuildNetworkManager.cpp">
+      <Filter>World Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ZSList.cpp">
+      <Filter>World Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WorldGuildDatabaseManager.cpp">
+      <Filter>World Sources\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\classes.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\database.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\DatabaseHandler.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\Item.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\Logger.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\MiscFunctions.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\moremath.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\Mutex.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\packet_dump.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\packet_dump_file.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\races.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\timer.cpp">
+      <Filter>Common Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\EQPacket.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\EQPacketManager.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\Fragment.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\FragmentGroup.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\FragmentGroupList.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\GuildNetwork.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\packet_functions.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\PlayerPacketFactory.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\ServerPacketFactory.cpp">
+      <Filter>Common Sources\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Source\GuildDatabase.cpp">
+      <Filter>Common Sources\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="..\EQC\Sources\EQCException.cpp">
+      <Filter>EQC\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\EQC\Sources\EQCUtils.cpp">
+      <Filter>EQC\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\EQC\Sources\PacketUtils.cpp">
+      <Filter>EQC\Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\Boat.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\BoatsManager.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\client.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ClientList.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ClientListEntry.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TimeOfDay.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\World.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\WorldGuildManager.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\zoneserver.h">
+      <Filter>World Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ClientNetwork.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\console.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ConsoleList.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\LoginServer.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\net.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\TCPConnection.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\WorldGuildNetworkManager.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ZSList.h">
+      <Filter>World Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\WorldGuildDatabaseManager.h">
+      <Filter>World Headers\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\EQC\Include\EQCException.hpp">
+      <Filter>EQC\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\EQC\Include\EQCUtils.hpp">
+      <Filter>EQC\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\EQC\Include\PacketUtils.hpp">
+      <Filter>EQC\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\classes.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\config.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\database.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\deity.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\eq_opcodes.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\eq_packet_structs.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\EQCheckTable.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\EQCSharedMemory.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\FactionCommon.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\Item.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\languages.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\linked_list.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\Logger.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\MessageTypes.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\MiscFunctions.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\moremath.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\Mutex.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\packet_dump.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\packet_dump_file.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\PlayerProfile.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\queue.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\queues.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\races.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\seperator-2.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\seperator.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\servertalk.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\timer.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\types.h">
+      <Filter>Common Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\ACK_INFO.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\APPlayer.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\EQPacket.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\EQPACKET_HDR_INFO.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\EQPacketManager.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\Fragment.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\FRAGMENT_INFO.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\FragmentGroup.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\FragmentGroupList.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\GuildNetwork.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\packet_functions.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\ServerPacket.h">
+      <Filter>Common Headers\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\DatabaseHandler.h">
+      <Filter>Common Headers\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Include\GuildDatabase.h">
+      <Filter>Common Headers\Database</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
