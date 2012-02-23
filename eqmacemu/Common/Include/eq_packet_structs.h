@@ -522,13 +522,20 @@ struct EmoteMessage_Struct
 **      or give a pet a weapon (model changes)
 ** Length: 16 Bytes
 ** Opcode: 9220
+** This is not correct, but close.
 */
 
-struct WearChange_Struct{
+struct WearChange_Struct
+{
 /*000*/ int16 spawn_id;
-/*002*/ int16 slot_graphic;
-/*004*/ int32 color[5];
-/*009*/ int8 wear_slot_id[4];
+/*002*/ int16 wear_slot_id;
+/*004*/ int16 slot_graphic;
+/*006*/ int8 color;
+/*007*/ int8 unknown3;
+/*009*/ int8 blue;
+/*010*/ int8 green;
+/*011*/ int8 red;
+/*012*/ int8 unknown4;
 };
 
 /*

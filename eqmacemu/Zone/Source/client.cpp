@@ -517,9 +517,9 @@ void Client::QueuePacket(APPLAYER* app, bool ack_req)
 	MPacketManager.lock();
 	packet_manager.MakeEQPacket(app, ack_req);
 	MPacketManager.unlock();
-	if (app->opcode != OP_WearChange){ //This is our keep-alive so we wanna ignore it.
-	cout<<"Sending out packet with an opcode of "<<app->opcode<<" and size of "<<app->size<<endl;
-	}
+	//if (app->opcode != OP_WearChange && app->size < 10){ 
+	//cout<<"Sending out packet with an opcode of "<<app->opcode<<" and size of "<<app->size<<endl;
+	//}
 }
 
 void Client::ReceiveData(uchar* buf, int len)
