@@ -76,20 +76,20 @@ namespace EQC
 			memset(cc.unknown2374, 0, sizeof(cc.unknown2374));
 			memset(cc.unknown2920, 0, sizeof(cc.unknown2920));
 			memset(cc.unknown2956, 0, sizeof(cc.unknown2956));
-			memset(cc.unknown3134, 0, sizeof(cc.unknown3134));
+//			memset(cc.unknown3134, 0, sizeof(cc.unknown3134));
 			memset(cc.unknown3448, 0, sizeof(cc.unknown3448));
 			memset(cc.unknown3656, 0, sizeof(cc.unknown3656));
 			cc.bind_point_zone = cc.current_zone;
 			cc.bind_location[0][0] = cc.x;
 			cc.bind_location[1][0] = cc.y;
 			cc.bind_location[2][0] = cc.z;
-            cc.BirthdayTime = 0; // todo: see how birthtime is coded
-            cc.Unknown_4952 = 0;
-            cc.TimePlayedMin = 0;
-            memset(cc.Unknown_4960, 0, sizeof(cc.Unknown_4960));
+			cc.BirthdayTime = 0; // todo: see how birthtime is coded
+//			cc.Unknown_4952 = 0;
+			cc.TimePlayedMin = 0;
+			memset(cc.Unknown_4960, 0, sizeof(cc.Unknown_4960));
             cc.fatigue = 0;
-			cc.unknown4756 = 0;
-			cc.unknown4756 = 0;
+//			cc.unknown4756 = 0;
+//			cc.unknown4756 = 0;
 			memset(cc.unknown4760, 0, sizeof(cc.unknown4760));
 			memset(cc.unknown5225, 0, sizeof(cc.unknown5225));
 			/* ************************** */

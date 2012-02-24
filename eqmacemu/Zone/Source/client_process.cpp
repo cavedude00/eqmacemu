@@ -5825,13 +5825,6 @@ void Client::SendStaminaUpdate(int32 hungerlevel, int32 thirstlevel, int8 fatigu
 	safe_delete(outapp);
 }
 
-/******************************************************************
-*                 Author?   : Process_ClientConnection1           *
-*                 Date?     : ?                                   *
-*******************************************************************
-*																  *
-*                                                                 *
-*******************************************************************/
 void Client::Process_ClientConnection1(APPLAYER *app)
 {
 	if (app->opcode == OP_SetDataRate)
@@ -5851,8 +5844,6 @@ void Client::Process_ClientConnection1(APPLAYER *app)
 	}
 }
 
-// Quagmire - Antighost code
-// Dark-Prince - Move it into its own method, formatted and commented it
 bool Client::QuagmireGhostCheck(APPLAYER *app)
 {
 	// tmp var is so the search doesnt find this object
@@ -5888,16 +5879,6 @@ bool Client::QuagmireGhostCheck(APPLAYER *app)
 	return true;
 }
 
-
-
-
-/******************************************************************
-*                 Author?   : Process_ClientConnection2           *
-*                 Date?     : ?                                   *
-*******************************************************************
-*																  *
-*                                                                 *
-*******************************************************************/
 void Client::Process_ClientConnection2(APPLAYER *app)
 {
 
@@ -5936,7 +5917,13 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	}
 
 	strcpy(name, pp.name);
-	strcpy(Surname, pp.Surname); 
+	strcpy(Surname, pp.Surname);
+	if((pp.x == -1 && pp.y == -1 && pp.z == -1)||(pp.x == -2 && pp.y == -2 && pp.z == -2)) {
+					//Fixed XYZ
+					pp.x = zone->safe_x();
+					pp.y = zone->safe_y();
+					pp.z = zone->safe_z()/10;
+	}
 	x_pos = pp.x;
 	y_pos = pp.y;
 	z_pos = pp.z;
@@ -5947,27 +5934,33 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	gender = pp.gender;
 	base_gender = pp.gender;
 	level = pp.level;
-	deity = DEITY_AGNOSTIC;
+	deity = DEITY_AGNOSTIC;haircolor = pp.haircolor;
+	beardcolor = pp.beardcolor;
+	eyecolor1 = pp.eyecolor1;
+	eyecolor2 = pp.eyecolor2;
+	hairstyle = pp.hairstyle;
+	//title = pp.title;
+	luclinface = pp.luclinface;
 
 	//cavedude - not sure if our client needs this.
 	/*
-	for(int i=0; i< 24; i++)  
-		pp.unknown3888[i] = 0;  	
+	for(int i=0; i< 24; i++)
+		pp.unknown3888[i] = 0;
 
 	// Harakiri need to clear these, or the client things he got some items already as pointers
-	for(int i=0; i< 8; i++)  
-		pp.bankinvitemPointers[i] = 0;  	
+	for(int i=0; i< 8; i++)
+		pp.bankinvitemPointers[i] = 0;
 	// Harakiri need to clear these, or the client things he got some items already as pointers
-	for(int i=0; i< 30; i++)  
-		pp.inventoryitemPointers[i] = 0;  
-	
-	for(int i=0; i< 12; i++)  
-		pp.unknown3944[i] = 0;  
-	
+	for(int i=0; i< 30; i++)
+		pp.inventoryitemPointers[i] = 0;
+
+	for(int i=0; i< 12; i++)
+		pp.unknown3944[i] = 0;
+
 	pp.unknown4178 =  0;
 	pp.unknown4179 =  0;
 	*/
-	
+
 	// Harakiri for each spell slot in ms the refresh time left
 	//pp.spellSlotRefresh[0] = 10000;
 	//pp.spellSlotRefresh[1] = 10000;
@@ -5983,14 +5976,14 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 
 	// Harakiri SK and Paladin, ms left for deathtouch/LOH
 	// pp.abilityCooldown = 0;
-	
+
 	//for(int i=0; i < 4; i++) {
 	//	pp.spellSlotRefresh[i] = 0;
 	//}
 
-	
-	memset(pp.GroupMembers, 0, sizeof(pp.GroupMembers));  
-	for(int i=0; i<3592; i++)  
+
+	memset(pp.GroupMembers, 0, sizeof(pp.GroupMembers));
+	for(int i=0; i<3592; i++)
 //		pp.unknown5638[i] = 0;
 
 	this->LoadSpells();
@@ -6010,6 +6003,39 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	}
 	else
 		memset(this->GetPlayerProfilePtr()->GroupMembers, 0, sizeof(this->GetPlayerProfilePtr()->GroupMembers));
+
+	switch (race)
+				{
+				case OGRE:
+					size = 9;break;
+				case TROLL:
+					size = 8;break;
+				case VAHSHIR:
+				case BARBARIAN:
+					size = 7;break;
+				case HUMAN:
+				case HIGH_ELF:
+				case ERUDITE:
+				case IKSAR:
+					size = 6;break;
+				case WOOD_ELF:
+				case DARK_ELF:
+				case HALF_ELF:
+					size = 5;break;
+				case DWARF:
+				case HALFLING:
+					size = 4;break;
+				case GNOME:
+					size = 3;break;
+				default:
+					size = 0;break;
+				}
+
+				CalcBonuses();
+				CalcMaxHP();
+				CalcMaxMana();
+				SetHP(pp.cur_hp);
+				SetMana(pp.mana);
 
 	APPLAYER *outapp;
 	outapp = new APPLAYER;
@@ -6037,8 +6063,12 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	sze->z = pp.z;
 	sze->heading = pp.heading * 2;
 	sze->walkspeed = walkspeed;
-	sze->runspeed = runspeed;			
+	sze->runspeed = runspeed;
 	sze->anon = pp.anon;
+	if(pp.pvp==1) 
+	{
+		sze->pvp=1;
+	}
 	// Disgrace: proper face selection
 	sze->face = GetFace();
 
@@ -6056,16 +6086,25 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	sze->guildeqid = (int16) guildeqid;
 
 	//Grass clipping radius.
-	//					sze->skyradius=500;
+	sze->skyradius=244;
 	//*shrug*
 	//			sze->unknown304[0]=255;
 
 	//This might be the fRadius bug... Setting it to 500.
 
 	//sze->unknownfloat2 = 0x0000000F;
+
+	sze->haircolor = haircolor;
+	sze->beardcolor = beardcolor;
+	sze->eyecolor1 = eyecolor1;
+	sze->eyecolor2 = eyecolor2;
+	sze->hairstyle = hairstyle;
+	sze->luclinface = luclinface;
+
 	SetEQChecksum((unsigned char*)sze, sizeof(ServerZoneEntry_Struct));
 	QueuePacket(outapp);
-	safe_delete(outapp);//delete outapp;
+	delete outapp;
+	//entity_list.SendZoneSpawnsBulk(this); cavedude: Bugged for now.
 
 	outapp = new APPLAYER(OP_Weather, 8);
 	if (zone->zone_weather == 1)
@@ -6075,7 +6114,7 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	if (zone->zone_weather == 2)
 	{
 		outapp->pBuffer[0] = 0x01;
-		outapp->pBuffer[4] = 0x02; 
+		outapp->pBuffer[4] = 0x02;
 	}
 	QueuePacket(outapp);
 	safe_delete(outapp);//delete outapp;
@@ -6090,13 +6129,6 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 
 }
 
-/******************************************************************
-*                 Author?   : Process_ClientConnection3           *
-*                 Date?     : ?                                   *
-*******************************************************************
-*																  *
-*                                                                 *
-*******************************************************************/
 void Client::Process_ClientConnection3(APPLAYER *app)
 {
 	if (app->opcode == 0x5d40) // Here the client sends tha character name again
@@ -6144,18 +6176,11 @@ void Client::SendNewZone(NewZone_Struct newzone_data)
 	outapp = new APPLAYER(OP_NewZone, sizeof(NewZone_Struct));
 	memcpy(outapp->pBuffer, &zone->newzone_data, outapp->size);
 	NewZone_Struct* nza = (NewZone_Struct*)outapp->pBuffer;
-	strncpy(nza->char_name,this->GetName(),64);
+	strncpy(nza->char_name,name,64);
 	QueuePacket(outapp);
 	delete outapp;			
 }
 
-/******************************************************************
-*                 Author?   : Process_ClientConnection4           *
-*                 Date?     : ?                                   *
-*******************************************************************
-*																  *
-*                                                                 *
-*******************************************************************/
 void Client::Process_ClientConnection4(APPLAYER *app)
 {
 
@@ -6196,8 +6221,6 @@ void Client::Process_ClientConnection4(APPLAYER *app)
 		DumpPacket(app);
 	}
 }
-
-///////////////////////////////////////////////////////////////////////////
 
 void Client::Process_ClientConnection5(APPLAYER *app)
 {

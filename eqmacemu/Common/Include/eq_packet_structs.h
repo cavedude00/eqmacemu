@@ -712,13 +712,14 @@ they were originally.
 //				   0xFFFFFF00 - dubious
 //				   0xFFFFFE00 - threateningly
 //				   0xFFFFFD00 - scowls
-struct Consider_Struct
-{ 
-/*000*/   int32   playerid;     // Comment: ID of player 
-/*004*/   int32   targetid;     // Comment: ID of target 
-/*008*/   int32   faction;	    // Comment: Yeahlight: See the comment above. 
-/*012*/   int32   unknown_c[3]; // Comment: Unused items 
-/*028*/   int32   unworthy;     // Comment: if not 0 then unworthy when green 
+struct Consider_Struct{
+/*000*/ int16	playerid;               // PlayerID
+/*002*/ int16	targetid;               // TargetID
+/*004*/ int32	faction;                // Faction
+/*008*/ int32	level;                  // Level
+/*012*/ sint32	cur_hp;                  // Current Hitpoints
+/*016*/ sint32	max_hp;                  // Maximum Hitpoints
+/*020*/ int8	unknown3[4];
 };
 
 struct ConsentRequest_Struct

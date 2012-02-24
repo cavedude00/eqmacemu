@@ -48,9 +48,9 @@ int8	unknown02[7];
 */
 struct PlayerProfile_Struct
 {
-/* Global Definitions */
 #define pp_inventory_size 30
-#define pp_containerinv_size 90
+#define pp_containerinv_size 80
+#define pp_cursorbaginventory_size 10
 #define pp_bank_inv_size 8
 #define pp_bank_cont_inv_size 80
 /* ***************** */
@@ -72,7 +72,7 @@ struct PlayerProfile_Struct
 /*0156*/	int16	trainingpoints;				// Players Points
 /*0158*/	int16	mana;				// Player Mana
 /*0160*/	int16	cur_hp;				// Player Health
-/*0162*/	int16	unknown162;         // Players Face
+/*0162*/	int16	face;				// Players Face
 /*0164*/	int16	STR;				// Player Strength
 /*0166*/	int16	STA;				// Player Stamina
 /*0168*/	int16	CHA;				// Player Charisma
@@ -80,7 +80,7 @@ struct PlayerProfile_Struct
 /*0172*/	int16	INT;				// Player Intelligence
 /*0174*/	int16	AGI;				// Player Agility
 /*0176*/	int16	WIS;				// Player Wisdom
-/*0178*/	int8	face;               //
+/*0178*/	int8	face_;               //
 /*0179*/    int8    EquipType[9];       // i think its the visible parts of the body armor
 /*0188*/    int32   EquipColor[9];      //
 /*0224*/	int16	inventory[30];		// Player Inventory Item Numbers
@@ -88,7 +88,7 @@ struct PlayerProfile_Struct
 /*0310*/	int8	unknown0310[6];		// ***Placeholder
 /*0316*/	struct	ItemProperties_Struct	invItemProprieties[30];
 										// These correlate with inventory[30]
-/*0616*/	struct	SpellBuff_Struct	buffs[BUFF_COUNT];
+/*0616*/	struct	SpellBuff_Struct	buffs[15];
 										// Player Buffs Currently On
 /*0766*/	int16	containerinv[pp_containerinv_size];	// Player Items In "Bags"
 										// If a bag is in slot 0, this is where the bag's items are
@@ -120,11 +120,11 @@ struct PlayerProfile_Struct
 /*2948*/	int32	silver_bank;		// Player Silver (Bank)
 /*2952*/	int32	copper_bank;		// Player Copper (Bank)
 /*2956*/	int8	unknown2956[30];	// ***Placeholder
-/*2986*/	int16	skills[75];			// Player Skills
-/*3134*/	int8	unknown3134[280];	// ***Placeholder (ETHQ says there are more skills and boat info, perhaps we need that sometime (neotokyo))
-/*3116*/    int32   hungerlevel;        // need to find max value ... < 10000 ; 0 is max famished?
-/*3120*/    int32   thirstlevel;        // need to find max value ... < 10000 ; 0 is max famished?
-/*3424*/	int8	unknown3424[20];	// ***Placeholder
+/*2986*/	int16	skills[74];			// Player Skills
+/*3060*/	int8	unknown3060[56];	// ***Placeholder
+/*3116*/	int32	hungerlevel;
+/*3120*/	int32	thirstlevel;
+/*3124*/	int8	unknown3422[320];
 /*3444*/	int32	current_zone;		// Player Zone (Lyenu: Zones are now saved as int32)
 /*3448*/	int8	unknown3448[336];	// ***Placeholder
 /*3784*/	int32	bind_point_zone;	// Lyenu: Bind zone is saved as a int32 now
@@ -166,11 +166,10 @@ struct PlayerProfile_Struct
 /*5632*/	int8	title;				// AA Title
 /*5633*/	int8	perAA;				// AA Percentage
 /*5634*/	int32	aapoints;			// AA Points
-/*5638*/	int8	unknown5426[2702];	// Unknown
+/*5638*/	int8	unknown5426[2748];	// Unknown
 //			int32	raid_id;			// Raid ID?
 //			int32	unknown5450;		// Unknown (Added 09 Oct 2002)
 };
-
 // Restore structure packing to default
 #pragma pack()
 
