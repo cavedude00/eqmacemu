@@ -777,7 +777,8 @@ void command_zone(Client *c, const Seperator *sep)
 				c->SetZoningX((sint32)x);
 				c->SetZoningY((sint32)y);
 				c->SetZoningZ((sint32)z);				
-				c->ZonePC(sep->arg[1], x, y, z);
+				c->MovePC(sep->arg[1], x, y, z, false, false);
+				c->Message(BLACK, "Got a zone request for %s", sep->arg[1]);
 			}
 			else
 			{
@@ -1066,7 +1067,7 @@ void command_teleport(Client *c, const Seperator *sep)
 						
 			c->Message(BLACK, "Teleporting you to zone name = %s, x = %f, y = %f, z = %f", sep->arg[1], x, y, z);
 
-			c->TeleportPC(sep->arg[1], x, y, z,heading);
+			c->MovePC(sep->arg[1], x, y, z,heading);
 		}
 		
 }

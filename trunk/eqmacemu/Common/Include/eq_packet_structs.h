@@ -334,12 +334,11 @@ struct Buff_Struct
 #define SLOT_ITEMSPELL		10		// Cofruben: we right clicked into a clickable item which allow us casting some spell.
 struct CastSpell_Struct
 {
-	uint16	slot;			// Comment: Unknown -> needs confirming -> Which Slot it is being casted from maybe?
-	uint16	spell_id;		// Comment: Unknown -> needs confirming -> ID of spell being cast maybe?
-	int16	inventoryslot;  // Comment: Needs confirming -> Slot for clicky item, 0xFFFF = normal cast
-	int8	cs_unknown1[2];	// Comment: Unknown -> needs confirming 
-	uint32	target_id;		// Comment: Unknown -> needs confirming -> Target of the Spell?
-	int32	cs_unknown2;	// Comment: Unknown -> needs confirming
+	int16	slot;
+	int16	spell_id;
+	int16	inventoryslot;  // slot for clicky item, 0xFFFF = normal cast
+	int16	target_id;
+	int32	cs_unknown2;
 };
 
 
@@ -499,13 +498,13 @@ struct DeleteSpawn_Struct
 //Yeahlight: New ChannelMessage_Struct struct
 struct ChannelMessage_Struct
 {
-	char  targetname[32];		// Comment:  Tell recipient
-	char  sender[23];           // Comment:  The senders name (len might be wrong)
-	int8  cm_unknown2[9];       // Comment:  ***Placeholder
-	int16  language;            // Comment:  Language // Harakiri: The client will print "in an unknown tongue" as long as the language skill is not at least 25
-	int16  chan_num;            // Comment:  Channel
-	int8  cm_unknown4[2];		// Comment:  ***Placeholder
-	char  message[0];           // Comment:  Variable length message
+/*000*/	char	targetname[64];		// Tell recipient
+/*064*/	char	sender[64];			// The senders name (len might be wrong)
+/*128*/	int16	language;			// Language
+/*130*/	int16	chan_num;			// Channel
+/*132*/	int8	cm_unknown4[2];		// ***Placeholder
+/*134*/	int16	skill_in_language;	// The players skill in this language? might be wrong
+/*136*/	char	message[0];			// Variable length message
 };
 
 //Kibanu: New EmoteMessage_Struct
@@ -1136,27 +1135,48 @@ struct LootingItem_Struct
 
 
 // Size = 84 bytes
-struct GMZoneRequest_Struct
-{
-	char	charname[PC_MAX_NAME_LENGTH];		// Comment: 
-	char	zonename[ZONE_SHORTNAME_LENGTH];		// Comment: 
-	int8	unknown1[32];		// Comment: gm name? gotta check this out
-	int8	success;			// Comment: 0 if command failed, 1 if succeeded?
-	int8	unknown2[5];		// Comment: 0x00
+struct GMZoneRequest_Struct {
+	char	charname[64];
+	int32	zoneID;
+	int8	unknown1[16];
+	int8	success; // 0 if command failed, 1 if succeeded?
+	int8	unknown2[3]; // 0x00
 };
 
-struct GMSummon_Struct 
-{
-/*  0*/	char    charname[30];	// Comment: (Confirmed by Wizzel)
-/* 30*/	char    gmname[30];		// Comment: (Confirmed by Wizzel)
-/* 60*/ int8	unknown1;		// Comment:
-/* 61*/	char    zonename[15];	// Comment: (Confirmed by Wizzel)
-/* 76*/	int8	unknown2[16];	// Comment:  7C EF FC 0F 80 F3 FC 0F A9 CB 4A 00 7C EF FC 0F
-/*92*/	sint32  y;				// Comment: 
-/*96*/	sint32  x;				// Comment: 
-/*100*/ sint32  z;				// Comment: this is the x10 z
-/*104*/	int8	unknown3[4];	// Comment: E0 E0 56 00
+struct GMSummon_Struct {
+/*  0*/	char    charname[64];
+/* 30*/	char    gmname[64];
+/* 60*/ int32	success;
+/* 61*/	int32	zoneID;
+#ifndef INVERSEXY
+/*92*/	sint32  x;
+/*96*/	sint32  y;
+#else
+	sint32 y;
+	sint32 x;
+#endif
+/*100*/ sint32  z;
+/*104*/	int8 unknown2[4]; // E0 E0 56 00
 };
+
+struct GMGoto_Struct { // x,y is swapped as compared to summon and makes sense as own packet
+/*  0*/	char    charname[64];
+/* 30*/	char    gmname[64];
+/* 60*/ int32	success;
+/* 61*/	int32	zoneID;
+
+/*92*/	sint32  x;
+/*96*/	sint32  y;
+/*100*/ sint32  z;
+/*104*/	int32 unknown2; // E0 E0 56 00
+};
+
+/*struct GMGoto_Struct 
+{
+	char	gotoname[30];		// Comment: 
+	char	myname[30];			// Comment: 
+	int8	unknown[48];		// Comment: 
+};*/
 
 struct GMSurname_Struct 
 {
@@ -1262,13 +1282,6 @@ struct LFG_Struct
 {
 	char	name[PC_MAX_NAME_LENGTH + 2];	// Comment: 
 	int32	value;		// Comment: 
-};
-
-struct GMGoto_Struct 
-{
-	char	gotoname[30];		// Comment: 
-	char	myname[30];			// Comment: 
-	int8	unknown[48];		// Comment: 
 };
 
 // EverQuest Time Information:

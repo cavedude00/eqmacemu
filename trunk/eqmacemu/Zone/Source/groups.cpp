@@ -115,18 +115,18 @@ bool Group::AddMember(Client* member, InsertPosition pos, bool newleader){
 		if (it->Ptr && it->Ptr != member)
 			it->Ptr->QueuePacket(outapp);
 		else if(!it->Ptr && strcmp(it->Name, member->GetName()) != 0) {	//Member not in zone, send packet by world.
-			ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
+/*			ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
 			memset(pack->pBuffer, 0, pack->size);
 			ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*) pack->pBuffer;
 			strncpy(sss->charname, it->Name, MAX_NAME_SIZE);
 			sss->opcode = OP_GroupUpdate;
 			memcpy(sss->packet, outapp->pBuffer, sizeof(GroupUpdate_Struct));
 			worldserver.SendPacket(pack);
-			safe_delete(pack);//delete pack;
+			safe_delete(pack);//delete pack;*/
 		}
 
 		//5.1. Force an update to groups if players aren't in the zone.
-		if ( !it->Ptr )
+	/*	if ( !it->Ptr )
 		{
 			ServerPacket* pack = new ServerPacket(ServerOP_GroupRefresh, sizeof(ServerGroupRefresh_Struct));
 			memset(pack->pBuffer, 0, pack->size);
@@ -136,7 +136,7 @@ bool Group::AddMember(Client* member, InsertPosition pos, bool newleader){
 			sgr->gid = this->GetGroupID();
 			worldserver.SendPacket(pack);
 			safe_delete(pack);//delete pack;
-		}
+		}*/
 	}
 	safe_delete(outapp);//delete outapp;
 	member->SetGroupInvitePending(false);
@@ -223,14 +223,14 @@ void Group::ChangeLeader(char* member, bool leftgame){
 					it->Ptr->QueuePacket(outapp2);
 				}
 				else {	//Member not in zone, send packet by world.
-					ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
+/*					ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
 					memset(pack->pBuffer, 0, pack->size);
 					ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*) pack->pBuffer;
 					strncpy(sss->charname, it->Name, MAX_NAME_SIZE);
 					sss->opcode = OP_GroupUpdate;
 					memcpy(sss->packet, outapp2->pBuffer, sizeof(GroupUpdate_Struct));
 					worldserver.SendPacket(pack);
-					safe_delete(pack);//delete pack;
+					safe_delete(pack);//delete pack;*/
 				}
 			}
 		}
@@ -247,14 +247,14 @@ void Group::ChangeLeader(char* member, bool leftgame){
 				it2->Ptr->QueuePacket(outapp2);
 			}
 			else if( (!it2->Ptr || !it->Ptr) && strcmp(it2->Name, it->Name) != 0) {	//Member not in zone, send packet by world.
-				ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
+/*				ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
 				memset(pack->pBuffer, 0, pack->size);
 				ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*) pack->pBuffer;
 				strncpy(sss->charname, it2->Name, MAX_NAME_SIZE);
 				sss->opcode = OP_GroupUpdate;
 				memcpy(sss->packet, outapp2->pBuffer, sizeof(GroupUpdate_Struct));
 				worldserver.SendPacket(pack);
-				safe_delete(pack);//delete pack;
+				safe_delete(pack);//delete pack;*/
 			}
 		}
 		safe_delete(outapp2);//delete outapp;
@@ -270,14 +270,14 @@ void Group::ChangeLeader(char* member, bool leftgame){
 			if ( client )
 				client->QueuePacket(outapp);
 			else { // Send packet through world server
-				ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupFollow_Struct));
+/*				ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupFollow_Struct));
 				memset(pack->pBuffer, 0, pack->size);
 				ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*) pack->pBuffer;
 				strncpy(sss->charname, member, MAX_NAME_SIZE);
 				sss->opcode = OP_GroupFollow;
 				memcpy(sss->packet, outapp->pBuffer, sizeof(GroupFollow_Struct));
 				worldserver.SendPacket(pack);
-				safe_delete(pack);//delete pack;
+				safe_delete(pack);//delete pack;*/
 			}
 			safe_delete(outapp);//delete outapp;	
 		}
@@ -303,7 +303,7 @@ void Group::ChangeLeader(char* member, bool leftgame){
 		safe_delete(pack);//delete pack;
 
 		//7.1. They're not in zone, refresh group structure in their zone
-		if ( !it->Ptr ) {
+	/*	if ( !it->Ptr ) {
 			ServerPacket* pack = new ServerPacket(ServerOP_GroupRefresh, sizeof(ServerGroupRefresh_Struct));
 			memset(pack->pBuffer, 0, pack->size);
 			ServerGroupRefresh_Struct* sgr = (ServerGroupRefresh_Struct*) pack->pBuffer;			
@@ -312,7 +312,7 @@ void Group::ChangeLeader(char* member, bool leftgame){
 			sgr->gid = this->GetGroupID();
 			worldserver.SendPacket(pack);
 			safe_delete(pack);//delete pack;
-		}
+		}*/
 	}
 
 	// Flag so old leader doesn't disband the group, the client sends a disband packet to server for some reason.
@@ -366,14 +366,14 @@ void Group::DelMember(char* name, bool ignoresender, bool leftgame) {
 		if (it->Ptr)
 			it->Ptr->QueuePacket(outapp); // Notifies other members.
 		else if(!it->Ptr) {	//Member not in zone, send packet by world.
-			ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
+/*			ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
 			memset(pack->pBuffer, 0, pack->size);
 			ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*) pack->pBuffer;
 			strncpy(sss->charname, it->Name, MAX_NAME_SIZE);
 			sss->opcode = OP_GroupUpdate;
 			memcpy(sss->packet, outapp->pBuffer, sizeof(GroupUpdate_Struct));
 			worldserver.SendPacket(pack);
-			safe_delete(pack);//delete pack;
+			safe_delete(pack);//delete pack;*/
 		}
 	}
 
@@ -385,7 +385,7 @@ void Group::DelMember(char* name, bool ignoresender, bool leftgame) {
 		if (Member)
 			Member->QueuePacket(outapp);
 		else {	//Member not in zone, send packet by world.
-			ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
+/*			ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
 			memset(pack->pBuffer, 0, pack->size);
 			ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*) pack->pBuffer;
 			strncpy(sss->charname, name, MAX_NAME_SIZE);
@@ -401,13 +401,13 @@ void Group::DelMember(char* name, bool ignoresender, bool leftgame) {
 			sgr->gid = this->GetGroupID();
 			sgr->action = REMOVE_MEMBER;
 			worldserver.SendPacket(pack);
-			safe_delete(pack);//delete pack;
+			safe_delete(pack);//delete pack;*/
 		}
 	}
 	safe_delete(outapp);//delete outapp;
 
 	//7. Check for out-of-zone group members to force a group refresh to group entity in their zone
-	for (it = this->pvMembers.begin(); it < this->pvMembers.end(); it++) {
+	/*for (it = this->pvMembers.begin(); it < this->pvMembers.end(); it++) {
 		if ( !it->Ptr ) {
 			ServerPacket* pack = new ServerPacket(ServerOP_GroupRefresh, sizeof(ServerGroupRefresh_Struct));
 			memset(pack->pBuffer, 0, pack->size);
@@ -418,7 +418,7 @@ void Group::DelMember(char* name, bool ignoresender, bool leftgame) {
 			worldserver.SendPacket(pack);
 			safe_delete(pack);//delete pack;
 		}
-	}
+	}*/
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -458,7 +458,7 @@ void Group::DisbandGroup(bool newleader) {
 				memset(it->Ptr->GetPlayerProfilePtr()->GroupMembers, 0, sizeof(it->Ptr->GetPlayerProfilePtr()->GroupMembers));
 		}
 		else if(!it->Ptr) {	//Member not in zone, send packet by world.
-			ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
+		/*	ServerPacket* pack = new ServerPacket(ServerOP_SendPacket, sizeof(ServerSendPacket_Struct) + sizeof(GroupUpdate_Struct));
 			memset(pack->pBuffer, 0, pack->size);
 			ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*) pack->pBuffer;
 			strncpy(sss->charname, it->Name, MAX_NAME_SIZE);
@@ -473,7 +473,7 @@ void Group::DisbandGroup(bool newleader) {
 			strncpy(sgr->member, it->Name, MAX_NAME_SIZE);
 			sgr->action = GROUP_QUIT;
 			worldserver.SendPacket(pack);
-			safe_delete(pack);//delete pack;
+			safe_delete(pack);//delete pack;*/
 		}
 	}
 	safe_delete(outapp);//delete outapp;

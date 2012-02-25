@@ -143,10 +143,7 @@ public:
 	void	SetBindPoint();
 	void	MovePC(const char* zonename, float x, float y, float z, bool ignorerestrictions = false, bool useSummonMessage = true);
 	void	ZonePC(char* zonename, float x, float y, float z);
-	// Harakiri the client will automatically decide if he needs to zone or just moved if he is already in the zone
-	void	TeleportPC(char* zonename, float x, float y, float z, float heading = 0);
 	// Harakiri teleport and translocate is bit different in the client, the translocate seems only be used for the spell
-	// whereas TeleportPC should be used for everything else, teleportPC also has heading
 	void	TranslocatePC(char* zonename, float x, float y, float z);	
 	void	SendTranslocateConfirmation(Mob* caster, Spell* spell);
 	void	WhoAll();

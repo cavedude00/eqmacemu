@@ -416,7 +416,47 @@ void ZoneServer::ProcessServerOP_Lock(ServerPacket* pack)
 	}
 }
 
+void ZoneServer::ProcessServerOP_ZoneToZoneRequest(ServerPacket* pack)
+{
+		if(pack->size != sizeof(ZoneToZone_Struct)) return;
+			
+		ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
+		ZoneServer* zsc = zoneserver_list.FindByID(ztz->current_zone_id);
+		
+		if(zsc == 0)
+				return;
 
+		if(Database::Instance()->LoadZoneID(GetZoneName()) == ztz->current_zone_id)
+		{
+			ZoneServer* zs = zoneserver_list.FindByID(ztz->requested_zone_id);
+			if(zs == 0)
+			{
+				if (!zoneserver_list.TriggerBootup(Database::Instance()->GetZoneName(ztz->requested_zone_id))) 
+				{
+					printf("Unable to boot.\n");
+					ztz->response = 0;
+					zsc->SendPacket(pack);
+				}
+			else
+			{
+				ztz->response = 1;
+				zsc->SendPacket(pack);
+			}
+		}
+		else
+		{
+			zs->SendPacket(pack);
+			return;
+		}
+	}
+	else
+	{
+		if(zsc != 0)
+			zsc->SendPacket(pack);
+			return;
+	}
+	return;
+}
 	/********************************************************************
 	 *						  Tazadar - 6/10/09							*
 	 ********************************************************************

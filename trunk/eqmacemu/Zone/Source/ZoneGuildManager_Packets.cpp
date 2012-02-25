@@ -25,7 +25,7 @@ namespace EQC
 			{
 				// Check if the zone is connected to the world or not
 
-				Client* GuildLeader = entity_list.GetClientByName(guildleader);
+	/*			Client* GuildLeader = entity_list.GetClientByName(guildleader);
 
 				ServerPacket* pack = EQC::Common::CreateServerPacket(ServerOP_GuildCreateRequest, sizeof(GuildCreateReqest_Struct));
 				GuildCreateReqest_Struct* gcrs = (GuildCreateReqest_Struct*) pack->pBuffer;
@@ -34,7 +34,7 @@ namespace EQC
 
 
 				worldserver.SendPacket(pack);
-				safe_delete(pack);//delete pack;
+				safe_delete(pack);//delete pack;*/
 			}
 
 

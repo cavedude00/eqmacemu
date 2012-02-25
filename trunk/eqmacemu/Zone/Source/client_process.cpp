@@ -1197,8 +1197,8 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	}
 
 
-	//EQC::Common::Log(EQCLog::Debug, CP_CLIENT, "Dumping ProcessOP_ZoneChange_Struct, packet size: %d", pApp->size);
-	//DumpPacket(pApp);
+	EQC::Common::Log(EQCLog::Debug, CP_CLIENT, "Dumping ProcessOP_ZoneChange_Struct, packet size: %d", pApp->size);
+	DumpPacket(pApp);
 
 	ZoneChange_Struct* zc = (ZoneChange_Struct*)pApp->pBuffer;
 
@@ -1210,12 +1210,12 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	float tarx = 0, tary = 0, tarz = 0;
 	int8 minstatus = 0;
 	int8 minlevel = 0;
-	char tarzone[16] = "";
+	int32 tarzone = 0;
 	cout << "Zone request for:" << zc->char_name << " to:" << Database::Instance()->GetZoneName(zc->zoneID) << endl;
 
 	if(Database::Instance()->GetSafePointsByID(zc->zoneID, &tarx, &tary, &tarz, &minstatus, &minlevel))
 	{
-		strcpy(tarzone, Database::Instance()->GetZoneName(zc->zoneID));
+		tarzone = zc->zoneID;
 	}
 
 	if(zonesummon_ignorerestrictions) 
@@ -1242,7 +1242,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	// -1, -1, -1 = code for zone safe point
 	else if(zonesummon_x == -1 && zonesummon_y == -1 && (zonesummon_z == -1 || zonesummon_z == -10)) 
 	{
-		cout << "Zoning to safe coords: " << tarzone << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
+		cout << "Zoning to safe coords: " << Database::Instance()->GetZoneName(tarzone) << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
 		zonesummon_x = -2;
 		zonesummon_y = -2;
 		zonesummon_z = -2;
@@ -1250,12 +1250,12 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	// -3 -3 -3 = bind point
 	else if(zonesummon_x == -3 && zonesummon_y == -3 && (zonesummon_z == -3 || zonesummon_z == -30)) 
 	{
-		strcpy(tarzone, Database::Instance()->GetZoneName(pp.bind_point_zone)); //copy bindzone to target
+		tarzone = pp.bind_point_zone; //copy bindzone to target
 		//Yeahlight: Client location is backwards! (Y, X, Z)
 		tarx = pp.bind_location[1][0]; //copy bind cords to target
 		tary = pp.bind_location[0][0];
 		tarz = pp.bind_location[2][0];
-		cout << "Zoning: Death, zoning to bind point: " << tarzone << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
+		cout << "Zoning: Death, zoning to bind point: " << Database::Instance()->GetZoneName(tarzone) << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
 		zonesummon_x = -2;
 		zonesummon_y = -2;
 		zonesummon_z = -2;
@@ -1271,7 +1271,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		tarx = zonesummon_x;
 		tary = zonesummon_y;
 		tarz = zonesummon_z;
-		cout << "Zoning to specified cords: " << tarzone << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
+		cout << "Zoning to specified cords: " << Database::Instance()->GetZoneName(tarzone) << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
 		zonesummon_x = -2;
 		zonesummon_y = -2;
 		zonesummon_z = -2;
@@ -1293,15 +1293,15 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		this->zoningZ = tarz;
 	}
 	//Yeahlight: Succor / escape spell
-	else if(strcmp(Database::Instance()->GetZoneName(zc->zoneID), zone->GetShortName()) == 0)
+	else if(tarzone = zone->GetZoneID())
 	{
 		cout<<"Zoning with escape spell"<<endl;
-		strcpy(tarzone, Database::Instance()->GetZoneName(zc->zoneID));
+		tarzone = zc->zoneID;
 	}
 	else if(pendingTranslocate)
 	{		
 		cout<<"Zoning with translocate"<<endl;
-		strcpy(tarzone, Database::Instance()->GetZoneName(zc->zoneID));
+		tarzone = zc->zoneID;
 		tarx = pendingTranslocateX;
 		tary = pendingTranslocateY;
 		tarz = pendingTranslocateZ;
@@ -1311,20 +1311,20 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	else
 	{
 		cout<<"Zoning with invalid protocol"<<endl;
-		tarzone[0] = 0;
+		tarzone = 0;
 	}
 
 	if(admin < minstatus)
 	{
-		Message(RED, "You are not awesome enough to enter %s.", tarzone);
+		Message(RED, "You are not awesome enough to enter %s.", Database::Instance()->GetZoneName(tarzone));
 	}
 	else if(GetLevel() < minlevel)
 	{
-		Message(RED, "Your will is not strong enough to enter %s", tarzone);
+		Message(RED, "Your will is not strong enough to enter %s", Database::Instance()->GetZoneName(tarzone));
 	}
 
 	APPLAYER* outapp;
-	if(tarzone[0] != 0 && this->admin >= minstatus && this->GetLevel() >= minlevel)
+	if(tarzone != 0 && this->admin >= minstatus && this->GetLevel() >= minlevel)
 	{
 		if(this->IsGrouped())
 		{
@@ -1332,71 +1332,41 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 			if(g)
 				g->MemberZonedOut(this);
 		}
-		//cout << "Zone target:" << tarzone << " x:" << tarx << " y:" << tary << " z:" << tarz << endl;
+		cout << "Zone target:" << Database::Instance()->GetZoneName(tarzone) << " x:" << tarx << " y:" << tary << " z:" << tarz << endl;
 
 		outapp = new APPLAYER(OP_CancelTrade, 0);
 		QueuePacket(outapp);
 		safe_delete(outapp);//delete outapp;
 
-		outapp = new APPLAYER;
-		outapp->opcode = 0x1020;
-		outapp->size = 0;
-		QueuePacket(outapp);
-		safe_delete(outapp);//delete outapp;
-
-		outapp = new APPLAYER(OP_ZoneChange, sizeof(ZoneChange_Struct));
-		memset(outapp->pBuffer, 0, sizeof(ZoneChange_Struct));
-		ZoneChange_Struct *zc2 = (ZoneChange_Struct*)outapp->pBuffer;
-		strcpy(zc2->char_name, zc->char_name);
-		zc2->zoneID = Database::Instance()->LoadZoneID(tarzone);
-		//								memcpy(zc2->zc_unknown1, zc->zc_unknown1, sizeof(zc->zc_unknown1));
-
-		/*zc2->zc_unknown1[0] = 0x10;
-		zc2->zc_unknown1[1] = 0x00; 
-		zc2->zc_unknown1[2] = 0x00;
-		zc2->zc_unknown1[3] = 0x00;
-		zc2->zc_unknown1[4] = 0x04;
-		zc2->zc_unknown1[5] = 0xb5; 
-		zc2->zc_unknown1[6] = 0x01;
-		zc2->zc_unknown1[7] = 0x02; 
-		zc2->zc_unknown1[8] = 0x43; 
-		zc2->zc_unknown1[9] = 0x58; 
-		zc2->zc_unknown1[10] = 0x4f;
-		zc2->zc_unknown1[11] = 0x00; 
-		zc2->zc_unknown1[12] = 0xb0; 
-		zc2->zc_unknown1[13] = 0xa5; 
-		zc2->zc_unknown1[14] = 0xc7; 
-		zc2->zc_unknown1[15] = 0x0d; 
-		zc2->zc_unknown1[16] = 0x01;
-		zc2->zc_unknown1[17] = 0x00;
-		zc2->zc_unknown1[18] = 0x00;
-		zc2->zc_unknown1[19] = 0x00;*/
-
+		ServerPacket* pack = new ServerPacket(ServerOP_ZoneToZoneRequest, sizeof(ZoneToZone_Struct));
+		pack->pBuffer = new uchar[pack->size];
+		memset(pack->pBuffer, 0, pack->size);
+		ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
+		ztz->response = 0;
+		ztz->ignorerestrictions = 0;
+		ztz->admin = 0;
+		ztz->current_zone_id = zone->GetZoneID();
+		ztz->requested_zone_id = tarzone;
+		strncpy(ztz->name, zc->char_name, 64);
+		worldserver.SendPacket(pack);
+		safe_delete(pack);
 
 		// The client seems to dump this profile on us, but I ignore it for now. Saving is client initiated?
 		x_pos = tarx; // Hmm, these coordinates will now be saved when ~client is called
 		y_pos = tary;
 		z_pos = tarz;
 
-		pp.current_zone = Database::Instance()->LoadZoneID(tarzone);
+		pp.current_zone = tarzone;
 		this->Save();
 
-		Database::Instance()->SetAuthentication(account_id, zc->char_name, tarzone, ip); // We have to tell the world server somehow?
-		QueuePacket(outapp);
-		safe_delete(outapp);//delete outapp;
+		Database::Instance()->SetAuthentication(account_id, zc->char_name, Database::Instance()->GetZoneName(tarzone), ip); // We have to tell the world server somehow?
 	}
 	else
 	{
-		//cerr << "Zone '" << zc->zone_name << "' is not available" << endl;
+		cerr << "Zone '" << Database::Instance()->GetZoneName(zc->zoneID) << "' is not available" << endl;
 
 		outapp = new APPLAYER(OP_CancelTrade, 0);
 		QueuePacket(outapp);
-		safe_delete(outapp);//delete outapp;
-
-		outapp = new APPLAYER;
-		outapp->opcode = 0x1020;
-		outapp->size = 0;
-		QueuePacket(outapp);					
 		safe_delete(outapp);//delete outapp;
 
 		outapp = new APPLAYER(OP_ZoneChange, sizeof(ZoneChange_Struct));
@@ -1406,6 +1376,14 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		zc2->zoneID = zc->zoneID;
 		QueuePacket(outapp);
 		safe_delete(outapp);//delete outapp;
+
+		int8 stuffdata[16] = {0xE6, 0x02, 0x10, 0x00, 0x00, 0x00, 0x68, 0x42, 0x00, 0x00, 0xDB, 0xC3, 0xFA, 0xFE, 0x00, 0xC2};
+		outapp = new APPLAYER(0x2120, sizeof(stuffdata));
+		memcpy(outapp->pBuffer, stuffdata, sizeof(stuffdata));
+		QueuePacket(outapp);
+		delete outapp;
+	
+		cout << "Sent ZoneChange " << endl;
 
 		isZoning = false;
 		isZoningZP = false;
@@ -2608,7 +2586,7 @@ void Client::ProcessOP_GMZoneRequest(APPLAYER* pApp)
 		memset(outapp->pBuffer, 0, outapp->size);
 		GMZoneRequest_Struct* gmzr2 = (GMZoneRequest_Struct*) outapp->pBuffer;
 		strcpy(gmzr2->charname, this->GetName());
-		strcpy(gmzr2->zonename, gmzr->zonename);
+		gmzr2->zoneID, gmzr->zoneID;
 		gmzr2->success = 1;
 		int8 tmp[32] = { 0xe8, 0xf0, 0x58, 0x00, 0x70, 0xef, 0xad, 0x0e, 0x74, 0xf3, 0xad, 0x0e, 0xc7, 0x01, 0x4c, 0x00,
 			0x00, 0xa0, 0x04, 0xc5, 0x00, 0x20, 0x5f, 0xc5, 0x00, 0x00, 0xba, 0xc2, 0x00, 0x00, 0x00, 0x00 };
@@ -3850,7 +3828,7 @@ void Client::ProcessOP_GMGoto(APPLAYER* pApp){
 		return;
 	}
 	GMGoto_Struct* gmg = (GMGoto_Struct*) pApp->pBuffer;
-	Mob* gt = entity_list.GetMob(gmg->gotoname);
+	Mob* gt = entity_list.GetMob(gmg->charname);
 
 	if (gt != 0) 
 	{
@@ -3868,7 +3846,7 @@ void Client::ProcessOP_GMGoto(APPLAYER* pApp){
 		memset(pack->pBuffer, 0, pack->size);
 		ServerGMGoto_Struct* wsgmg = (ServerGMGoto_Struct*) pack->pBuffer;
 		strcpy(wsgmg->myname, this->GetName());
-		strcpy(wsgmg->gotoname, gmg->gotoname);
+		strcpy(wsgmg->gotoname, gmg->charname);
 		wsgmg->admin = admin;
 		worldserver.SendPacket(pack);
 		safe_delete(pack);//delete pack;

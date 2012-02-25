@@ -23,42 +23,50 @@
 #define	WORLD_KICK_TIMER					180000  // Comment: Yeahlight: How often World issues a world kick purge on stuck accounts in the database (3 minutes)
 #define TOTAL_NUMBER_OF_ZONES				130		// Comment: Yeahlight: Our total number of bootable zones
 
-#define ServerOP_KeepAlive			0x0001		// Comment: packet to test if port is still open
-#define ServerOP_ChannelMessage		0x0002		// Comment: broadcast/guildsay
-#define ServerOP_SetZone			0x0003		// Comment: client -> server zoneinfo
-#define ServerOP_ShutdownAll		0x0004		// Comment: exit(0);
-#define ServerOP_ZoneShutdown		0x0005		// Comment: unload all data, goto sleep mode
-#define ServerOP_ZoneBootup			0x0006		// Comment: come out of sleep mode and load zone specified
-#define ServerOP_ZoneStatus			0x0007		// Comment: Shows status of all zones
-#define ServerOP_SetConnectInfo		0x0008		// Comment: Tells server address and port #
-#define ServerOP_EmoteMessage		0x0009		// Comment: Worldfarts
-#define ServerOP_ClientList			0x000A		// Comment: Update worldserver's client list, for #whos
-#define ServerOP_Who				0x000B		// Comment: #who
-#define ServerOP_ZonePlayer			0x000C		// Comment: #zone, or #summon
-#define ServerOP_KickPlayer			0x000D		// Comment: #kick
-#define ServerOP_RefreshGuild		0x000E		// Comment: Notice to all zoneservers to refresh their guild cache for ID# in packet
-#define ServerOP_GuildKickAll		0x000F		// Comment: Remove all clients from this guild
-#define ServerOP_GuildInvite		0x0010		// Comment: 
-#define ServerOP_GuildRemove		0x0011		// Comment: 
-#define ServerOP_GuildPromote		0x0012		// Comment: 
-#define ServerOP_GuildDemote		0x0013		// Comment: 
-#define ServerOP_GuildLeader		0x0014		// Comment: 
-#define ServerOP_GuildGMSet			0x0015		// Comment: 
-#define ServerOP_GuildGMSetRank		0x0016		// Comment: 
-#define ServerOP_FlagUpdate			0x0018		// Comment: GM Flag updated for character, refresh the memory cache
-#define ServerOP_GMGoto				0x0019		// Comment: 
-#define ServerOP_MultiLineMsg		0x001A		// Comment: 
-#define ServerOP_Lock				0x001B		// Comment: For #lock/#unlock inside server
-#define ServerOP_Motd				0x001C		// Comment: For changing MoTD inside server.
-#define ServerOP_Uptime				0x001D		// Comment: 
-#define ServerOP_Petition			0x001E		// Comment: 
-#define	ServerOP_KillPlayer			0x001F		// Comment: 
-#define ServerOP_UpdateGM			0x0020		// Comment: 
+#define ServerOP_KeepAlive			0x0001	// packet to test if port is still open
+#define ServerOP_ChannelMessage		0x0002	// broadcast/guildsay
+#define ServerOP_SetZone			0x0003	// client -> server zoneinfo
+#define ServerOP_ShutdownAll		0x0004	// exit(0);
+#define ServerOP_ZoneShutdown		0x0005	// unload all data, goto sleep mode
+#define ServerOP_ZoneBootup			0x0006	// come out of sleep mode and load zone specified
+#define ServerOP_ZoneStatus			0x0007	// Shows status of all zones
+#define ServerOP_SetConnectInfo		0x0008	// Tells server address and port #
+#define ServerOP_EmoteMessage		0x0009	// Worldfarts
+#define ServerOP_ClientList			0x000A	// Update worldserver's client list, for #whos
+#define ServerOP_Who				0x000B	// #who
+#define ServerOP_ZonePlayer			0x000C  // #zone, or #summon
+#define ServerOP_KickPlayer			0x000D  // #kick
+#define ServerOP_RefreshGuild		0x000E	// Notice to all zoneservers to refresh their guild cache for ID# in packet
+#define ServerOP_GuildKickAll		0x000F	// Remove all clients from this guild
+#define ServerOP_GuildInvite		0x0010
+#define ServerOP_GuildRemove		0x0011
+#define ServerOP_GuildPromote		0x0012
+#define ServerOP_GuildDemote		0x0013
+#define ServerOP_GuildLeader		0x0014
+#define ServerOP_GuildGMSet			0x0015
+#define ServerOP_GuildGMSetRank		0x0016
+#define ServerOP_FlagUpdate			0x0018	// GM Flag updated for character, refresh the memory cache
+#define ServerOP_GMGoto				0x0019
+#define ServerOP_MultiLineMsg		0x001A
+#define ServerOP_Lock				0x001B  // For #lock/#unlock inside server
+#define ServerOP_Motd				0x001C  // For changing MoTD inside server.
+#define ServerOP_Uptime				0x001D
+#define ServerOP_Petition			0x001E
+#define	ServerOP_KillPlayer			0x001F
+#define ServerOP_UpdateGM			0x0020
 #define ServerOP_RezzPlayer			0x0021
-#define ServerOP_SendPacket			0x0022		// Comment: send directly a packet to a certain player -Cofruben.
-#define ServerOP_GuildCreateRequest 0x0023		// Comment: Custom Op-Code for Guild Creation Request -Dark-Prince
-#define ServerOP_GuildCreateResponse 0x0025		// Comment: Custom Op-Code for Guild Creation Response -Dark-Prince
-#define ServerOP_GroupRefresh		0x0026		// Comment: Used to force a zone's group entity refresh for a client
+#define ServerOP_ZoneReboot			0x0022
+#define ServerOP_ZoneToZoneRequest	0x0023
+#define ServerOP_AcceptWorldEntrance 0x0024
+#define ServerOP_ZAAuth				0x0025
+#define ServerOP_ZAAuthFailed		0x0026
+#define ServerOP_ZoneIncClient		0x0027	// Incomming client
+#define ServerOP_ClientListKA		0x0028
+#define ServerOP_ChangeWID			0x0029
+#define ServerOP_IPLookup			0x002A
+#define ServerOP_LockZone			0x002B
+#define ServerOP_ItemStatus			0x002C
+
 //---------- Tazadar : Boat ServerOP ------------//
 #define ServerOP_BoatNP				0x0027		// Comment: Tazadar -> Used to inform a boat that a new passenger arrived
 #define ServerOP_BoatPL				0x0028		// Comment: Tazadar -> Used to inform a boat that a passenger left the boat
@@ -107,6 +115,20 @@ struct ServerZoneStateChange_struct {
 	char adminname[64];
 	int32 zoneid;
 	bool makestatic;
+};
+
+struct ZoneToZone_Struct {
+	char	name[64];
+	int32	requested_zone_id;
+	int32	current_zone_id;
+	int8	response;
+	int16	admin;
+	int8	ignorerestrictions;
+};
+
+struct WorldToZone_Struct {
+	int32	account_id;
+	sint8	response;
 };
 
 struct SetZone_Struct {
