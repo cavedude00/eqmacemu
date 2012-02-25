@@ -100,7 +100,7 @@
 #define OP_GMKill		   0x6c40 // /kill
 #define OP_GMSurname	   0x6e41 // /lastname
 #define OP_GMToggle		   0xde41 // /toggle
-#define OP_Translocate     0x0642
+#define OP_Translocate	   0x0642
 #define OP_Jump	           0x2040
 #define OP_MovementUpdate  0x1F40
 #define OP_SenseHeading    0x8741
@@ -138,6 +138,7 @@
 #define OP_ClientTarget    0x6241
 #define OP_SummonedItem    0x7841
 #define OP_SpecialMesg     0x8041
+#define OP_Track		   0x8441 //cavedude: ShowEQ 4.3.4.
 #define OP_Sneak           0x8541
 #define OP_Hide            0x8641
 #define OP_SenseTraps      0x8841
@@ -269,7 +270,6 @@
 
 // Unknowns: Some of these we may have above under a different name, or may be in SEQ source. Just trying to get us to copile atm.
 #define OP_Beg				0x0000
-#define OP_Track			0x8441 //cavedude: ShowEQ 4.3.4
 #define OP_DropItem			0x0000
 #define OP_PickupItem		0x0000
 #define OP_SplitMoney		0x0000
@@ -291,7 +291,6 @@
 #define OP_StationItem		0x0000
 #define OP_TradeMoneyUpdate		0x0000
 #define OP_PetitionClientUpdate		0x0000
-#define OP_TeleportPC		0x0000
 #define OP_InitiateConsume		0x0000
 #define OP_SplitResponse	0x0000
 #define OP_SpawnProjectile	0x0000

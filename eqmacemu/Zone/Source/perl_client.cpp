@@ -1571,7 +1571,7 @@ XS(XS_Client_TeleportPC)
 			heading = (float)SvNV(ST(5));
 		}
 
-		THIS->TeleportPC(zonename, x, y, z, heading);
+		THIS->MovePC(zonename, x, y, z, heading);
 	}
 	XSRETURN_EMPTY;
 }

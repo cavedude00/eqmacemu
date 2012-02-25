@@ -100,6 +100,7 @@ private:
 	void ProcessServerOP_BoatPL(ServerPacket* pack);
 	void ProcessServerOP_TravelDone(ServerPacket* pack);
 	void ProcessServerOP_ZoneRunStatus(ServerPacket* pack);
+	void ProcessServerOP_ZoneToZoneRequest(ServerPacket* pack);
 };
 
 

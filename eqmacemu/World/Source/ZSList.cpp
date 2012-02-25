@@ -379,7 +379,7 @@ namespace EQC
 
 			void ZSList::ForceGroupRefresh(char* member, int32 groupid, int8 action)
 			{
-				cout << "ZSList: Refreshing group for " << member << endl;
+				/*cout << "ZSList: Refreshing group for " << member << endl;
 				if (strlen(member) > 0)
 				{
 					ServerPacket* pack = new ServerPacket( ServerOP_GroupRefresh, sizeof(ServerGroupRefresh_Struct));
@@ -392,7 +392,7 @@ namespace EQC
 
 					zoneserver_list.SendPacket(pack);
 					safe_delete(pack);//delete pack;
-				}				
+				}*/		
 			}
 
 			void ZSList::ClientRemove(char* name, int32 zone)

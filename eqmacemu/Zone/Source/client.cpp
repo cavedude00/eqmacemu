@@ -663,6 +663,8 @@ void Client::MovePC(const char* zonename, float x, float y, float z, bool ignore
 	CAST_CLIENT_DEBUG_PTR(this)->Log(CP_UPDATES, "Client::MovePC(zonename = %s, x = %f, y = %f, z = %f, ignore_restrictions = %i)", zonename, x, y, z, ignorerestrictions);
 	zonesummon_ignorerestrictions = ignorerestrictions;
 
+	int32 zoneid = Database::Instance()->LoadZoneID(zonename);
+
 	//Yeahlight: We are using the GM summon struct, thus displaying, "You have been summoned!"
 	if(useSummonMessage)
 	{
@@ -674,11 +676,11 @@ void Client::MovePC(const char* zonename, float x, float y, float z, bool ignore
 
 		if (zonename == 0 || strcmp(zone->GetShortName(), zonename) == 0)
 		{
-			strcpy(gms->zonename, zone->GetFileName());
+			gms->zoneID = Database::Instance()->LoadZoneID(zone->GetFileName());
 		}
 		else
 		{
-			strcpy(gms->zonename, "zonesummon");
+			gms->zoneID = zoneid;
 			if (strcasecmp(zonename, zone->GetShortName()) != 0)
 			{
 				strcpy(zonesummon_name, zonename);
@@ -690,10 +692,8 @@ void Client::MovePC(const char* zonename, float x, float y, float z, bool ignore
 		gms->x = (sint32) x;
 		gms->y = (sint32) y;
 		gms->z = (sint32) z;
-		int8 tmp[16] = { 0x7C, 0xEF, 0xFC, 0x0F, 0x80, 0xF3, 0xFC, 0x0F, 0xA9, 0xCB, 0x4A, 0x00, 0x7C, 0xEF, 0xFC, 0x0F };
-		memcpy(gms->unknown2, tmp, 16);
-		int8 tmp2[4] = { 0xE0, 0xE0, 0x56, 0x00 };
-		memcpy(gms->unknown3, tmp2, 4);
+		int8 tmp[4] = { 0xE0, 0xE0, 0x56, 0x00 };
+		memcpy(gms->unknown2, tmp, 4);
 		QueuePacket(outapp);
 		safe_delete(outapp);//delete outapp;
 	}
@@ -3636,70 +3636,6 @@ void Client::CreateZoneLineNode(char* zoneName, char* connectingZoneName, int16 
 	myfile.close();
 }
 
-
-//o--------------------------------------------------------------
-//| TeleportPC; Harakiri, September 16, 2009
-//o--------------------------------------------------------------
-//| Teleports the player, the client automatically issues a changezone
-//| request if the player is not already in the zone
-//| when the player is already in the zone, the client automatically 
-//| moves the player
-//| This method should now used for all moving/zoning EXCEPT translocate
-//| The teleportPC function in the game client at offset 00495996
-//| will call the same function as zonePC at offset 004DC1B5
-//| when the player is not already in the zone
-//| note: for negative x y the client always adds +1 to the coords when
-//| moving in the same zone
-//o--------------------------------------------------------------
-void Client::TeleportPC(char* zonename, float x, float y, float z, float heading)
-{	
-	EQC::Common::Log(EQCLog::Debug,CP_CLIENT,"Client::TeleportPC(zone name = %s, x = %f, y = %f, z = %f, heading = %f)", zonename, x, y, z,heading);
-				
-	// if not in this zone, memorize coords, client will issue a ProcessOP_ZoneChange shortly
-	if(strcmp(zone->GetShortName(), zonename) != 0)
-	{
-		this->usingSoftCodedZoneLine = true;
-		this->isZoning = true;
-		this->zoningX = (sint32)x;
-		this->zoningY = (sint32)y;
-		this->zoningZ = (sint32)z;
-		this->tempHeading = (int8)heading;
-	// reset
-	} else {	
-		this->isZoningZP = false;
-		this->isZoning = false;
-		this->usingSoftCodedZoneLine = false;
-	}
-	
-	APPLAYER* outapp = new APPLAYER(OP_TeleportPC, sizeof(TeleportPC_Struct));
-
-	TeleportPC_Struct* tls = (TeleportPC_Struct*)outapp->pBuffer;
-	memset(outapp->pBuffer, 0, sizeof(TeleportPC_Struct));
-	strcpy(tls->zone, zonename);			
-	tls->xPos = x;
-	tls->yPos = y;	
-	
-	// Harakiri - the client does not sometimes like going to 0 z at a specific point in a zone
-	// example in qeynos2 standing infront of the gates and going to 0 0 0 will teleport to a random location sometimes
-	// the closer you walk to 0 0 0 tho, teleport 0 0 0 will always work
-	// however, i figured if z is not 0, like a small value, it will always work
-	// translocate does not have this issue tho, only teleport
-	if(z==0) {
-		// workaround
-		tls->zPos = 0.1f;
-	} else {
-		tls->zPos = z;
-	}
-
-	if(heading!=0) {
-		tls->heading = heading*2; // Harakiri client will divide this by 2
-	}
-
-	QueuePacket(outapp);
-	safe_delete(outapp);
-	
-}
-
 //o--------------------------------------------------------------
 //| TranslocatePC; Harakiri, September 16, 2009
 //o--------------------------------------------------------------
@@ -3763,7 +3699,7 @@ void Client::ZonePC(char* zonename, float x, float y, float z)
 	
 
 	// Harakiri Client will automatically do local movepc if the client is already in the target zone
-	TeleportPC(zonename,x,y,z);
+	MovePC(zonename,x,y,z);
 
 	CAST_CLIENT_DEBUG_PTR(this)->Log(CP_UPDATES, "Client::ZonePC(zone name = %s, x = %f, y = %f, z = %f)", zonename, x, y, z);
 }

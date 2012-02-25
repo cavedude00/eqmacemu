@@ -426,7 +426,7 @@ void Client::ChannelMessageSend(char* from, char* to, int8 chan_num, int8 langua
 	cm->cm_unknown4[1] = 0xff;
 	//////////////////////////////////////////////////////////////
 	//Yeahlight: One of these bytes describes how drunk the sender is
-	cm->cm_unknown2[0] = 0x00;
+/*	cm->cm_unknown2[0] = 0x00;
 	cm->cm_unknown2[1] = 0x00;
 	cm->cm_unknown2[2] = 0x00;
 	cm->cm_unknown2[3] = 0x00;
@@ -434,7 +434,7 @@ void Client::ChannelMessageSend(char* from, char* to, int8 chan_num, int8 langua
 	cm->cm_unknown2[5] = 0x00;
 	cm->cm_unknown2[6] = 0x00;
 	cm->cm_unknown2[7] = 0x00;
-	cm->cm_unknown2[8] = 0x00;
+	cm->cm_unknown2[8] = 0x00;*/
 	//////////////////////////////////////////////////////////////
 	strcpy(&cm->message[0], buffer);
 

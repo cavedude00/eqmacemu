@@ -162,11 +162,11 @@ bool ZoneServer::Process()
 					this->ProcessServerOP_EmoteMessage(pack);	//Kibanu: Changed to emote message, 
 					break;										// was pointing to channel message
 				}
-			case ServerOP_GroupRefresh:
+/*			case ServerOP_GroupRefresh:
 				{
 					this->ProcessServerOP_GroupRefresh(pack);	//Kibanu - Added 4/22/2009
 					break;
-				}
+				}*/
 			case ServerOP_MultiLineMsg: 
 				{
 					this->ProcessServerOP_MultiLineMsg(pack);
@@ -247,11 +247,11 @@ bool ZoneServer::Process()
 					guild_mgr.ProcessServerOP_RefreshGuild(pack);
 					break;
 				}
-			case ServerOP_GuildCreateRequest:
+/*			case ServerOP_GuildCreateRequest:
 				{
 					guild_mgr.ProcessServerOP_GuildCreateRequest(pack);
 					break;
-				}
+				}*/
 
 			case ServerOP_GuildLeader:
 			case ServerOP_GuildInvite:
@@ -285,11 +285,11 @@ bool ZoneServer::Process()
 					break;
 				}
 			// Cofruben: used to send a packet directly to a client.
-			case ServerOP_SendPacket:
+/*			case ServerOP_SendPacket:
 				{
 					this->ProcessServerOP_SendPacket(pack);
 					break;
-				}
+				}*/
 			case ServerOP_Petition: 
 			case ServerOP_FlagUpdate:
 			case ServerOP_KickPlayer: 
@@ -297,7 +297,12 @@ bool ZoneServer::Process()
 			{
 				zoneserver_list.SendPacket(pack);
 				break;
-			}		
+			}	
+			case ServerOP_ZoneToZoneRequest: 
+				{
+					this->ProcessServerOP_ZoneToZoneRequest(pack);
+					break;
+				}
 			default:
 			{
 				this->ProcessServerOP_Unknown(pack);
@@ -529,3 +534,4 @@ void ZoneServer::TriggerBootup(char* zonename, char* adminname)
 	SendPacket(pack);
 	safe_delete(pack);//delete pack;
 }
+

@@ -70,7 +70,7 @@ namespace EQC
 				// Guild Creation was a success, notify client
 
 				// Create a ServerPacker of ServerOP_GuildCreateResponse
-				ServerPacket* pack = EQC::Common::CreateServerPacket(ServerOP_GuildCreateResponse, sizeof(GuildCreateResponse_Struct));
+//				ServerPacket* pack = EQC::Common::CreateServerPacket(ServerOP_GuildCreateResponse, sizeof(GuildCreateResponse_Struct));
 
 				// Map ServerPacker to a GuildCreateResponse_Struct
 				GuildCreateResponse_Struct* gcrs = (GuildCreateResponse_Struct*) pack->pBuffer;

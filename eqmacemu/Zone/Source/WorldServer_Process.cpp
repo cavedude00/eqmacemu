@@ -129,7 +129,7 @@ void WorldServer::Process()
 				}
 				break;
 			}
-		case ServerOP_GroupRefresh: //Kibanu - 4/22/2009
+/*		case ServerOP_GroupRefresh: //Kibanu - 4/22/2009
 			{
 				cout << "WorldServer_Process: In Group Refresh" << endl;
 				if (!ZoneLoaded)
@@ -149,7 +149,7 @@ void WorldServer::Process()
 					}
 				}
 				break;
-			}
+			}*/
 		case ServerOP_ShutdownAll: 
 			{
 				entity_list.Save();
@@ -226,12 +226,12 @@ void WorldServer::Process()
 					client->SetZoningX(szp->x_pos);
 					client->SetZoningY(szp->y_pos);
 					client->SetZoningZ(szp->z_pos);
-					client->ZonePC(szp->zone, szp->x_pos, szp->y_pos, szp->z_pos);
+					client->MovePC(szp->zone, szp->x_pos, szp->y_pos, szp->z_pos, false, false);
 				}
 				break;
 			}
 			// Cofruben: used to send a packet directly to a client.
-		case ServerOP_SendPacket: 
+/*		case ServerOP_SendPacket: 
 			{
 				ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*)pack->pBuffer;
 				int32 PacketSize = pack->size - sizeof(sss->charname) - sizeof(sss->opcode);
@@ -245,7 +245,7 @@ void WorldServer::Process()
 				PacketTo->QueuePacket(outapp);
 				safe_delete(outapp);//delete outapp;
 				break;
-			}
+			}*/
 		case ServerOP_KickPlayer:
 			{
 				ServerKickPlayer_Struct* skp = (ServerKickPlayer_Struct*) pack->pBuffer;
@@ -589,7 +589,7 @@ void WorldServer::Process()
 				}
 				break;
 			}
-		case ServerOP_GuildCreateResponse:
+/*		case ServerOP_GuildCreateResponse:
 			{
 				GuildCreateResponse_Struct* gcrs = (GuildCreateResponse_Struct*) pack->pBuffer;
 
@@ -602,7 +602,7 @@ void WorldServer::Process()
 				}
 				
 				break;
-			}
+			}*/
 		case ServerOP_FlagUpdate:
 			{
 				Client* client = entity_list.GetClientByAccID(Database::Instance()->GetAccountIDByName((char*) pack->pBuffer));
@@ -974,13 +974,73 @@ void WorldServer::Process()
 					zone->SetTimeOfDay(false);
 				break;
 			}
-		default:
+		case ServerOP_ZoneToZoneRequest: 
 			{
-				cout << "Unknown ZSopcode:" << (int)pack->opcode;
-				cout << "size:" << pack->size << endl;
-				//DumpPacket(pack->pBuffer, pack->size);
+				if(pack->size != sizeof(ZoneToZone_Struct)) break;
+				if (!ZoneLoaded) break;
+				ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
+			
+				if(ztz->current_zone_id == zone->GetZoneID())
+				{
+					Entity* entity = entity_list.GetClientByName(ztz->name);
+					if(entity == 0 || !entity->IsClient())
+					break;
+
+					APPLAYER *outapp;
+					outapp = new APPLAYER(OP_ZoneChange,sizeof(ZoneChange_Struct));
+					ZoneChange_Struct* zc2=(ZoneChange_Struct*)outapp->pBuffer;
+
+					if(ztz->response == 0 || ztz->response == -1)
+					{
+						zc2->success = -1;
+						SetZone(Database::Instance()->GetZoneName(ztz->current_zone_id));
+					}
+					else
+					{
+						strncpy(zc2->char_name,entity->CastToMob()->GetName(),64);
+						zc2->zoneID=ztz->requested_zone_id;
+						zc2->success = 1;
+					}
+					entity->CastToClient()->QueuePacket(outapp);
+					delete outapp;
+
+					Client* client = entity_list.GetClientByName(zc2->char_name);
+					switch(ztz->response)
+					{
+						case -1:
+						{
+							client->Message(RED, "The zone is currently full, please try again later.");
+							break;
+						}
+						case 0:
+						{
+							client->Message(RED, "All zone servers are taken at this time, please try again later.");
+							break;
+						}
+
+					}
+				}
+				else
+				{
+					/*sint32 max = database.GetMaxClientsInZone(zone->GetZoneID());
+
+					if(max != 0 && numclients >= max)
+					ztz->response = -1;
+					else*/
+					ztz->response = 1;
+
+					worldserver.SendPacket(pack);
+					break;
+				}
 				break;
 			}
+				default:
+				{
+					cout << "Unknown ZSopcode:" << (int)pack->opcode;
+					cout << "size:" << pack->size << endl;
+					//DumpPacket(pack->pBuffer, pack->size);
+					break;
+				}
 		}
 
 		safe_delete(pack);//delete pack;
