@@ -44,6 +44,7 @@ public:
 	void	TriggerBootup(char* zonename = 0, char* adminname = 0);
 
 	char*	GetZoneName()	{ return zone_name; }
+	int32	GetZoneID()		{ return zoneID; }
 	int32	GetIP()			{ return ip; }
 	int16	GetPort()		{ return port; }
 	char*	GetCAddress()	{ return clientaddress; }
@@ -59,6 +60,7 @@ private:
 	void SendKeepAlive();
 
 	int32	ID;
+	int32	zoneID;
 	int		send_socket;
 	int32	ip;
 	int16	port;
@@ -80,7 +82,7 @@ private:
 	void ProcessServerOP_SetZone(ServerPacket* pack);
 	void ProcessServerOP_SetConnectInfo(ServerPacket* pack);
 	void ProcessServerOP_ShutdownAll(ServerPacket* pack);
-	void ProcessServerServerOP_ZoneShutdown(ServerPacket* pack);
+	void ProcessServerOP_ZoneShutdown(ServerPacket* pack);
 	void ProcessServerOP_ZoneBootup(ServerPacket* pack);
 	void ProcessServerOP_ZoneStatus(ServerPacket* pack);
 	void ProcessServerOP_ClientList(ServerPacket* pack);

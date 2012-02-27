@@ -976,15 +976,17 @@ void WorldServer::Process()
 			}
 		case ServerOP_ZoneToZoneRequest: 
 			{
-				if(pack->size != sizeof(ZoneToZone_Struct)) break;
-				if (!ZoneLoaded) break;
+				if(pack->size != sizeof(ZoneToZone_Struct)) 
+					break;
+				if (!ZoneLoaded) 
+					break;
 				ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
 			
 				if(ztz->current_zone_id == zone->GetZoneID())
 				{
 					Entity* entity = entity_list.GetClientByName(ztz->name);
 					if(entity == 0 || !entity->IsClient())
-					break;
+						break;
 
 					APPLAYER *outapp;
 					outapp = new APPLAYER(OP_ZoneChange,sizeof(ZoneChange_Struct));
@@ -992,7 +994,7 @@ void WorldServer::Process()
 
 					if(ztz->response == 0 || ztz->response == -1)
 					{
-						zc2->success = -1;
+						zc2->success = ZONE_ERROR_NOTREADY;
 						SetZone(Database::Instance()->GetZoneName(ztz->current_zone_id));
 					}
 					else
@@ -1002,7 +1004,7 @@ void WorldServer::Process()
 						zc2->success = 1;
 					}
 					entity->CastToClient()->QueuePacket(outapp);
-					delete outapp;
+					safe_delete(outapp);
 
 					Client* client = entity_list.GetClientByName(zc2->char_name);
 					switch(ztz->response)
@@ -1028,8 +1030,10 @@ void WorldServer::Process()
 					ztz->response = -1;
 					else*/
 					ztz->response = 1;
-
-					worldserver.SendPacket(pack);
+					// since they asked about comming, lets assume they are on their way and not shut down.
+					zone->StartShutdownTimer(AUTHENTICATION_TIMEOUT * 1000);
+		
+					SendPacket(pack);
 					break;
 				}
 				break;

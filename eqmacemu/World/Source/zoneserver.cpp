@@ -199,7 +199,7 @@ bool ZoneServer::Process()
 				}
 			case ServerOP_ZoneShutdown:
 				{
-					this->ProcessServerServerOP_ZoneShutdown(pack);
+					this->ProcessServerOP_ZoneShutdown(pack);
 					break;
 				}
 			case ServerOP_ZoneBootup: 
@@ -526,10 +526,12 @@ void ZoneServer::TriggerBootup(char* zonename, char* adminname)
 	if (zonename == 0)
 	{
 		s->zoneid = Database::Instance()->LoadZoneID(this->zone_name);
+		zoneID = Database::Instance()->LoadZoneID(this->zone_name);
 	}
 	else
 	{
 		s->zoneid = Database::Instance()->LoadZoneID(zonename);
+		zoneID = Database::Instance()->LoadZoneID(zonename);
 	}
 	SendPacket(pack);
 	safe_delete(pack);//delete pack;

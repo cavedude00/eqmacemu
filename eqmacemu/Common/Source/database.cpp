@@ -503,7 +503,7 @@ void Database::GetCharSelectInfo(int32 account_id, CharacterSelect_Struct* cs, C
 	int char_num = 0;
 	unsigned long* lengths;
 	
-	if (RunQuery(query, MakeAnyLenString(&query, "SELECT name,profile FROM character_ WHERE account_id=%i order by name", account_id), errbuf, &result)) {
+	if (RunQuery(query, MakeAnyLenString(&query, "SELECT name,profile,zonename FROM character_ WHERE account_id=%i order by name", account_id), errbuf, &result)) {
 		safe_delete_array(query);//delete[] query;
 		while ((row = mysql_fetch_row(result)))
 		{
@@ -518,6 +518,7 @@ void Database::GetCharSelectInfo(int32 account_id, CharacterSelect_Struct* cs, C
 				cs->gender[char_num] = pp->gender;
 				cs->face[char_num] = pp->face;
 				cs->zone[char_num] = pp->current_zone;
+				cs->zone[char_num] = LoadZoneID(row[2]);
 				
 				// Coder_01 - REPLACE with item info when available.
 				Item_Struct* item = 0;
@@ -762,7 +763,7 @@ fclose(fp);
 	for (i=0;i<4; i++)
 		pp.start_point_zone[i] = ZONE_ID;
 
-    end += sprintf(end, "UPDATE character_ SET profile=");
+    end += sprintf(end, "UPDATE character_ SET zonename=\'%s\', x=%f, y=%f, z=%f, profile=", GetZoneName(ZONE_ID), pp.x, pp.y, pp.z);
     *end++ = '\'';
     end += DoEscapeString(end, (char*)&pp, sizeof(PlayerProfile_Struct));
     *end++ = '\'';
@@ -794,7 +795,7 @@ bool Database::CreateCharacter(int32 account_id, PlayerProfile_Struct* pp) {
 		return 0;
 	}
 
-    end += sprintf(end, "UPDATE character_ SET profile=");
+    end += sprintf(end, "UPDATE character_ SET zonename=\'%s\', x=%f, y=%f, z=%f, profile=", GetZoneName(pp->current_zone), pp->x, pp->y, pp->z);
     *end++ = '\'';
     end += DoEscapeString(end, (char*) pp, sizeof(PlayerProfile_Struct));
     *end++ = '\'';
@@ -817,7 +818,8 @@ bool Database::CreateCharacter(int32 account_id, PlayerProfile_Struct* pp) {
 	Return true if the character was found, otherwise false.
 	False will also be returned if there is a database error.
 */
-unsigned long Database::GetPlayerProfile(int32 account_id, char* name, PlayerProfile_Struct* pp)
+//unsigned long Database::GetPlayerProfile(int32 account_id, char* name, PlayerProfile_Struct* pp)
+unsigned long Database::GetPlayerProfile(int32 account_id, char* name, PlayerProfile_Struct* pp, char* current_zone)
 {
 	char errbuf[MYSQL_ERRMSG_SIZE];
     char *query = 0;
@@ -826,7 +828,7 @@ unsigned long Database::GetPlayerProfile(int32 account_id, char* name, PlayerPro
 
 	unsigned long* lengths;
 
-	if (RunQuery(query, MakeAnyLenString(&query, "SELECT profile FROM character_ WHERE account_id=%i AND name='%s'", account_id, name), errbuf, &result)) {
+	if (RunQuery(query, MakeAnyLenString(&query, "SELECT profile, zonename, x, y, z FROM character_ WHERE account_id=%i AND name='%s'", account_id, name), errbuf, &result)) {
 		safe_delete_array(query);//delete[] query;
 		if (mysql_num_rows(result) == 1) {	
 			row = mysql_fetch_row(result);
@@ -839,6 +841,16 @@ unsigned long Database::GetPlayerProfile(int32 account_id, char* name, PlayerPro
 				//mysql_free_result(result);
 				//return false;
 			//}
+			if (current_zone)
+				strcpy(current_zone, row[1]);
+				pp->current_zone = LoadZoneID(row[1]);
+				pp->x = atof(row[2]);
+				pp->y = atof(row[3]);
+				pp->z = atof(row[4]);
+			if (pp->x == -1 && pp->y == -1 && pp->z == -1)
+				GetSafePointsByID(pp->current_zone, &pp->x, &pp->y, &pp->z);
+			else
+				pp->z *= 10;
 		}
 		else {
 			mysql_free_result(result);
@@ -873,7 +885,7 @@ bool Database::SetPlayerProfile(int32 account_id, char* name, PlayerProfile_Stru
 	if (strlen(name) > 15)
 		return false;
 
-    end += sprintf(end, "UPDATE character_ SET profile=");
+    end += sprintf(end, "UPDATE character_ SET zonename='%s', x='%f', y='%f', z='%f', profile=", GetZoneName(pp->current_zone), pp->x, pp->y, pp->z);
     *end++ = '\'';
     end += DoEscapeString(end, (char*)pp, sizeof(PlayerProfile_Struct));
     *end++ = '\'';

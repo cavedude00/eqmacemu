@@ -419,70 +419,78 @@ namespace EQC
 
 
 			static const int BaseRace[TOTAL_RACES][7] =
-			{				 /* STR  STA  AGI  DEX  WIS  INT  CHR */
-				{ /*Human*/      75,  75,  75,  75,  75,  75,  75},
-				{ /*Barbarian*/ 103,  95,  82,  70,  70,  60,  55},
-				{ /*Erudite*/    60,  70,  70,  70,  83, 107,  70},
-				{ /*Wood Elf*/   65,  65,  95,  80,  80,  75,  75},
-				{ /*High Elf*/   55,  65,  85,  70,  95,  92,  80},
-				{ /*Dark Elf*/   60,  65,  90,  75,  83,  99,  60},                
-				{ /*Half Elf*/   70,  70,  90,  85,  60,  75,  75},
-				{ /*Dwarf*/      90,  90,  70,  90,  83,  60,  45},
-				{ /*Troll*/     108, 109,  83,  75,  60,  52,  40},
-				{ /*Ogre*/      130, 122,  70,  70,  67,  60,  37},
-				{ /*Halfling*/   70,  75,  95,  90,  80,  67,  50},
-				{ /*Gnome*/      60,  70,  85,  85,  67,  98,  60},
-				{ /*Iksar*/      70,  70,  90,  85,  80,  75,  55} // Iksar Support - Dark-Prince 22/12/2007
-			};
+			{          /* STR  STA  AGI  DEX  WIS  INT  CHR */
+	/*Human*/      75,  75,  75,  75,  75,  75,  75,
+	/*Barbarian*/ 103,  95,  82,  70,  70,  60,  55,
+	/*Erudite*/    60,  70,  70,  70,  83, 107,  70,
+	/*Wood Elf*/   65,  65,  95,  80,  80,  75,  75,
+	/*High Elf*/   55,  65,  85,  70,  95,  92,  80,
+	/*Dark Elf*/   60,  65,  90,  75,  83,  99,  60,                
+	/*Half Elf*/   70,  70,  90,  85,  60,  75,  75,
+	/*Dwarf*/      90,  90,  70,  90,  83,  60,  45,
+	/*Troll*/     108, 109,  83,  75,  60,  52,  40,
+	/*Ogre*/      130, 122,  70,  70,  67,  60,  37,
+	/*Halfling*/   70,  75,  95,  90,  80,  67,  50,
+	/*Gnome*/      60,  70,  85,  85,  67,  98,  60,
+	/*Iksar*/      70,  70,  90,  85,  80,  75,  55,
+	/*Vah Shir*/   90,  75,  90,  70,  70,  65,  65,
+	/*Froglok*/    70,  80, 100, 100,  75,  75,  50 
+	};
 
 
 			static const int BaseClass[TOTAL_CLASSES][8] =
-			{					/* STR  STA  AGI  DEX  WIS  INT  CHR  ADD*/
-				{ /*Warrior*/      10,  10,   5,   0,   0,   0,   0,  25},
-				{ /*Cleric*/        5,   5,   0,   0,  10,   0,   0,  30},
-				{ /*Paladin*/      10,   5,   0,   0,   5,   0,  10,  20},
-				{ /*Ranger*/        5,  10,  10,   0,   5,   0,   0,  20},
-				{ /*ShadowKnight*/ 10,   5,   0,   0,   0,   10,  5,  20},
-				{ /*Druid*/         0,  10,   0,   0,  10,   0,   0,  30},
-				{ /*Monk*/          5,   5,  10,  10,   0,   0,   0,  20},                
-				{ /*Bard*/          5,   0,   0,  10,   0,   0,  10,  25},
-				{ /*Rouge*/         0,   0,  10,  10,   0,   0,   0,  30},
-				{ /*Shaman*/        0,   5,   0,   0,  10,   0,   5,  30},
-				{ /*Necromancer*/   0,   0,   0,  10,   0,  10,   0,  30},
-				{ /*Wizard*/        0,  10,   0,   0,   0,  10,   0,  30},
-				{ /*Magician*/      0,  10,   0,   0,   0,  10,   0,  30},
-				{ /*Enchanter*/     0,   0,   0,   0,   0,  10,  10,  30},
-				{ /*Beastlord*/     0,  10,   5,   0,  10,   0,   5,  20},
-			};
+		{            /* STR  STA  AGI  DEX  WIS  INT  CHR  ADD*/
+	/*Warrior*/      10,  10,   5,   0,   0,   0,   0,  25,
+	/*Cleric*/        5,   5,   0,   0,  10,   0,   0,  30,
+	/*Paladin*/      10,   5,   0,   0,   5,   0,  10,  20,
+	/*Ranger*/        5,  10,  10,   0,   5,   0,   0,  20,
+	/*ShadowKnight*/ 10,   5,   0,   0,   0,   10,  5,  20,
+	/*Druid*/         0,  10,   0,   0,  10,   0,   0,  30,
+	/*Monk*/          5,   5,  10,  10,   0,   0,   0,  20,                
+	/*Bard*/          5,   0,   0,  10,   0,   0,  10,  25,
+	/*Rouge*/         0,   0,  10,  10,   0,   0,   0,  30,
+	/*Shaman*/        0,   5,   0,   0,  10,   0,   5,  30,
+	/*Necromancer*/   0,   0,   0,  10,   0,  10,   0,  30,
+	/*Wizard*/        0,  10,   0,   0,   0,  10,   0,  30,
+	/*Magician*/      0,  10,   0,   0,   0,  10,   0,  30,
+	/*Enchanter*/     0,   0,   0,   0,   0,  10,  10,  30,
+	/*Beastlord*/     0,  10,   5,   0,  10,   0,   5,  20,
+	/*Berserker*/    10,   5,   0,  10,   0,   0,   0,  25
+	};
 
 			static const bool ClassRaceLookupTable[TOTAL_CLASSES][TOTAL_RACES]= 
-			{						/*Human  Barbarian Erudite Woodelf Highelf Darkelf Halfelf Dwarf  Troll  Ogre   Halfling Gnome  Iksar  Vahshir Froglok*/
-				{ /*Warrior*/         true,  true,     false,  true,   false,  true,   true,   true,  true,  true,  true,    true},
-				{ /*Cleric*/          true,  false,    true,   false,  true,   true,   true,   true,  false, false, true,    true},
-				{ /*Paladin*/         true,  false,    true,   false,  true,   false,  true,   true,  false, false, true,    true},
-				{ /*Ranger*/          true,  false,    false,  true,   false,  false,  true,   false, false, false, true,    false},
-				{ /*ShadowKnight*/    true,  false,    true,   false,  false,  true,   false,  false, true,  true,  false,   true},
-				{ /*Druid*/           true,  false,    false,  true,   false,  false,  true,   false, false, false, true,    false},
-				{ /*Monk*/            true,  false,    false,  false,  false,  false,  false,  false, false, false, false,   false},
-				{ /*Bard*/            true,  false,    false,  true,   false,  false,  true,   false, false, false, false,   false},
-				{ /*Rogue*/           true,  true,     false,  true,   false,  true,   true,   true,  false, false, true,    true},
-				{ /*Shaman*/          false, true,     false,  false,  false,  false,  false,  false, true,  true,  false,   false},
-				{ /*Necromancer*/     true,  false,    true,   false,  false,  true,   false,  false, false, false, false,   true},
-				{ /*Wizard*/          true,  false,    true,   false,  true,   true,   false,  false, false, false, false,   true},
-				{ /*Magician*/        true,  false,    true,   false,  true,   true,   false,  false, false, false, false,   true},
-				{ /*Enchanter*/       true,  false,    true,   false,  true,   true,   false,  false, false, false, false,   true},
-				{ /*Beastlord*/       false, true,     false,  false,  false,  false,  false,  false, true,  true,  false,   false}
-			};//Initial table by kathgar, editted by Wiz for accuracy, solar too, addeed to EQC by Dark-Prince
+	{                 /*Human  Barbarian Erudite Woodelf Highelf Darkelf Halfelf Dwarf  Troll  Ogre   Halfling Gnome  Iksar  Vahshir Froglok*/
+	/*Warrior*/         true,  true,     false,  true,   false,  true,   true,   true,  true,  true,  true,    true,  true,  true,   true,
+	/*Cleric*/          true,  false,    true,   false,  true,   true,   true,   true,  false, false, true,    true,  false, false,  true,  
+	/*Paladin*/         true,  false,    true,   false,  true,   false,  true,   true,  false, false, true,    true,  false, false,  true,
+	/*Ranger*/          true,  false,    false,  true,   false,  false,  true,   false, false, false, true,    false, false, false,  false,
+	/*ShadowKnight*/    true,  false,    true,   false,  false,  true,   false,  false, true,  true,  false,   true,  true,  false,  false,
+	/*Druid*/           true,  false,    false,  true,   false,  false,  true,   false, false, false, true,    false, false, false,  false,    
+	/*Monk*/            true,  false,    false,  false,  false,  false,  false,  false, false, false, false,   false, true,  false,  false,
+	/*Bard*/            true,  false,    false,  true,   false,  false,  true,   false, false, false, false,   false, false, true,   false,
+	/*Rogue*/           true,  true,     false,  true,   false,  true,   true,   true,  false, false, true,    true,  false, true,   false,
+	/*Shaman*/          false, true,     false,  false,  false,  false,  false,  false, true,  true,  false,   false, true,  true,   true,
+	/*Necromancer*/     true,  false,    true,   false,  false,  true,   false,  false, false, false, false,   true,  true,  false,  false,
+	/*Wizard*/          true,  false,    true,   false,  true,   true,   false,  false, false, false, false,   true,  false, false,  true,
+	/*Magician*/        true,  false,    true,   false,  true,   true,   false,  false, false, false, false,   true,  false, false,  false,
+	/*Enchanter*/       true,  false,    true,   false,  true,   true,   false,  false, false, false, false,   true,  false, false,  false,  
+	/*Beastlord*/       false, true,     false,  false,  false,  false,  false,  false, true,  true,  false,   false, true,  true,   false,
+	/*Berserker*/       false, true,     false,  false,  false,  false,  false,  true,  true,  true,  false,   false, false, true,   false
+	};//Initial table by kathgar, editted by Wiz for accuracy, solar too
 
 			EQC::Common::PrintF(CP_WORLDSERVER, "Validating char creation info for '%s'...\n", cc->name);
 
 			classtemp = cc->class_ - 1;
 			racetemp = cc->race - 1;
 
-			// Iksar support.... might as well keep it in, its not hurting -- Dark-Prince 22/12/2007
 			if (cc->race == IKSAR) 
 			{
 				racetemp = 12;
+			}
+
+			if (cc->race == VAHSHIR)
+			{
+				racetemp = 13;
 			}
 
 			// Added a level check, dont want to be able to phoney this one :P - Dark-Prince 22/12/2007
