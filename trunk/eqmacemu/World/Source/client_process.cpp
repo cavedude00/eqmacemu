@@ -240,7 +240,8 @@ namespace EQC
 
 				// load up the Player Profile from the database
 				PlayerProfile_Struct pp;
-				if (Database::Instance()->GetPlayerProfile(this->account_id, char_name, &pp) == 0)
+				if (Database::Instance()->GetPlayerProfile(this->account_id, char_name, &pp, zone_name) == 0)
+				//if (Database::Instance()->GetPlayerProfile(this->account_id, char_name, &pp) == 0)
 				{
 					cerr << "Could not get PlayerProfile for " << char_name << endl;
 					

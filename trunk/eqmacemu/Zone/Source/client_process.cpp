@@ -1197,8 +1197,8 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	}
 
 
-	EQC::Common::Log(EQCLog::Debug, CP_CLIENT, "Dumping ProcessOP_ZoneChange_Struct, packet size: %d", pApp->size);
-	DumpPacket(pApp);
+	//EQC::Common::Log(EQCLog::Debug, CP_CLIENT, "Dumping ProcessOP_ZoneChange_Struct, packet size: %d", pApp->size);
+	//DumpPacket(pApp);
 
 	ZoneChange_Struct* zc = (ZoneChange_Struct*)pApp->pBuffer;
 
@@ -1210,6 +1210,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	float tarx = 0, tary = 0, tarz = 0;
 	int8 minstatus = 0;
 	int8 minlevel = 0;
+	sint8 myerror=ZONE_ERROR_NOTREADY;
 	int32 tarzone = 0;
 	cout << "Zone request for:" << zc->char_name << " to:" << Database::Instance()->GetZoneName(zc->zoneID) << endl;
 
@@ -1293,7 +1294,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		this->zoningZ = tarz;
 	}
 	//Yeahlight: Succor / escape spell
-	else if(tarzone = zone->GetZoneID())
+	else if(zc->zoneID = zone->GetZoneID())
 	{
 		cout<<"Zoning with escape spell"<<endl;
 		tarzone = zc->zoneID;
@@ -1317,10 +1318,12 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	if(admin < minstatus)
 	{
 		Message(RED, "You are not awesome enough to enter %s.", Database::Instance()->GetZoneName(tarzone));
+		myerror = ZONE_ERROR_NOEXPERIENCE;
 	}
 	else if(GetLevel() < minlevel)
 	{
 		Message(RED, "Your will is not strong enough to enter %s", Database::Instance()->GetZoneName(tarzone));
+		myerror = ZONE_ERROR_NOEXPERIENCE;
 	}
 
 	APPLAYER* outapp;
@@ -1338,19 +1341,6 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		QueuePacket(outapp);
 		safe_delete(outapp);//delete outapp;
 
-		ServerPacket* pack = new ServerPacket(ServerOP_ZoneToZoneRequest, sizeof(ZoneToZone_Struct));
-		pack->pBuffer = new uchar[pack->size];
-		memset(pack->pBuffer, 0, pack->size);
-		ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
-		ztz->response = 0;
-		ztz->ignorerestrictions = 0;
-		ztz->admin = 0;
-		ztz->current_zone_id = zone->GetZoneID();
-		ztz->requested_zone_id = tarzone;
-		strncpy(ztz->name, zc->char_name, 64);
-		worldserver.SendPacket(pack);
-		safe_delete(pack);
-
 		// The client seems to dump this profile on us, but I ignore it for now. Saving is client initiated?
 		x_pos = tarx; // Hmm, these coordinates will now be saved when ~client is called
 		y_pos = tary;
@@ -1359,7 +1349,31 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		pp.current_zone = tarzone;
 		this->Save();
 
-		Database::Instance()->SetAuthentication(account_id, zc->char_name, Database::Instance()->GetZoneName(tarzone), ip); // We have to tell the world server somehow?
+		if (pp.current_zone == zone->GetZoneID()) {
+			// no need to ask worldserver if we're zoning to ourselves (most likely to a bind point), also fixes a bug since the default response was failure
+			APPLAYER* outapp = new APPLAYER(OP_ZoneChange,sizeof(ZoneChange_Struct));
+			ZoneChange_Struct* zc2 = (ZoneChange_Struct*) outapp->pBuffer;
+			strcpy(zc2->char_name, GetName());
+			zc2->zoneID = pp.current_zone;
+			zc2->success = 1;
+			QueuePacket(outapp);
+
+			safe_delete(outapp);
+			zone->StartShutdownTimer(AUTHENTICATION_TIMEOUT * 1000);
+		}
+		else {
+			ServerPacket* pack = new ServerPacket(ServerOP_ZoneToZoneRequest, sizeof(ZoneToZone_Struct));
+			ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
+			ztz->response = 0;
+			ztz->current_zone_id = zone->GetZoneID();
+			ztz->requested_zone_id = tarzone;
+			ztz->admin = admin;
+			ztz->ignorerestrictions = zonesummon_ignorerestrictions;
+			strcpy(ztz->name, GetName());	
+			worldserver.SendPacket(pack);
+			safe_delete(pack);
+		}
+		//Database::Instance()->SetAuthentication(account_id, zc->char_name, Database::Instance()->GetZoneName(tarzone), ip); // We have to tell the world server somehow?
 	}
 	else
 	{
@@ -1374,6 +1388,8 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		ZoneChange_Struct *zc2 = (ZoneChange_Struct*)outapp->pBuffer;
 		strcpy(zc2->char_name, zc->char_name);
 		zc2->zoneID = zc->zoneID;
+		zc2->success = myerror;
+		memset(zc2->unknown0073,0xff,sizeof(zc2->unknown0073));
 		QueuePacket(outapp);
 		safe_delete(outapp);//delete outapp;
 
@@ -1381,7 +1397,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		outapp = new APPLAYER(0x2120, sizeof(stuffdata));
 		memcpy(outapp->pBuffer, stuffdata, sizeof(stuffdata));
 		QueuePacket(outapp);
-		delete outapp;
+		safe_delete(outapp);
 	
 		cout << "Sent ZoneChange " << endl;
 
@@ -2419,7 +2435,7 @@ void Client::ProcessOP_DeleteSpawn(APPLAYER* pApp)
 
 	cout << "Player attempting to delete spawn: " << name << endl;
 	APPLAYER* outapp = new APPLAYER;
-	outapp->opcode = 0x5921;
+	outapp->opcode = 0x5941;
 	outapp->size = 0;
 	QueuePacket(outapp);
 	safe_delete(outapp);//delete outapp;
@@ -5869,7 +5885,7 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 
 	memset(&pp, 0, sizeof(PlayerProfile_Struct));
 
-	long pplen=Database::Instance()->GetPlayerProfile(account_id, name, &pp);
+	long pplen=Database::Instance()->GetPlayerProfile(account_id, name, &pp, zone->GetShortName());
 
 	if(pplen==0)
 	{
@@ -6023,7 +6039,7 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	outapp->size = DeflatePacket((unsigned char*)&pp, sizeof(PlayerProfile_Struct), outapp->pBuffer, 10000);
 	EncryptProfilePacket(outapp);
 	QueuePacket(outapp);
-	delete outapp;
+	safe_delete(outapp);
 	pp.current_zone = zone->GetZoneID();
 
 	outapp = new APPLAYER(OP_ZoneEntry, sizeof(ServerZoneEntry_Struct));
@@ -6081,7 +6097,7 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 
 	SetEQChecksum((unsigned char*)sze, sizeof(ServerZoneEntry_Struct));
 	QueuePacket(outapp);
-	delete outapp;
+	safe_delete(outapp);
 	//entity_list.SendZoneSpawnsBulk(this); cavedude: Bugged for now.
 
 	outapp = new APPLAYER(OP_Weather, 8);

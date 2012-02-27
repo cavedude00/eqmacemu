@@ -42,10 +42,10 @@ const int WORLD_PORT = 9000;
 
 // Used in arrays for char creation validation, must be the total name of races
 // solar: if this is increased you'll have to add a column to the classrace table (Search for : ClassRaceLookupTable)
-#define TOTAL_RACES	13
+#define TOTAL_RACES	15
 
 // Used in arrays for char creation validation, must be the total name of classes
-#define TOTAL_CLASSES 15 
+#define TOTAL_CLASSES 16
 
 // The MAXIMUM a playerable char can obtain - Including GM's - Dark-Prince 22/12/2007
 #define MAX_PLAYERLEVEL 60

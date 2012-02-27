@@ -63,7 +63,7 @@ struct PlayerProfile_Struct
 /*0141*/	int8	unknown0141;		// ***Placeholder
 /*0142*/	int16	race;				// Player Race (Lyenu: Changed to an int16, since races can be over 255)
 /*0144*/	int16	class_;				// Player Class
-/*0146*/	int8	unknown0145;		// ***Placeholder
+/*0146*/	int8	unknown0146;		// ***Placeholder
 /*0147*/	int8	unknown0147;		// ***Placeholder
 /*0148*/	int8	level;				// Player Level
 /*0149*/	int8	unknown0149;		// ***Placeholder
@@ -100,7 +100,7 @@ struct PlayerProfile_Struct
 /*1846*/	sint16	spell_book[256];	// Player spells scribed in their book
 /*2358*/	int8	unknown2374[512];	// ***Placeholder
 /*2870*/	sint16	spell_memory[8];	// Player spells memorized
-/*2886*/	int8	unknown[18];			// ***Placeholder
+/*2886*/	int8	unknown2886[18];			// ***Placeholder
 #ifndef INVERSEXY
 /*2904*/	float	x;					// Player X (Not Inversed)
 /*2908*/	float	y;					// Player Y (Not Inversed)

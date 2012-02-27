@@ -193,7 +193,7 @@ void ZoneServer::ProcessServerOP_ShutdownAll(ServerPacket* pack)
 	CatchSignal(0);
 }
 
-void ZoneServer::ProcessServerServerOP_ZoneShutdown(ServerPacket* pack)
+void ZoneServer::ProcessServerOP_ZoneShutdown(ServerPacket* pack)
 {
 	ServerZoneStateChange_struct* s = (ServerZoneStateChange_struct *) pack->pBuffer;
 	ZoneServer* zs = 0;
@@ -418,42 +418,37 @@ void ZoneServer::ProcessServerOP_Lock(ServerPacket* pack)
 
 void ZoneServer::ProcessServerOP_ZoneToZoneRequest(ServerPacket* pack)
 {
-		if(pack->size != sizeof(ZoneToZone_Struct)) return;
-			
-		ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
-		ZoneServer* zsc = zoneserver_list.FindByID(ztz->current_zone_id);
-		
+	if(pack->size != sizeof(ZoneToZone_Struct))
+		return;
+	ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
+	ZoneServer* zsc = 0;
+	if(zoneID = ztz->current_zone_id)
+		zsc = this;
+	else
+		zsc = zoneserver_list.FindByID(ztz->requested_zone_id);
 		if(zsc == 0)
-				return;
-
-		if(Database::Instance()->LoadZoneID(GetZoneName()) == ztz->current_zone_id)
-		{
-			ZoneServer* zs = zoneserver_list.FindByID(ztz->requested_zone_id);
-			if(zs == 0)
-			{
-				if (!zoneserver_list.TriggerBootup(Database::Instance()->GetZoneName(ztz->requested_zone_id))) 
-				{
-					printf("Unable to boot.\n");
-					ztz->response = 0;
-					zsc->SendPacket(pack);
-				}
-			else
-			{
-				ztz->response = 1;
-				zsc->SendPacket(pack);
-			}
-		}
-		else
-		{
-			zs->SendPacket(pack);
 			return;
+	if(zoneID = ztz->current_zone_id){
+		ZoneServer* zs = zoneserver_list.FindByID(ztz->requested_zone_id);
+		if(zs) {
+			// send to the zoneserver hosting the zone for further processing
+			zs->SendPacket(pack);
+		}
+		else {
+			if (zoneserver_list.TriggerBootup(Database::Instance()->GetZoneName(ztz->requested_zone_id))) {
+				// bootup successful, ready to rock
+				ztz->response = 1;
+			}
+			else {
+				// bootup failed, send back error code 0
+				ztz->response = 0;
+			}
+			zsc->SendPacket(pack);
 		}
 	}
-	else
-	{
-		if(zsc != 0)
-			zsc->SendPacket(pack);
-			return;
+	else {
+		// Send the response back to the original zoneserver
+		zsc->SendPacket(pack);
 	}
 	return;
 }

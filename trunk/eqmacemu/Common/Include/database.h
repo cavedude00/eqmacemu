@@ -121,7 +121,7 @@ public:
 	int8	GetZoneW(char* zone_name);
 
 	void	GetCharSelectInfo(int32 account_id, CharacterSelect_Struct* cs,CharWeapon_Struct* weapons);
-	unsigned long	GetPlayerProfile(int32 account_id, char* name, PlayerProfile_Struct* pp);
+	unsigned long	GetPlayerProfile(int32 account_id, char* name, PlayerProfile_Struct* pp, char* current_zone);
 	bool	SetPlayerProfile(int32 account_id, char* name, PlayerProfile_Struct* pp);
 	bool	CreateSpawn2(int32 spawngroup, char* zone, float heading, float x, float y, float z, int32 respawn, int32 variance);
 	bool	CheckNameFilter(char* name);

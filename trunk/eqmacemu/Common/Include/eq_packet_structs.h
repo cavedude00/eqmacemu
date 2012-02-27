@@ -646,6 +646,14 @@ struct Beg_Struct
 ** Length: 70 Bytes-2 = 68 bytes 
 ** OpCode: a320
 */
+
+#define ZONE_ERROR_NOMSG 0
+#define ZONE_ERROR_NOTREADY -1
+#define ZONE_ERROR_VALIDPC -2
+#define ZONE_ERROR_STORYZONE -3
+#define ZONE_ERROR_NOEXPANSION -6
+#define ZONE_ERROR_NOEXPERIENCE -7
+
 struct ZoneChange_Struct {
 /*000*/	char	char_name[64];     // Character Name
 /*064*/	int32	zoneID;
