@@ -1219,8 +1219,9 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		tarzone = zc->zoneID;
 	else
 	tarzone = 0;
+	if(Database::Instance()->GetZoneName(tarzone)){
 	cout << "Zone request for:" << zc->char_name << " to: " << Database::Instance()->GetZoneName(tarzone) << "(" << tarzone << ")" << endl;
-
+	}
 
 	if(!Database::Instance()->GetSafePointsByID(tarzone, &tarx, &tary, &tarz, &minstatus, &minlevel))
 	{
@@ -2111,7 +2112,7 @@ void Client::ProcessOP_SpawnAppearance(APPLAYER* pApp){
 	}
 	else if (sa->type == SAT_Autosplit) {						
 		//Tazadar: We change the autosplit value
-	//	pp.autosplit=sa->parameter;
+		pp.autosplit=sa->parameter;
 		cout << "Client " << name << " Change Autosplit to " << (int)sa->parameter<< endl;
 		this->Save();
 	}

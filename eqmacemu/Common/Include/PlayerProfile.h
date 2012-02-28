@@ -100,12 +100,13 @@ struct PlayerProfile_Struct
 /*1846*/	sint16	spell_book[256];	// Player spells scribed in their book
 /*2358*/	int8	unknown2374[512];	// ***Placeholder
 /*2870*/	sint16	spell_memory[8];	// Player spells memorized
-/*2886*/	int8	unknown2886[18];			// ***Placeholder
-/*2904*/	float	y;					// Player Y (Inversed)
-/*2908*/	float	x;					// Player X (Inversed)
-/*2912*/	float	z;					// Player Z
-/*2916*/	float	heading;			// Player Heading
-/*2920*/	int8	unknown2920[4];		// ***Placeholder
+/*2886*/	int8	unknown2886[14];			// ***Placeholder [16]
+/*2900*/	int16	unknown2900;
+/*2902*/	float	x;					// Player X
+/*2906*/	float	y;					// Player Y
+/*2910*/	float	z;					// Player Z
+/*2914*/	float	heading;			// Player Heading
+/*2918*/	int8	unknown2920[6];		// ***Placeholder
 /*2924*/	int32	platinum;			// Player Platinum (Character)
 /*2928*/	int32	gold;				// Player Gold (Character)
 /*2932*/	int32	silver;				// Player Silver (Character)
@@ -114,11 +115,17 @@ struct PlayerProfile_Struct
 /*2944*/	int32	gold_bank;			// Player Gold (Bank)
 /*2948*/	int32	silver_bank;		// Player Silver (Bank)
 /*2952*/	int32	copper_bank;		// Player Copper (Bank)
-/*2956*/	int8	unknown2956[30];	// ***Placeholder
-/*2986*/	int16	skills[74];			// Player Skills
-/*3134*/	int32	hungerlevel;		// Probably wrong, previously was in the spot where skills should be.
-/*3138*/	int32	thirstlevel;		// Probably wrong, previously was in the spot where skills should be.
-/*3142*/	int8	unknown3422[302];
+/*2956*/	int32	platinum_cursor;
+/*2960*/	int32	gold_cursor;
+/*2964*/	int32	silver_cursor;
+/*2968*/	int32	copper_cursor;
+/*2972*/	int8	unknown2972[16];	// ***Placeholder
+/*2988*/	int16	skills[75];			// Player Skills
+/*3138*/	int32	hungerlevel;		// Probably wrong, previously was in the spot where skills should be.
+/*3142*/	int32	thirstlevel;		// Probably wrong, previously was in the spot where skills should be.
+/*3146*/	int8	unknown3144[202];
+/*3348*/	int8	autosplit;
+/*3349*/	int8	unknown3449[95];
 /*3444*/	int32	current_zone;		// 
 /*3448*/	int8	unknown3448[336];	// ***Placeholder
 /*3784*/	int32	bind_point_zone;	// Lyenu: Bind zone is saved as a int32 now

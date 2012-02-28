@@ -75,14 +75,10 @@ namespace EQC
 			memset(cc.unknown0310, 0, sizeof(cc.unknown0310));
 			memset(cc.unknown2374, 0, sizeof(cc.unknown2374));
 			memset(cc.unknown2920, 0, sizeof(cc.unknown2920));
-			memset(cc.unknown2956, 0, sizeof(cc.unknown2956));
+			memset(cc.unknown2972, 0, sizeof(cc.unknown2972));
 //			memset(cc.unknown3134, 0, sizeof(cc.unknown3134));
 			memset(cc.unknown3448, 0, sizeof(cc.unknown3448));
 			memset(cc.unknown3656, 0, sizeof(cc.unknown3656));
-			cc.bind_point_zone = cc.current_zone;
-			cc.bind_location[0][0] = cc.x;
-			cc.bind_location[1][0] = cc.y;
-			cc.bind_location[2][0] = cc.z;
 			cc.BirthdayTime = 0; // todo: see how birthtime is coded
 //			cc.Unknown_4952 = 0;
 			cc.TimePlayedMin = 0;
@@ -98,7 +94,9 @@ namespace EQC
 			
 			//Lyenu - This is the call to add starting items
 			Database::Instance()->SetStartingItems(&cc, (int8) cc.race, (int8) cc.class_, (char*) &cc.name);
-			Database::Instance()->SetStartingLocations(&cc, (int8) cc.race, (int8) cc.class_, (char*) &cc.name);
+			Database::Instance()->SetStartingLocations(&cc, (int8) cc.race, (int8) cc.class_, (int8) cc.deity, (char*) &cc.name);
+
+			cout << "Starting location for :" << cc.name << " in zone: " << Database::Instance()->GetZoneName(cc.current_zone) << " x:  " << cc.x << " y:" << cc.y << " z: " << cc.z <<endl;
 
 			cc.invItemProprieties[22].charges=5;//we have 5 food
 			cc.invItemProprieties[23].charges=5;//we have 5 drink
@@ -242,7 +240,6 @@ namespace EQC
 				// load up the Player Profile from the database
 				PlayerProfile_Struct pp;
 				if (Database::Instance()->GetPlayerProfile(this->account_id, char_name, &pp, zone_name) == 0)
-				//if (Database::Instance()->GetPlayerProfile(this->account_id, char_name, &pp) == 0)
 				{
 					cerr << "Could not get PlayerProfile for " << char_name << endl;
 					

@@ -1762,16 +1762,19 @@ struct Door_Struct{
 /*0016*/ float   yPos;          // y loc
 /*0020*/ float   xPos;          // x loc
 /*0024*/ float   zPos;          // z loc
-		 float	 heading;		// y rotation (verified by Sp0tter).
-	     float	 incline;		// x rotation (verified by Sp0tter).
-		 float	 padding;
-		 uint8   doorid;
-/*0037*/ uint8	 opentype;      //Opentype (verified by Wizzel)
-		 uint8	 doorIsOpen;    //Yeahlight: Door is open
-		 uint8	 inverted;	    //Yeahlight: Door starts at inverted state. This flags needs to be ON for traps to animate and has other odd effects on other types of doors.
-/*0040*/ int16	 parameter;     //Yeahlight: Specific distance door (most likely a lift/button) will travel
+/*0028*/ float	 heading;		// y rotation (verified by Sp0tter).
+/*0032*/ float	 incline;		// x rotation (verified by Sp0tter).
+/*0036*/ float	 padding;
+/*0038*/ uint8   doorid;
+/*0039*/ uint8	 opentype;      //Opentype (verified by Wizzel)
+/*0040*/ uint8	 doorIsOpen;    //Yeahlight: Door is open
+/*0041*/ uint8	 inverted;	    //Yeahlight: Door starts at inverted state. This flags needs to be ON for traps to animate and has other odd effects on other types of doors.
+/*0042*/ int16	 parameter;     //Yeahlight: Specific distance door (most likely a lift/button) will travel
+/*0044*/ int8	 unknown0044;
+/*0045*/ int8    auto_return;
+/*0046*/ int8	 unknown0046;
 /*????*/ //Yeahlight: I could not find the correct locations in the struct for the below variables, which probably means they are safe here:
-		 uint8	 triggerID;     //Yeahlight: ID of door this "door" triggers (0 means no doors triggered)
+/*0047*/ uint8	 triggerID;     //Yeahlight: ID of door this "door" triggers (0 means no doors triggered)
 		 uint8	 lockpick;		//Yeahlight: Skill required to pick this lock (0 means no lock on door or door is unpickable if a key exists [below])
 		 int16	 keyRequired;	//Yeahlight: Key required to open the lock, item ID #
 		 char	 zoneName[16];  //Yeahlight: Destination zone name for clickies ("NONE" is default)
