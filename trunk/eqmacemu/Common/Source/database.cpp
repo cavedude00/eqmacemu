@@ -517,7 +517,6 @@ void Database::GetCharSelectInfo(int32 account_id, CharacterSelect_Struct* cs, C
 				cs->race[char_num] = pp->race;
 				cs->gender[char_num] = pp->gender;
 				cs->face[char_num] = pp->face;
-				cs->zone[char_num] = pp->current_zone;
 				cs->zone[char_num] = LoadZoneID(row[2]);
 				
 				// Coder_01 - REPLACE with item info when available.
@@ -757,7 +756,7 @@ fclose(fp);
 	pp.copper_bank = 45;
 	memset(pp.GroupMembers[0], 0, 6*sizeof(pp.GroupMembers[0]));
 
-	for (i=0;i<74; i++)
+	for (i=0;i<75; i++)
 		pp.skills[i] = i;	
 	pp.bind_point_zone = ZONE_ID;
 	for (i=0;i<4; i++)
@@ -849,8 +848,6 @@ unsigned long Database::GetPlayerProfile(int32 account_id, char* name, PlayerPro
 				pp->z = atof(row[4]);
 			if (pp->x == -1 && pp->y == -1 && pp->z == -1)
 				GetSafePointsByID(pp->current_zone, &pp->x, &pp->y, &pp->z);
-			else
-				pp->z *= 10;
 		}
 		else {
 			mysql_free_result(result);
@@ -2954,7 +2951,7 @@ bool Database::SetStartingItems(PlayerProfile_Struct *cc, int8 si_race, int8 si_
 	return bret; // Dark-Prince : 25/20/2007 : single return point
 }
 
-bool Database::SetStartingLocations(PlayerProfile_Struct *cc, int8 sl_race, int8 sl_class, char* sl_name)
+bool Database::SetStartingLocations(PlayerProfile_Struct *cc, int8 sl_race, int8 sl_class, int8 sl_deity, char* sl_name)
 {
 	char errbuf[MYSQL_ERRMSG_SIZE];
 	char* query = 0;
@@ -2963,14 +2960,18 @@ bool Database::SetStartingLocations(PlayerProfile_Struct *cc, int8 sl_race, int8
 
 	cout<< "Loading starting locations for: Race: " << (int) sl_race << " Class: " << (int) sl_class << " onto " << sl_name << endl;
 
-	if(RunQuery(query, MakeAnyLenString(&query, "SELECT x, y, z, zone_id FROM start_zones WHERE player_class = %i AND player_race = %i limit 1", sl_class, sl_race), errbuf, &result))
+	if(RunQuery(query, MakeAnyLenString(&query, "SELECT x, y, z, zone_id, bind_x, bind_y, bind_z FROM start_zones WHERE player_class = %i AND player_race = %i AND player_deity = %i limit 1", sl_class, sl_race, sl_deity), errbuf, &result))
 	{
 		while(row = mysql_fetch_row(result))
 		{
-			cc->x = atoi(row[0]);
-			cc->y = atoi(row[1]);
-			cc->z = atoi(row[2]);
+			cc->x = atof(row[0]);
+			cc->y = atof(row[1]);
+			cc->z = atof(row[2]);
 			cc->current_zone = atoi(row[3]);
+			cc->bind_point_zone = cc->current_zone;
+			cc->bind_location[0][0] = atof(row[4]);
+			cc->bind_location[1][0] = atof(row[5]);
+			cc->bind_location[2][0] = atof(row[6]);
 		}
 		mysql_free_result(result);
 	}

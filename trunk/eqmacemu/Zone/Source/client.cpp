@@ -676,7 +676,7 @@ void Client::MovePC(const char* zonename, float x, float y, float z, bool ignore
 
 		if (zonename == 0 || strcmp(zone->GetShortName(), zonename) == 0)
 		{
-			gms->zoneID = Database::Instance()->LoadZoneID(zone->GetFileName());
+			gms->zoneID = zone->GetZoneID();
 		}
 		else
 		{
@@ -3070,6 +3070,10 @@ APPLAYER* Client::CreateTimeOfDayPacket(int8 Hour, int8 Minute, int8 Day, int8 M
 
 void Client::Handle_Connect5GDoors()
 {
+	uchar buffer1[sizeof(Door_Struct) - 40];
+	uchar buffer2[7000];
+	int16 length = 0;
+
 	EQC::Common::PrintF(CP_ZONESERVER, "Sending doors one at a time.\n");
 	LinkedListIterator<Door_Struct*> iterator(zone->door_list);
 
@@ -3080,8 +3084,30 @@ void Client::Handle_Connect5GDoors()
 		Door_Struct* door = iterator.GetData();
 
 		//Yeahlight: TODO: Remove the excess, serverside data from the door struct
-		APPLAYER* outapp = new APPLAYER(OP_SpawnDoor, sizeof(Door_Struct) - 40);
-		memcpy(outapp->pBuffer, door, sizeof(Door_Struct) - 40);
+	//	APPLAYER* outapp = new APPLAYER(OP_SpawnDoor, sizeof(Door_Struct) - 40);
+	//	memcpy(outapp->pBuffer, door, sizeof(Door_Struct) - 40);
+
+		Door_Struct* nd = (Door_Struct*)buffer1;
+		memset(nd,0,sizeof(Door_Struct) - 40);
+
+		memcpy(nd->name,iterator.GetData()->name,16);
+		nd->opentype = iterator.GetData()->opentype;
+
+		nd->xPos = iterator.GetData()->yPos;
+		nd->yPos = iterator.GetData()->xPos;
+		nd->zPos = iterator.GetData()->zPos;
+		nd->heading = iterator.GetData()->heading;
+
+		memcpy(buffer2+length,buffer1,44);
+		length = length + 44;
+
+		APPLAYER *outapp;
+		outapp = new APPLAYER;
+
+		outapp->pBuffer = new uchar[7000];
+		length = DeflatePacket(buffer2,length,outapp->pBuffer+2,7000);
+		outapp->size = length+2;
+		DoorSpawns_Struct* ds = (DoorSpawns_Struct*)outapp->pBuffer;
 
 		QueuePacket(outapp);
 

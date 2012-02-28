@@ -132,7 +132,7 @@ public:
 	bool	CreateCharacter(int32 account_id, PlayerProfile_Struct* pp);
 	bool	DeleteCharacter(char* name);
 	bool    SetStartingItems(PlayerProfile_Struct *cc, int8 si_race, int8 si_class, char* si_name);
-	bool	SetStartingLocations(PlayerProfile_Struct *cc, int8 sl_race, int8 sl_class, char* sl_name);
+	bool	SetStartingLocations(PlayerProfile_Struct *cc, int8 sl_race, int8 sl_class, int8 sl_deity, char* sl_name);
 
 	int32	GetAccountIDByChar(char* charname);
 	int32	GetAccountIDByName(char* accname);

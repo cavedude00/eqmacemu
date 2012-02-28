@@ -48,7 +48,7 @@ const int WORLD_PORT = 9000;
 #define TOTAL_CLASSES 16
 
 // The MAXIMUM a playerable char can obtain - Including GM's - Dark-Prince 22/12/2007
-#define MAX_PLAYERLEVEL 60
+#define MAX_PLAYERLEVEL 65
 
 // The MAXIMUM level a NPC can obtain - Dark-Prince 07/06/2008
 #define MAX_NPCLEVEL 99
@@ -77,10 +77,10 @@ const int WORLD_PORT = 9000;
 #define ITEM_MAX_LORE_LENGTH	60
 
 // Max Length of a players name
-#define PC_MAX_NAME_LENGTH		30
+#define PC_MAX_NAME_LENGTH		64
 
 // Max Length of a players Surname
-#define PC_SURNAME_MAX_LENGTH	20
+#define PC_SURNAME_MAX_LENGTH	30
 // Max Length of a NPC's name
 #define NPC_MAX_NAME_LENGTH		30
 
