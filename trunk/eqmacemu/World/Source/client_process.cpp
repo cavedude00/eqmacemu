@@ -92,6 +92,7 @@ namespace EQC
 //			cc.unknown4756 = 0;
 			memset(cc.unknown4760, 0, sizeof(cc.unknown4760));
 			memset(cc.unknown5225, 0, sizeof(cc.unknown5225));
+			
 			/* ************************** */
 			
 			

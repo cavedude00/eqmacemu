@@ -101,13 +101,8 @@ struct PlayerProfile_Struct
 /*2358*/	int8	unknown2374[512];	// ***Placeholder
 /*2870*/	sint16	spell_memory[8];	// Player spells memorized
 /*2886*/	int8	unknown2886[18];			// ***Placeholder
-#ifndef INVERSEXY
-/*2904*/	float	x;					// Player X (Not Inversed)
-/*2908*/	float	y;					// Player Y (Not Inversed)
-#else
 /*2904*/	float	y;					// Player Y (Inversed)
 /*2908*/	float	x;					// Player X (Inversed)
-#endif
 /*2912*/	float	z;					// Player Z
 /*2916*/	float	heading;			// Player Heading
 /*2920*/	int8	unknown2920[4];		// ***Placeholder
@@ -121,11 +116,10 @@ struct PlayerProfile_Struct
 /*2952*/	int32	copper_bank;		// Player Copper (Bank)
 /*2956*/	int8	unknown2956[30];	// ***Placeholder
 /*2986*/	int16	skills[74];			// Player Skills
-/*3060*/	int8	unknown3060[56];	// ***Placeholder
-/*3116*/	int32	hungerlevel;
-/*3120*/	int32	thirstlevel;
-/*3124*/	int8	unknown3422[320];
-/*3444*/	int32	current_zone;		// Player Zone (Lyenu: Zones are now saved as int32)
+/*3134*/	int32	hungerlevel;		// Probably wrong, previously was in the spot where skills should be.
+/*3138*/	int32	thirstlevel;		// Probably wrong, previously was in the spot where skills should be.
+/*3142*/	int8	unknown3422[302];
+/*3444*/	int32	current_zone;		// 
 /*3448*/	int8	unknown3448[336];	// ***Placeholder
 /*3784*/	int32	bind_point_zone;	// Lyenu: Bind zone is saved as a int32 now
 /*3788*/	int32	start_point_zone[4];
@@ -166,7 +160,7 @@ struct PlayerProfile_Struct
 /*5632*/	int8	title;				// AA Title
 /*5633*/	int8	perAA;				// AA Percentage
 /*5634*/	int32	aapoints;			// AA Points
-/*5638*/	int8	unknown5426[2748];	// Unknown
+/*5638*/	int8	unknown5426[2822];	// Unknown
 //			int32	raid_id;			// Raid ID?
 //			int32	unknown5450;		// Unknown (Added 09 Oct 2002)
 };

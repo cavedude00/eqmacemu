@@ -157,4 +157,7 @@ void Client::InitProcessArray()
 	process_opcode_array[OP_PlayerSave]		= &Client::ProcessOP_PlayerSave;
 	process_opcode_array[OP_PlayerSave2]	= &Client::ProcessOP_PlayerSave;
 	process_opcode_array[OP_ItemMissing]	= &Client::ProcessOP_ItemMissing;	
+	process_opcode_array[0x5021]	= &Client::ProcessOP_DeleteSpawn;
+	process_opcode_array[0x5901]	= &Client::Process_0x5901;
+	process_opcode_array[0x5541]	= &Client::Process_0x5541;
 }

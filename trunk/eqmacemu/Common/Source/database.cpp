@@ -521,7 +521,7 @@ void Database::GetCharSelectInfo(int32 account_id, CharacterSelect_Struct* cs, C
 				cs->zone[char_num] = LoadZoneID(row[2]);
 				
 				// Coder_01 - REPLACE with item info when available.
-				Item_Struct* item = 0;
+			/*	Item_Struct* item = 0;
 				item = GetItem(pp->inventory[2]);
 				if (item != 0) {
 					cs->equip[char_num][0] = item->common.material;
@@ -556,7 +556,7 @@ void Database::GetCharSelectInfo(int32 account_id, CharacterSelect_Struct* cs, C
 				if (item != 0) {
 					cs->equip[char_num][6] = item->common.material;
 					cs->cs_colors[char_num][6] = item->common.color;
-				}
+				}*/
 
 				weapons->righthand[char_num]=pp->inventory[13];
 				weapons->lefthand[char_num]=pp->inventory[14];

@@ -486,6 +486,8 @@ private:
 	void    ProcessOP_ClientTarget(APPLAYER* pApp);
 	void    ProcessOP_YellForHelp(APPLAYER* pApp);
 	void	ProcessOP_DeleteSpawn(APPLAYER* pApp=0);
+	void	Process_0x5901(APPLAYER* pApp);
+	void	Process_0x5541(APPLAYER* inpacket);
 	void	ProcessOP_GMZoneRequest(APPLAYER* pApp);
 	void	ProcessOP_EndLootRequest(APPLAYER* pApp);
 	void	ProcessOP_LootRequest(APPLAYER* pApp);
@@ -578,7 +580,7 @@ private:
 	void	ProcessOP_BindWound(APPLAYER* pApp);
 	void	ProcessOP_SpawnProjectile(APPLAYER* pApp);
 	void	ProcessOP_TranslocateResponse(APPLAYER* pApp);
-	
+
 	bool	IsValidGuild();// Need to find a better name for this!
 
 	void SendExpUpdatePacket(int32 set_exp);
