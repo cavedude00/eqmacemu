@@ -2210,6 +2210,11 @@ struct QuestCompletedMoney_Struct{
 	/*0032*/	uint32	platinum; // Comment: Harakiri amount of platinum			
 	};
 
+struct GlobalID_Struct
+{
+int16 entity_id;
+};
+
 // Restore structure packing to default
 #pragma pack()
 

@@ -1195,28 +1195,36 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		cout << "Wrong size on ZoneChange: " << pApp->size << ", should be " << sizeof(ZoneChange_Struct) << " on 0x" << hex << setfill('0') << setw(4) << pApp->opcode << dec << endl;
 		return;
 	}
-
+		if(this->IsGrouped())
+		{
+			Group* g = entity_list.GetGroupByClient(this);
+			if(g)
+				g->MemberZonedOut(this);
+		}
 
 	//EQC::Common::Log(EQCLog::Debug, CP_CLIENT, "Dumping ProcessOP_ZoneChange_Struct, packet size: %d", pApp->size);
 	//DumpPacket(pApp);
 
 	ZoneChange_Struct* zc = (ZoneChange_Struct*)pApp->pBuffer;
 
-	if(strcasecmp(Database::Instance()->GetZoneName(zc->zoneID), "zonesummon") == 0)
-	{
-		zc->zoneID = Database::Instance()->LoadZoneID(zonesummon_name);
-	}
-
-	float tarx = 0, tary = 0, tarz = 0;
+	float tarx = -1, tary = -1, tarz = -1;
 	int8 minstatus = 0;
 	int8 minlevel = 0;
 	sint8 myerror=ZONE_ERROR_NOTREADY;
 	int32 tarzone = 0;
-	cout << "Zone request for:" << zc->char_name << " to:" << Database::Instance()->GetZoneName(zc->zoneID) << endl;
-
-	if(Database::Instance()->GetSafePointsByID(zc->zoneID, &tarx, &tary, &tarz, &minstatus, &minlevel))
-	{
+	
+    if (zc->zoneID == 0)
+		tarzone = Database::Instance()->LoadZoneID(zonesummon_name);
+	else if (Database::Instance()->GetZoneName(zc->zoneID))
 		tarzone = zc->zoneID;
+	else
+	tarzone = 0;
+	cout << "Zone request for:" << zc->char_name << " to: " << Database::Instance()->GetZoneName(tarzone) << "(" << tarzone << ")" << endl;
+
+
+	if(!Database::Instance()->GetSafePointsByID(tarzone, &tarx, &tary, &tarz, &minstatus, &minlevel))
+	{
+		tarzone = 0;
 	}
 
 	if(zonesummon_ignorerestrictions) 
@@ -1329,12 +1337,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	APPLAYER* outapp;
 	if(tarzone != 0 && this->admin >= minstatus && this->GetLevel() >= minlevel)
 	{
-		if(this->IsGrouped())
-		{
-			Group* g = entity_list.GetGroupByClient(this);
-			if(g)
-				g->MemberZonedOut(this);
-		}
+
 		cout << "Zone target:" << Database::Instance()->GetZoneName(tarzone) << " x:" << tarx << " y:" << tary << " z:" << tarz << endl;
 
 		outapp = new APPLAYER(OP_CancelTrade, 0);
@@ -2431,17 +2434,41 @@ void Client::ProcessOP_ClientUpdate(APPLAYER* pApp)
 void Client::ProcessOP_DeleteSpawn(APPLAYER* pApp)
 {
 	// The client will send this with his id when he zones, maybe when he disconnects too?
-	// When zoning he seems to want 5921 and finish flag
+	// When zoning he seems to want 5941 and finish flag
 
 	cout << "Player attempting to delete spawn: " << name << endl;
+
+	PMClose(); // Flushing the queue of packet data to allow for proper zoning -Kasai
+	APPLAYER* outapp;
+	outapp = new APPLAYER(OP_DeleteSpawn, sizeof(GlobalID_Struct));
+	GlobalID_Struct *gis = (GlobalID_Struct*)outapp->pBuffer;
+	gis->entity_id = GetID();
+	entity_list.QueueClients(this,outapp,false);
+	safe_delete(outapp);
+
+	outapp = new APPLAYER(0x5941);
+	QueuePacket(outapp);
+	delete outapp;
+	Disconnect();
+
+	//QueuePacket(0); // Closing packet
+}
+
+void Client::Process_0x5901(APPLAYER* pApp) 
+{
 	APPLAYER* outapp = new APPLAYER;
-	outapp->opcode = 0x5941;
-	outapp->size = 0;
+	outapp->opcode = 0x5901;
 	QueuePacket(outapp);
 	safe_delete(outapp);//delete outapp;
+}
 
-	PMClose();
-	//QueuePacket(0); // Closing packet
+void Client::Process_0x5541(APPLAYER* inpacket)  
+{ // Client dumps player profile on zoning, is this same opcode as saving?
+
+	if (inpacket->size != sizeof(PlayerProfile_Struct)-8) { //							DumpPacket(app);
+	cout << "Wrong size on 0x5541. Got: " << inpacket->size << ", Expected: " << sizeof(PlayerProfile_Struct) << endl;
+	}
+	this->Save();
 }
 
 //////////////////////
