@@ -22,6 +22,7 @@ public:
 	Client* GetClientByAccID(int32 accid);
 	Client* GetClient(int32 ip, int16 port);
 	Corpse*	GetCorpseByOwner(Client* client);
+	Corpse* GetCorpseByID(int16 id);
 	void	ClearClientPetitionQueue();
 
 	void    AddClient(Client*);

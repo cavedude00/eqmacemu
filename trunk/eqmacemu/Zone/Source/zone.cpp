@@ -186,7 +186,7 @@ Zone::Zone(char* in_short_name, char* in_address, int16 in_port)
 	autoshutdown_timer = new Timer(ZONE_AUTOSHUTDOWN_DELAY);
 	autoshutdown_timer->Start(AUTHENTICATION_TIMEOUT * 1000, false);
 	//Yeahlight: Our zones are now static, they do not shutdown
-	autoshutdown_timer->Disable();
+	//autoshutdown_timer->Disable();
 	bindCondition = 0;
 	levCondition = 0;
 	outDoorZone = false;
@@ -446,13 +446,13 @@ bool Zone::Process()
 	}
 
 	//Yeahlight: We use static zones now; no more going to sleep
-	//if (autoshutdown_timer->Check()) {
-	//	StartShutdownTimer();
-	//	if (numclients == 0) {
-	//		EQC::Common::PrintF(CP_ZONESERVER, "Automatic shutdown\n");
-	//		return false;
-	//	}
-	//}
+	if (autoshutdown_timer->Check()) {
+		StartShutdownTimer();
+		if (numclients == 0) {
+			EQC::Common::PrintF(CP_ZONESERVER, "Automatic shutdown\n");
+			return false;
+		}
+	}
 
 	//Yeahlight: Bulk spawn only timer has expired, permit respawns to send out spawn packets now
 	if(bulkOnly == true && bulkOnly_timer->Check())
@@ -472,9 +472,9 @@ bool Zone::Process()
 	}
 
 	//Tazadar : we check the timer to see if we change the weather or not
-	//if(weather_timer-time(0)<0){
-	//	weatherProc();
-	//}
+	if(weather_timer-time(0)<0){
+		weatherProc();
+	}
 
 	#ifdef EMBPERL
 	if(quest_manager.quest_timers->Check()) {

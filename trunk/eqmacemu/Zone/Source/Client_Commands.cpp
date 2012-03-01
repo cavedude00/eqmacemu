@@ -297,7 +297,7 @@ int command_add(const char *command_string, const char *desc, int access, CmdFun
 	string cstr(command_string);
 
 	if(commandlist.count(cstr) != 0) {
-		EQC::Common::Log(EQCLog::Error,CP_CLIENT, "command_add() - Command '%s' is a duplicate - check command.cpp." , command_string);
+		EQC::Common::Log(EQCLog::Error,CP_CLIENT, "command_add() - Command '%s' is a duplicate - check Client_Commands.cpp." , command_string);
 		return(-1);
 	}
 

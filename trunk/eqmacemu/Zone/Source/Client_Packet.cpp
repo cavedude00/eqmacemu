@@ -58,7 +58,7 @@ void Client::InitProcessArray()
 	process_opcode_array[OP_Jump]			= &Client::Process_Jump;
 	process_opcode_array[OP_AssistTarget]	= &Client::ProcessOP_AssistTarget;
 	process_opcode_array[OP_Consider]		= &Client::ProcessOP_Consider;
-//	process_opcode_array[OP_ConsiderCorpse]	= &Client::ProcessOP_ConsiderCorpse;
+	process_opcode_array[OP_ConsiderCorpse]	= &Client::ProcessOP_ConsiderCorpse;
 	process_opcode_array[OP_Surname]		= &Client::ProcessOP_Surname;
 	process_opcode_array[OP_YellForHelp]	= &Client::ProcessOP_YellForHelp;
 	process_opcode_array[OP_SpawnAppearance]= &Client::ProcessOP_SpawnAppearance;

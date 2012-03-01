@@ -2639,7 +2639,7 @@ void Client::ProcessOP_GMZoneRequest(APPLAYER* pApp)
 
 void Client::ProcessOP_EndLootRequest(APPLAYER* pApp)
 {
-	if (pApp->size == sizeof(int32))
+	if (pApp->size == sizeof(int16))
 	{
 		APPLAYER* outapp = 0;
 		Entity* entity = entity_list.GetID(*((int32*)pApp->pBuffer));
@@ -2671,7 +2671,7 @@ void Client::ProcessOP_EndLootRequest(APPLAYER* pApp)
 
 void Client::ProcessOP_LootRequest(APPLAYER* pApp)
 {
-	if(pApp->size != sizeof(int32))
+	if(pApp->size != sizeof(int16))
 	{
 		cout << "Wrong size: OP_LootRequest, size=" << pApp->size << ", expected " << sizeof(int16) << endl;
 		return;
@@ -3926,12 +3926,12 @@ void Client::ProcessOP_ShopRequest(APPLAYER* pApp){
 	mco->unknown[1] = 0x03;
 	mco->unknown[2] = 0x00;
 	mco->unknown[3] = 0x00;
-	if(action){ // Tazadar : We calculate the pricemultiplier
+/*	if(action){ // Tazadar : We calculate the pricemultiplier
 		mco->pricemultiplier=2.5;
 	}
 	else{ // Tazadar : We do not need to calculate the pricemultiplier
 		mco->pricemultiplier=200;
-	}
+	}*/
 	//DumpPacketHex(outapp);
 	QueuePacket(outapp);
 	safe_delete(outapp);
@@ -3940,7 +3940,7 @@ void Client::ProcessOP_ShopRequest(APPLAYER* pApp){
 		return;
 
 	int merchantid = 0;
-	this->pricemultiplier=mco->pricemultiplier;
+//	this->pricemultiplier=mco->pricemultiplier;
 	
 	if (tmp != 0 && tmp->IsNPC())
 	{
@@ -4026,7 +4026,7 @@ void Client::ProcessOP_ShopPlayerBuy(APPLAYER* pApp){
 		mpo->npcid = mp->npcid;
 		mpo->itemslot = mp->itemslot;
 		mpo->unknown001 = 0x00;
-		mpo->unknown002 = 0x00;
+		//mpo->unknown002 = 0x00;
 		mpo->unknown003 = 0x00;
 		mpo->unknown004 = 0x00; 
 		mpo->unknown005 = 0x00;
@@ -4064,7 +4064,7 @@ void Client::ProcessOP_ShopPlayerBuy(APPLAYER* pApp){
 		mpo->npcid = mp->npcid;
 		mpo->itemslot = mp->itemslot;													
 		mpo->unknown001 = 0x00;
-		mpo->unknown002 = 0x00;
+//		mpo->unknown002 = 0x00;
 		mpo->unknown003 = 0x00;
 		mpo->unknown004 = 0x00; 
 		mpo->unknown005 = 0x00;
@@ -4837,6 +4837,8 @@ void Client::ProcessOP_ClickDoor(APPLAYER* pApp)
 		if(!clicked->doorid)
 		{
 		Message(RED,"Unable to find door, please notify a GM (DoorID: %i).",door->doorid);
+		if(debugFlag && GetDebugMe())
+				Message(WHITE,"Debug: You (%i) clicked a door: #%i, parameter: %i. Door was last clicked at %i", clicked->playerid, clicked->doorid, door->parameter, door->pLastClick);
 		return;
 		}
 		if(door->doorid == clicked->doorid) 
@@ -6866,5 +6868,26 @@ void Client::ProcessOP_ItemMissing(APPLAYER *pApp) {
 	EQC::Common::Log(EQCLog::Debug, CP_CLIENT, "Received ItemMissing from Client");
 
 	DumpPacketHex(pApp);
+
+}
+
+void Client::ProcessOP_ConsiderCorpse(APPLAYER *pApp)
+{
+	//DumpPacket(app);
+	if(pApp->size == sizeof(Consider_Struct))
+	{
+		Consider_Struct *con = (Consider_Struct*)pApp->pBuffer;
+		Corpse* tcorpse = entity_list.GetCorpseByID(con->targetid);
+        if (tcorpse && tcorpse->IsNPCCorpse()) {
+			Message(BLACK, "This corpse regards you sadly. Noone asked what I wanted my tombstone to say!");
+		}
+		if (tcorpse && tcorpse->IsPlayerCorpse()) {
+			Message(BLACK, "This corpse glares at you threateningly! I told you that wasn't going to work.");
+		}
+	}
+	else
+	{
+		EQC::Common::Log(EQCLog::Error, CP_CLIENT, "Incorrect size on ConsiderCorpse_Struct. Got: %i , Expected: %i ",pApp->size,sizeof(Consider_Struct));
+	}
 
 }

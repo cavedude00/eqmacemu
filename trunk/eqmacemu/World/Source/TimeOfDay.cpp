@@ -71,7 +71,7 @@ namespace EQC
 
 		void TimeOfDay::UpdateAllClients()
 		{
-			LinkedList<ClientListEntry*>* clientlist = zoneserver_list.GetClientList();
+		/*	LinkedList<ClientListEntry*>* clientlist = zoneserver_list.GetClientList();
 			LinkedListIterator<ClientListEntry*> iterator(*clientlist);
 
 			iterator.Reset();
@@ -87,7 +87,7 @@ namespace EQC
 					tods->day = TimeOfDay::Instance()->GetDay();
 					tods->month = TimeOfDay::Instance()->GetMonth();
 					tods->year = TimeOfDay::Instance()->GetYear();
-									
+
 					ServerPacket* ssp = new ServerPacket(OP_TimeOfDay, sizeof(TimeOfDay_Struct) + sizeof(ServerSendPacket_Struct));
 					memset( ssp->pBuffer, 0, ssp->size );
 					ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*)ssp->pBuffer;
@@ -106,7 +106,7 @@ namespace EQC
 				//Yeahlight: Zone freeze debug
 				if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
 					EQC_FREEZE_DEBUG(__LINE__, __FILE__);
-			}
+			}*/
 		}
 
 		int8 TimeOfDay::GetMinute()

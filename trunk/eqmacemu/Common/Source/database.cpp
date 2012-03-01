@@ -3148,7 +3148,8 @@ bool Database::LoadDoorData(LinkedList<Door_Struct*>* door_list, char* zonename)
 			//door->triggerType = atoi(row[8]);
 			door->parameter = atoi(row[9]);
 			door->incline = (float)atof(row[10]);
-			door->doorIsOpen = atoi(row[11]);
+			//door->doorIsOpen = atoi(row[11]);
+			door->doorIsOpen = 1;
 			//Yeahlight: Trap type doors need inverted set to 1 to work properly
 			if(door->opentype >= 115)
 				door->inverted = 1;
