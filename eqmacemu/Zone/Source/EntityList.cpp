@@ -1581,3 +1581,19 @@ void EntityList::SignalMobsByNPCID(int32 snpc, int signal_id)
 		iterator.Advance();
 	}
 }
+
+Corpse* EntityList::GetCorpseByID(int16 id){
+	LinkedListIterator<Entity*> iterator(list);
+	iterator.Reset();
+	while(iterator.MoreElements())
+	{
+		if (iterator.GetData()->IsCorpse())
+		{
+			if (iterator.GetData()->id == id) {
+				return iterator.GetData()->CastToCorpse();
+			}
+		}
+		iterator.Advance();
+	}
+	return 0;
+}

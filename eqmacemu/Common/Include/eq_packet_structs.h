@@ -1291,41 +1291,48 @@ struct TimeOfDay_Struct
 	int16	year;			// Comment: Kibanu - Changed from long to int16 on 7/30/2009
 };
 
-// Darvik: shopkeeper structs
-struct Merchant_Click_Struct 
-{
-/*000*/int32	entityid;			// Comment: Merchant NPC's entity id
-/*002*/ int32	playerid;			// Comment: 
-/*004*/ int8	unknown[4];			/*
-										0 is e7 from 01 to // MAYBE SLOT IN PURCHASE
-										1 is 03
-										2 is 00
-										3 is 00
-									*/
-/*006*/	float   pricemultiplier ; 	// Comment: (Tazadar) the pricemultiplier
+struct Merchant_Click_Struct {
+/*000*/ int16	entityid;			// Merchant NPC's entity id
+/*002*/ int16	playerid;
+/*004*/ int8	unknown[8]; /*
+0 is e7 from 01 to // MAYBE SLOT IN PURCHASE
+1 is 03
+2 is 00
+3 is 00
+4 is ??
+5 is ??
+6 is 00 from a0 to
+7 is 00 from 3f to */
+/*
+0 is F6 to 01
+1 is CE CE
+4A 4A
+00 00
+00 E0
+00 CB
+00 90
+00 3F
+*/
+};			
+struct Merchant_Purchase_Struct {
+/*000*/	int16	npcid;			// Merchant NPC's entity id
+/*002*/	int16	playerid;		// Player's entity id
+/*004*/	int16	itemslot;
+/*006*/	int8	IsSold;		// Already sold
+/*007*/	int8	unknown001;	// always 0x0b, 0x7c, 0x00 ??
+//		int8	unknown002;  On live, it looks like it is only 16 bytes now and quanity is put at byte 9 (Hogie on 12/29/2002)
+/*008*/	int8	quantity;		// Qty - when used in Merchant_Purchase_Struct
+/*009*/	int8	unknown003;
+/*010*/	int8	unknown004;
+/*011*/	int8	unknown005;
+/*012*/	sint32  itemcost;
 };
 
-struct Merchant_Purchase_Struct 
-{
-/*000*/	int32	npcid;			// Comment: Merchant NPC's entity id
-/*004*/	int32	playerid;		// Comment: Player's entity id
-/*008*/	int16	itemslot;		// Comment: It was int8 but its int16 thats why i remove Sold (confirmed by Tazadar) 
-//		int8	IsSold;			// Comment: Already sold <<< wrong Removed & confirmed by Tazadar
-/*009*/	int8	unknown001;		// Comment: always 0x0b, 0x7c, 0x00 ??
-/*009*/	int8	unknown002;		// Comment: 
-/*013*/	int8	quantity;		// Comment: Qty - when used in Merchant_Purchase_Struct
-		int8	unknown003;		// Comment: 
-		int8	unknown004;		// Comment: 
-		int8	unknown005;		// Comment: 
-		sint32  itemcost;		// Comment: This is wrong !! (Tazadar)
-};
-
-struct Item_Shop_Struct 
-{
-	uint32 merchantid;			// Comment: 
-	int8 itemtype;				// Comment: 
-	Item_Struct item;			// Comment: 
-	int8 iss_unknown001[4];		// Comment: 
+struct Item_Shop_Struct {
+	uint16 merchantid;
+	int8 itemtype;
+	Item_Struct item;
+	int8 iss_unknown001[6];
 };
 
 struct Merchant_DelItem_Struct{

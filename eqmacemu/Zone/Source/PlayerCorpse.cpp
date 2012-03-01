@@ -1185,10 +1185,12 @@ void Corpse::CreateDecayTimerMessage(Client* client)
 	else
 	{
 		//Yeahlight: Corpse will decay in 1999ms or less; issue the expire warning
-		if(timeLeft < 2000)
+		if(timeLeft < 2000){
 			client->Message(BLACK, "This corpse is waiting to expire.");
-		else
+		}
+		else{
 			client->Message(BLACK, "This corpse will decay in 0 minute(s) %i seconds.", totalSeconds);
+		}
 	}
 }
 

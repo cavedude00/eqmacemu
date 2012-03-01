@@ -3123,8 +3123,42 @@ void Client::Handle_Connect5GDoors()
 		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
 			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
 
-		return;
+		//return;
 }
+
+/*void Client::Handle_Connect5GDoors()
+{
+	EQC::Common::PrintF(CP_ZONESERVER, "Sending doors one at a time.\n");
+	LinkedListIterator<Door_Struct*> iterator(zone->door_list);
+
+	iterator.Reset();
+
+	while(iterator.MoreElements())	
+	{
+		Door_Struct* nd = iterator.GetData();
+
+			nd->doorid = iterator.GetData()->doorid;
+			memcpy(nd->name,iterator.GetData()->name,16);
+			nd->opentype = iterator.GetData()->opentype;
+			nd->xPos = iterator.GetData()->xPos;
+			nd->yPos = iterator.GetData()->yPos;
+			nd->zPos = iterator.GetData()->zPos;
+			nd->heading = iterator.GetData()->heading;
+
+		//Yeahlight: TODO: Remove the excess, serverside data from the door struct
+		APPLAYER* outapp = new APPLAYER(OP_SpawnDoor, sizeof(Door_Struct) - 40);
+		memcpy(outapp->pBuffer, nd, sizeof(Door_Struct) - 40);
+
+		QueuePacket(outapp);
+
+		safe_delete(outapp);//delete outapp;
+
+		iterator.Advance();
+		//Yeahlight: Zone freeze debug
+		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
+			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
+	}
+}*/
 
 void Client::Handle_Connect5Objects()
 {
