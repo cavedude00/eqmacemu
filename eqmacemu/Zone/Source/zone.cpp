@@ -221,8 +221,8 @@ bool Zone::Init() {
 	if (!LoadProcessedGridData())
 		cout<<"PREPROCESSEDGRID load failed"<<endl;
 
-	//if (!Database::Instance()->LoadPatrollingNodes(zoneID))
-	//cout<<"PATROLLINGNODE load failed"<<endl;
+	if (!Database::Instance()->LoadPatrollingNodes(zoneID))
+	cout<<"PATROLLINGNODE load failed"<<endl;
 
 	spawn_group_list = new SpawnGroupList();
 	if (!Database::Instance()->PopulateZoneLists(short_name, &zone_point_list, spawn_group_list))
@@ -273,6 +273,7 @@ bool Zone::Init() {
 		zone->thisZonesZoneLines[i]->keepY = zone->zone_line_data.at(i)->keepY;
 		zone->thisZonesZoneLines[i]->keepZ = zone->zone_line_data.at(i)->keepZ;
 	}
+	EQC::Common::PrintF(CP_ZONESERVER, "Loading doors for '%s'\n", short_name);
 
 	if (!Database::Instance()->LoadDoorData(&door_list, short_name))
 		cout<<"DOOR load failed.\n";

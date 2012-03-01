@@ -55,6 +55,7 @@
 #define OP_CloseTrade	   0xdc40
 #define OP_FinTrade        0x4741
 #define OP_ItemInTrade	   0xdf40
+#define OP_TradeMoneyUpdate		0x3d41 //ShowEQ 4.3.4
 // Quagmire: Guild /-commands
 #define OP_GuildInviteAccept 0x1841
 #define OP_GuildLeader     0x9541 // /guildleader
@@ -225,15 +226,16 @@
 #define OP_GMDelCorpse		0xe941
 #define	OP_GMKick		0x6d40
 #define OP_GMServers		0xa840
-#define OP_BecomeNPC		0x8c41
+#define OP_GMBecomeNPC		0x8c41
 
 #define OP_TradeSkillCombine 0x0541
 
 #define	OP_CreateObject		0x2c40
 #define	OP_ClickObject		0x2b40
 #define	OP_SpawnDoor		0xf741
+#define OP_CSpawnDoor		0x9520 
 #define	OP_ClickDoor		0x8d40
-#define	OP_MoveDoor		0x8e40
+#define OP_OpenDoor			0x8e40
 
 #define OP_SendZonepoints	0xb440
 
@@ -243,13 +245,12 @@
 
 #define OP_Medding		0x5841
 
-//#define OP_AAPoints			0x1542
-
 #define OP_SetRunMode		0x1f40
 #define OP_EnvDamage		0x5840
 #define OP_ENVDAMAGE2		0x1e40
 #define OP_Report			0xbd41
 
+#define OP_AAPoints		 0x1522 //ShowEQ 4.3.4
 #define OP_UpdateAA      0x1442
 #define OP_RespondAA     0x1542
 #define OP_SendAAStats   0x2342
@@ -289,7 +290,6 @@
 #define OP_CleanStation		0x0000
 #define OP_QuestCompletedMoney		0x0000
 #define OP_StationItem		0x0000
-#define OP_TradeMoneyUpdate		0x0000
 #define OP_PetitionClientUpdate		0x0000
 #define OP_InitiateConsume		0x0000
 #define OP_SplitResponse	0x0000
@@ -298,11 +298,9 @@
 #define OP_MBSendMessageToClient		0x0000
 #define OP_MBDataSent_OpenMessageBoard		0x0000
 #define OP_MBMessageDetail		0x0000
-#define OP_GMBecomeNPC		0x0000
 #define OP_ConsentResponse	0x0000
 #define OP_CraftingStation	0x1000 // Wrong just using so Client_Process compiles.
 #define OP_PoisonComplete	0x0000
-#define	OP_OpenDoor			0x0000 // Not the same as OP_ClickDoor
 
 #define SUB_ChangeChar 00000
 

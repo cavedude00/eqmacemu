@@ -66,7 +66,7 @@ bool EntityList::AddHateToCloseMobs(NPC* sender, float dist, int social)
 								switch(GetLevelCon(currentmob->GetLevel(), sender->GetLevel())) 
 								{
 									case CON_GREEN:
-									case CON_BLUE2:
+									case CON_LIGHTBLUE:
 									case CON_BLUE:
 									case CON_WHITE:
 									{
@@ -108,7 +108,7 @@ bool EntityList::AddHateToCloseMobs(NPC* sender, float dist, int social)
 											dist2 = (dist * dist)/10;
 										break;
 									}
-									case CON_BLUE2:
+									case CON_LIGHTBLUE:
 									case CON_BLUE:
 									case CON_WHITE:
 									{
@@ -166,7 +166,7 @@ bool EntityList::AddHateToCloseMobs(NPC* sender, float dist, int social)
 										}
 										break;
 									}
-									case CON_BLUE2:
+									case CON_LIGHTBLUE:
 									case CON_BLUE:
 									case CON_WHITE:
 									{
@@ -246,7 +246,7 @@ bool EntityList::AddHateToCloseMobs(NPC* sender, float dist, int social)
 										}
 										break;
 									}
-									case CON_BLUE2:
+									case CON_LIGHTBLUE:
 									case CON_BLUE:
 									case CON_WHITE:
 									{
@@ -471,56 +471,214 @@ bool EntityList::AddHateToCloseMobs(NPC* sender, float dist, int social)
 	return false;
 }
 
-//Yeahlight: Clean up this mess
-//Yeahlight: TODO: Most of these ranges are incorrect by a few levels
-//Green: 0x02
-//Blue: 0x04
-//White: 0x00
-//Yellow: 0x0F
-//Red: 0x0D
+/*int32 GetLevelCon(int8 mylevel, int8 iOtherLevel) {
+    sint16 diff = iOtherLevel - mylevel;
+	int32 conlevel=0;
+	
+    if (diff == 0)
+        return CON_WHITE;
+    else if (diff >= 1 && diff <= 2)
+        return CON_YELLOW;
+    else if (diff >= 3)
+        return CON_RED;
+
+    if (mylevel <= 8)
+    {
+        if (diff <= -4)
+            conlevel = CON_GREEN;
+        else
+            conlevel = CON_BLUE;
+    }
+    else if (mylevel <= 9)
+	{
+        if (diff <= -6)
+            conlevel = CON_GREEN;
+        else if (diff <= -4)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+    else if (mylevel <= 13)
+	{
+        if (diff <= -7)
+            conlevel = CON_GREEN;
+        else if (diff <= -5)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 15)
+	{
+        if (diff <= -7)
+            conlevel = CON_GREEN;
+        else if (diff <= -5)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 17)
+	{
+        if (diff <= -8)
+            conlevel = CON_GREEN;
+        else if (diff <= -6)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 21)
+	{
+        if (diff <= -9)
+            conlevel = CON_GREEN;
+        else if (diff <= -7)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 25)
+	{
+        if (diff <= -10)
+            conlevel = CON_GREEN;
+        else if (diff <= -8)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 29)
+	{
+        if (diff <= -11)
+            conlevel = CON_GREEN;
+        else if (diff <= -9)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 31)
+	{
+        if (diff <= -12)
+            conlevel = CON_GREEN;
+        else if (diff <= -9)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 33)
+	{
+        if (diff <= -13)
+            conlevel = CON_GREEN;
+        else if (diff <= -10)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 37)
+	{
+        if (diff <= -14)
+            conlevel = CON_GREEN;
+        else if (diff <= -11)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 41)
+	{
+        if (diff <= -16)
+            conlevel = CON_GREEN;
+        else if (diff <= -12)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 45)
+	{
+        if (diff <= -17)
+            conlevel = CON_GREEN;
+        else if (diff <= -13)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 49)
+	{
+        if (diff <= -18)
+            conlevel = CON_GREEN;
+        else if (diff <= -14)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 53)
+	{
+        if (diff <= -19)
+            conlevel = CON_GREEN;
+        else if (diff <= -15)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else if (mylevel <= 55)
+	{
+        if (diff <= -20)
+            conlevel = CON_GREEN;
+        else if (diff <= -15)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	else
+	{
+        if (diff <= -21)
+            conlevel = CON_GREEN;
+        else if (diff <= -16)
+            conlevel = CON_LIGHTBLUE;
+        else
+            conlevel = CON_BLUE;
+	}
+	return conlevel;
+}*/
+
 int32 GetLevelCon(int8 PlayerLevel, int8 NPCLevel)
 {
 	sint8 tmp = NPCLevel - PlayerLevel;
 	int32 conlevel;
 	if (PlayerLevel <= 12)
 	{
-		conlevel =  (tmp <= -4) ? 0x02:
-	(tmp >=-3 && tmp <= -1) ? 0x04:
-	(tmp == 0) ? 0x00:			
-	(tmp >= 1 && tmp <= 2) ?0x0F:    
-	0x0D;							
+		conlevel =  (tmp <= -4) ? CON_GREEN:
+	(tmp >=-3 && tmp <= -1) ? CON_BLUE:
+	(tmp == 0) ? CON_WHITE:			
+	(tmp >= 1 && tmp <= 2) ?CON_YELLOW:    
+	CON_RED;							
 	}
 	else if (PlayerLevel >= 13 && PlayerLevel <= 24)
 	{
-		conlevel =  (tmp <= -6) ? 0x02:			
-	(tmp >=-5 && tmp <= -1) ? 0x04:
-	(tmp == 0) ? 0x00:
-	(tmp >= 1 && tmp <= 2) ?0x0F:
-	0x0D;
+		conlevel =  (tmp <= -6) ? CON_GREEN:			
+	(tmp >=-5 && tmp <= -1) ? CON_BLUE:
+	(tmp == 0) ? CON_WHITE:
+	(tmp >= 1 && tmp <= 2) ?CON_YELLOW:
+	CON_RED;
 	}
 	else if (PlayerLevel >= 25 && PlayerLevel <= 40)
 	{
-								conlevel =  (tmp <= -11) ? 0x02:
-	(tmp >=-10 && tmp <= -8) ? 0x04:
-	(tmp == 0) ? 0x00:
-	(tmp >= 1 && tmp <= 2) ?0x0F:
-	0x0D;
+								conlevel =  (tmp <= -11) ? CON_GREEN:
+	(tmp >=-10 && tmp <= -8) ? CON_BLUE:
+	(tmp == 0) ? CON_WHITE:
+	(tmp >= 1 && tmp <= 2) ?CON_YELLOW:
+	CON_RED;
 	}
 	else if (PlayerLevel >= 41 && PlayerLevel <= 49)
 	{
-								conlevel =  (tmp <= -12) ? 0x02:
-	(tmp >=-11 && tmp <= -1) ? 0x04:
-	(tmp == 0) ? 0x00:
-	(tmp >= 1 && tmp <= 2) ?0x0F:
-	0x0D;
+								conlevel =  (tmp <= -12) ? CON_GREEN:
+	(tmp >=-11 && tmp <= -1) ? CON_BLUE:
+	(tmp == 0) ? CON_WHITE:
+	(tmp >= 1 && tmp <= 2) ?CON_YELLOW:
+	CON_RED;
 	}
 	else if (PlayerLevel >= 50)
 	{
-								conlevel =  (tmp <= -14) ? 0x02:
-	(tmp >=-13 && tmp <= -1) ? 0x04:
-	(tmp == 0) ? 0x00:
-	(tmp >= 1 && tmp <= 2) ?0x0F:
-	0x0D;
+								conlevel =  (tmp <= -14) ? CON_GREEN:
+	(tmp >=-13 && tmp <= -1) ? CON_BLUE:
+	(tmp == 0) ? CON_WHITE:
+	(tmp >= 1 && tmp <= 2) ?CON_YELLOW:
+	CON_RED;
 	};
 	return conlevel;
 }

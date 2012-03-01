@@ -3073,51 +3073,57 @@ void Client::Handle_Connect5GDoors()
 	uchar buffer1[sizeof(Door_Struct) - 40];
 	uchar buffer2[7000];
 	int16 length = 0;
+	int16 qty = 0;
 
-	EQC::Common::PrintF(CP_ZONESERVER, "Sending doors one at a time.\n");
 	LinkedListIterator<Door_Struct*> iterator(zone->door_list);
 
 	iterator.Reset();
-
-	while(iterator.MoreElements())	
+	while(iterator.MoreElements())
 	{
-		Door_Struct* door = iterator.GetData();
+		if(iterator.GetData() != 0)
+		{
+			if (iterator.GetData()->doorid != 0)
+			{
+			Door_Struct* nd = (Door_Struct*)buffer1;
+			memset(nd,0,sizeof(Door_Struct) - 40);
+			
+			nd->doorid = iterator.GetData()->doorid;
+			memcpy(nd->name,iterator.GetData()->name,16);
+			nd->opentype = iterator.GetData()->opentype;
+			nd->xPos = iterator.GetData()->xPos;
+			nd->yPos = iterator.GetData()->yPos;
+			nd->zPos = iterator.GetData()->zPos;
+			nd->heading = iterator.GetData()->heading;
 
-		//Yeahlight: TODO: Remove the excess, serverside data from the door struct
-	//	APPLAYER* outapp = new APPLAYER(OP_SpawnDoor, sizeof(Door_Struct) - 40);
-	//	memcpy(outapp->pBuffer, door, sizeof(Door_Struct) - 40);
-
-		Door_Struct* nd = (Door_Struct*)buffer1;
-		memset(nd,0,sizeof(Door_Struct) - 40);
-
-		memcpy(nd->name,iterator.GetData()->name,16);
-		nd->opentype = iterator.GetData()->opentype;
-
-		nd->xPos = iterator.GetData()->yPos;
-		nd->yPos = iterator.GetData()->xPos;
-		nd->zPos = iterator.GetData()->zPos;
-		nd->heading = iterator.GetData()->heading;
-
-		memcpy(buffer2+length,buffer1,44);
-		length = length + 44;
-
+			memcpy(buffer2+length,buffer1,44);
+			length = length + 44;
+			qty++;
+			}
+		}
+		iterator.Advance();
+	}
+		if (qty == 0)
+			return;
+		
 		APPLAYER *outapp;
 		outapp = new APPLAYER;
-
+		outapp->opcode = OP_SpawnDoor;
 		outapp->pBuffer = new uchar[7000];
 		length = DeflatePacket(buffer2,length,outapp->pBuffer+2,7000);
 		outapp->size = length+2;
 		DoorSpawns_Struct* ds = (DoorSpawns_Struct*)outapp->pBuffer;
 
+		ds->count = qty;
+		EQC::Common::PrintF(CP_ZONESERVER,"%i Doors Spawned.\n",ds->count);
+
 		QueuePacket(outapp);
-
 		safe_delete(outapp);//delete outapp;
-
-		iterator.Advance();
+		
 		//Yeahlight: Zone freeze debug
 		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
 			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
-	}
+
+		return;
 }
 
 void Client::Handle_Connect5Objects()

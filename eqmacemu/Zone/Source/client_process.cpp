@@ -2254,54 +2254,43 @@ void Client::ProcessOP_Consider(APPLAYER* pApp)
 				if((tmob->GetClass() == MERCHANT || tmob->GetClass() == BANKER) && (FactionLevel == FACTION_SCOWLS || FactionLevel == FACTION_THREATENLY))
 					FactionLevel = FACTION_DUBIOUS;
 			}
-			int32 passValue = 0x00000000;
-			//Yeahlight: Our new client seems to use a four byte integer shifted left twice. I cannot make much sense of it
-			//           but these following values trigger the correct messages in the client.
-			//           Note: Apprehensive(0xFFFFFFFF) is not a typo and yes it does fill all four bytes unlike the rest
-			//0x00000500 - ally
-			//0x00000300 - warmly
-			//0x00000200 - kindly
-			//0x00000100 - amiable
-			//0x00000000 - indifferent
-			//0xFFFFFFFF - apprehensive
-			//0xFFFFFF00 - dubious
-			//0xFFFFFE00 - threateningly
-			//0xFFFFFD00 - scowls
+			int32 passValue = 0;
 			switch(FactionLevel)
 			{
 				case FACTION_ALLY: 
-					passValue = 0x00000500;
+					passValue = 1;
 					break;
 				case FACTION_WARMLY: 
-					passValue = 0x00000300;
+					passValue = 2;
 					break;
 				case FACTION_KINDLY: 
-					passValue = 0x00000200;
+					passValue = 3;
 					break;
 				case FACTION_AMIABLE: 
-					passValue = 0x00000100;
+					passValue = 4;
 					break;
 				case FACTION_INDIFFERENT: 
-					passValue = 0x00000000;
+					passValue = 5;
 					break;
 				case FACTION_APPREHENSIVE:
-					passValue = 0xFFFFFFFF;
+					passValue = 6;
 					break;
 				case FACTION_DUBIOUS:
-					passValue = 0xFFFFFF00;
+					passValue = 7;
 					break;
 				case FACTION_THREATENLY:
-					passValue = 0xFFFFFE00;
+					passValue = 8;
 					break;
 				case FACTION_SCOWLS:
-					passValue = 0xFFFFFD00;
+					passValue = 9;
 					break;
 				default:
-					passValue = 0x00000000;
+					passValue = 0;
 			}
 			if(debugFlag && GetDebugMe())
 				Message(WHITE, "Debug: Your consider level on %s: %i", tmob->GetName(), FactionLevel);
 			con->faction = passValue;
+			con->level = GetLevelCon(this->GetLevel(), tmob->GetLevel());
 			QueuePacket(outapp);
 			safe_delete(outapp);//delete outapp;
 		}
@@ -4845,7 +4834,11 @@ void Client::ProcessOP_ClickDoor(APPLAYER* pApp)
 	{
 		Door_Struct* door = iterator.GetData();
 		ClickDoor_Struct* clicked = (ClickDoor_Struct*) pApp->pBuffer;
-
+		if(!clicked->doorid)
+		{
+		Message(RED,"Unable to find door, please notify a GM (DoorID: %i).",door->doorid);
+		return;
+		}
 		if(door->doorid == clicked->doorid) 
 		{
 			//Yeahlight: If the door has not been touched in twelve seconds, then return it to the closed state
@@ -5003,10 +4996,10 @@ void Client::ProcessOP_DropCoin(APPLAYER* pApp)
 	if(pApp->size == sizeof(DropCoins_Struct))
 	{
 		//Yeahlight: Only clear the client's coin, cursor inventories
-/*		pp.platinum_cursor = 0;
+		pp.platinum_cursor = 0;
 		pp.gold_cursor = 0;
 		pp.silver_cursor = 0;
-		pp.copper_cursor = 0;*/
+		pp.copper_cursor = 0;
 		this->Save();
 
 		//Yeahlight: Add the new object to the zone's object list
@@ -5964,9 +5957,7 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	//title = pp.title;
 	luclinface = pp.luclinface;
 
-	//cavedude - not sure if our client needs this.
-	/*
-	for(int i=0; i< 24; i++)
+	/*for(int i=0; i< 24; i++)
 		pp.unknown3888[i] = 0;
 
 	// Harakiri need to clear these, or the client things he got some items already as pointers
@@ -5974,14 +5965,8 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 		pp.bankinvitemPointers[i] = 0;
 	// Harakiri need to clear these, or the client things he got some items already as pointers
 	for(int i=0; i< 30; i++)
-		pp.inventoryitemPointers[i] = 0;
+		pp.inventoryitemPointers[i] = 0;*/
 
-	for(int i=0; i< 12; i++)
-		pp.unknown3944[i] = 0;
-
-	pp.unknown4178 =  0;
-	pp.unknown4179 =  0;
-	*/
 
 	// Harakiri for each spell slot in ms the refresh time left
 	//pp.spellSlotRefresh[0] = 10000;
@@ -6126,7 +6111,7 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	SetEQChecksum((unsigned char*)sze, sizeof(ServerZoneEntry_Struct));
 	QueuePacket(outapp);
 	safe_delete(outapp);
-	//entity_list.SendZoneSpawnsBulk(this); cavedude: Bugged for now.
+	entity_list.SendZoneSpawnsBulk(this);
 
 	outapp = new APPLAYER(OP_Weather, 8);
 	if (zone->zone_weather == 1)
@@ -6424,9 +6409,9 @@ void Client::ProcessOP_Default(APPLAYER* app){
 		
 		case OP_GMZoneRequest2: 
 			{
-				if (admin < 100 && !strcasecmp((char*) app->pBuffer, "gmhome"))
+				if (admin < 100 && !strcasecmp((char*) app->pBuffer, "cshome"))
 				{
-					Message(BLACK, "GMHome is for GMs only");
+					Message(BLACK, "CSHome is for GMs only");
 				}
 				else
 				{

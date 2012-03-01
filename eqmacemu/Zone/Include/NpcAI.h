@@ -5,12 +5,12 @@
 
 
 
-#define CON_GREEN		0x02
-#define CON_BLUE		0x04
-#define CON_BLUE2		0x12	
-#define CON_WHITE		0x00
-#define CON_YELLOW		0x0F
-#define CON_RED			0x0D
+#define CON_GREEN		2
+#define CON_LIGHTBLUE	18
+#define CON_BLUE		4
+#define CON_WHITE		20
+#define CON_YELLOW		15
+#define CON_RED			13
 
 int32 GetLevelCon(int8 PlayerLevel, int8 NPCLevel);
 
