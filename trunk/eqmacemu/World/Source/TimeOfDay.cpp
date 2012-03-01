@@ -88,7 +88,7 @@ namespace EQC
 					tods->month = TimeOfDay::Instance()->GetMonth();
 					tods->year = TimeOfDay::Instance()->GetYear();
 									
-/*					ServerPacket* ssp = new ServerPacket(ServerOP_SendPacket, sizeof(TimeOfDay_Struct) + sizeof(ServerSendPacket_Struct));
+					ServerPacket* ssp = new ServerPacket(OP_TimeOfDay, sizeof(TimeOfDay_Struct) + sizeof(ServerSendPacket_Struct));
 					memset( ssp->pBuffer, 0, ssp->size );
 					ServerSendPacket_Struct* sss = (ServerSendPacket_Struct*)ssp->pBuffer;
 					strcpy(sss->charname, iterator.GetData()->name());
@@ -100,7 +100,7 @@ namespace EQC
 						cout << "Error in Time of Day Update: Cannot find server for " << iterator.GetData()->name() << "." << endl;
 					else
 						iterator.GetData()->Server()->SendPacket(ssp);
-					safe_delete(ssp);//delete packet;*/
+					safe_delete(ssp);//delete packet;
 				}
 				iterator.Advance();
 				//Yeahlight: Zone freeze debug

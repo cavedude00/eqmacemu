@@ -482,6 +482,7 @@ private:
 	void	ProcessOP_SpawnAppearance(APPLAYER* pApp);
 	void	ProcessOP_Surname(APPLAYER* pApp);
 	void	ProcessOP_Consider(APPLAYER* pApp);
+//	void	ProcessOP_ConsiderCorpse(APPLAYER* pApp);
 	void	ProcessOP_ClientUpdate(APPLAYER* pApp);
 	void    ProcessOP_ClientTarget(APPLAYER* pApp);
 	void    ProcessOP_YellForHelp(APPLAYER* pApp);

@@ -1131,9 +1131,9 @@ bool Database::GetSafePoints(char* short_name, float* safe_x, float* safe_y, flo
 		if(mysql_num_rows(result) == 1) {
 			row = mysql_fetch_row(result);
 			if(safe_x != 0)
-				*safe_x = atoi(row[0]);
+				*safe_x = atoi(row[1]);
 			if(safe_y != 0)
-				*safe_y = atoi(row[1]);
+				*safe_y = atoi(row[0]);
 			if(safe_z != 0)
 				*safe_z = atoi(row[2]);
 			if(minstatus != 0)
@@ -1169,9 +1169,9 @@ bool Database::GetSafePointsByID(int32 zoneid, float* safe_x, float* safe_y, flo
 		if(mysql_num_rows(result) == 1) {
 			row = mysql_fetch_row(result);
 			if(safe_x != 0)
-				*safe_x = atoi(row[0]);
+				*safe_x = atoi(row[1]);
 			if(safe_y != 0)
-				*safe_y = atoi(row[1]);
+				*safe_y = atoi(row[0]);
 			if(safe_z != 0)
 				*safe_z = atoi(row[2]);
 			if(minstatus != 0)
@@ -3153,7 +3153,7 @@ bool Database::LoadDoorData(LinkedList<Door_Struct*>* door_list, char* zonename)
 			if(door->opentype >= 115)
 				door->inverted = 1;
 			else
-				door->inverted = atoi(row[12]);
+			door->inverted = atoi(row[12]);
 			door->lockpick = atoi(row[13]);
 			door->keyRequired = atoi(row[14]);
 			strcpy(door->zoneName, row[15]);

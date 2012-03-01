@@ -26,12 +26,20 @@ Spawn2::Spawn2(int32 in_spawn2_id, int32 spawngroup_id, float in_x, float in_y, 
 		myPathGrid = in_pathgrid;
 	else
 		myPathGrid = 0;
-	x = in_x;
-	y = in_y;
+	x = in_y;
+	y = in_x;
+	z = in_z;
 	if(roamRange == 0)
 		z = mob->FindGroundZWithZ(x, y, in_z, 2);
-	else
+	else if(zone->map != 0)
 		z = mob->FindGroundZWithZ(x, y, in_z, 200);
+	else
+		z = in_z;
+
+	if(z = -999999){
+		z = in_z;
+	}
+
 	myRoamBox = 999;
 	//Yeahlight: roamRange is not zero, meaning the mob is not static (does not stand still; moves around)
 	if(roamRange != 0)

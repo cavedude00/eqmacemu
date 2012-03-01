@@ -2181,7 +2181,7 @@ Node* Mob::findClosestNode(Mob* mob, bool parse)
 	queue<int16> searchList;
 
 	//Yeahlight: This routein is not used for parsing data
-	if(parse) // cavedude_errProcessOP_ZoneChange
+	if(!parse)
 	{
 		aid = (int)(((float)guessMax) * (float)(1/(pow(2, (double)guessCounter))));
 		guessCounter++;

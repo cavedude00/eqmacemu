@@ -709,16 +709,6 @@ they were originally.
 
 ***************************************************************/ 
 
-//Yeahlight: Note: Our new client has some odd expected values for ->faction, they are as follows:
-//				   0x00000500 - ally
-//				   0x00000300 - warmly
-//				   0x00000200 - kindly
-//				   0x00000100 - amiable
-//				   0x00000000 - indifferent
-//				   0xFFFFFFFF - apprehensive
-//				   0xFFFFFF00 - dubious
-//				   0xFFFFFE00 - threateningly
-//				   0xFFFFFD00 - scowls
 struct Consider_Struct{
 /*000*/ int16	playerid;               // PlayerID
 /*002*/ int16	targetid;               // TargetID
@@ -768,13 +758,8 @@ struct SpawnPositionUpdate_Struct
 /*0002*/ int8   anim_type; // ??
 /*0003*/ int8	heading;                // Heading
 /*0004*/ sint8  delta_heading;          // Heading Change
-#ifndef INVERSEXY
 /*0005*/ sint16 x_pos;                  // New X position of spawn
 /*0007*/ sint16 y_pos;                  // New Y position of spawn
-#else
-	sint16 y_pos;
-	sint16 x_pos;
-#endif
 /*0009*/ sint16 z_pos;                  // New Z position of spawn
 /*0011*/ int32  delta_y:10,             // Y Velocity
                 spacer1:1,              // ***Placeholder
@@ -1880,11 +1865,9 @@ struct DoorSpawns_Struct	//SEQ
 
 struct ClickDoor_Struct {
 	int8	doorid;
-	int8 test1[3];
-	int16	keyinhand; // key ID, -1 if no key is in hand... not sure about lockpicks
-	int8 test2[2];
-	int8	playerid;
-	int8 test3[3];
+	int8	unknown[3];
+	int16	keyinhand;
+	int16	playerid;
 };
 
 struct DoorOpen_Struct {
