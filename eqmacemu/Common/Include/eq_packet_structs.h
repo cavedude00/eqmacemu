@@ -632,13 +632,13 @@ the client certainly isn't using it for anything that I can see.
 ***************************************************************/
 struct Beg_Struct
 {
-	int32	target;		// The player's target at time of beg.
-	int32	begger;		// The player making the coin request.
+	int16	target;		// The player's target at time of beg.
+	int16	begger;		// The player making the coin request.
 	int8	skill;		// The player's begging skill level.
 	int8	success;	// -1 = request | 0 = failure | 1 = plat | 2 = gold | 3 = silver | 4 = copper
-	int16	time;		// This is the time since player logged in.
-	int32	coins;		// The number of coins.  Whatever success is set to.
-	int8	unknown[2];	// Not sure.  Maybe we'll find out one day.
+	int16	unknown1;		// This is the time since player logged in.
+	int32	unknown2;		// The number of coins.  Whatever success is set to.
+	int8	unknown3[6];	// Not sure.  Maybe we'll find out one day.
 };
 
 /*
@@ -1670,14 +1670,14 @@ struct BookRequest_Struct
 // Recieved when player right clicks on guildmaster of his/her own guild
 // Size: 148 Bytes
 // OpCode: 9c20
-struct ClassTrain_Struct
-{
-	/*000*/ int32	npcid;
-	/*004*/ int32	playerid;
-	/*008*/ int8	highesttrain[73]; // Highest value for each skill a trainer can train you to.
-	/*081*/	int8	unknown[32];	  // one of these are important or the trainer wont open the training window
-	/*113*/ int8	highesttrainLang[24]; // Harakiri languages max a trainer can teach you
-	/*137*/ int8	unknown2[11];   // Unknown
+
+struct ClassTrain_Struct{
+	/*000*/ int32 npcid;
+	/*002*/ int32 playerid;
+	/*004*/ int8  highesttrain[73];
+	        int8	unknown[32];
+			int8	highesttrainLang[24];
+	/*004*/ int8 unknown2[107];
 };
 
 struct ClassSkillChange_Struct {
@@ -1775,6 +1775,7 @@ struct Door_Struct{
 		 float	 destZ;
 		 float   destHeading;
 		 int32	 pLastClick;
+		 uint8	 triggerType;
 
 /******Useful Open Types*******/
 //53: Spell Particle Effect

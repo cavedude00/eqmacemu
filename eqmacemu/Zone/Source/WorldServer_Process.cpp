@@ -226,7 +226,7 @@ void WorldServer::Process()
 					client->SetZoningX(szp->x_pos);
 					client->SetZoningY(szp->y_pos);
 					client->SetZoningZ(szp->z_pos);
-					client->MovePC(szp->zone, szp->x_pos, szp->y_pos, szp->z_pos, false, false);
+					client->ZonePC(szp->zone, szp->x_pos, szp->y_pos, szp->z_pos);
 				}
 				break;
 			}
