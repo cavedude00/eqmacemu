@@ -14,6 +14,7 @@
 using namespace std;
 
 const uint32	MAXITEMID = 33000;
+const uint32	MAXDOORID = 40000;
 
 class __declspec(dllexport) SharedMemory 
 {
@@ -23,7 +24,9 @@ public:
 
 	struct ShMemData_Struct {
 		Item_Struct item_array[MAXITEMID];
+		Door_Struct door_array[MAXDOORID];
 		uint32		max_item;
+		uint32		max_door;
 	};
 
 	static bool	isLoaded();
@@ -31,7 +34,9 @@ public:
 	static void	Unload();
 	
 	static Item_Struct*	getItem(uint32 id);
+	static Door_Struct*	getDoor(uint32 id);
 	static int			getMaxItem();
+	static int			getMaxDoor();
 
 	static void setDLL(HINSTANCE aDll) {hSharedDLL = aDll; }
 	static void setMemPtr(LPVOID alpvMem) {lpvSharedMem = alpvMem; }
@@ -40,6 +45,8 @@ public:
 private:
 	static bool					LoadItems();
 	static void					UnloadItems();
+	static bool					LoadDoors();
+	static void					UnloadDoors();
 	static ShMemData_Struct*	getPtr();
 	static uint32				CalcSMSize();
 	static HINSTANCE			hSharedDLL;

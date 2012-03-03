@@ -158,6 +158,7 @@ public:
 	bool	LoadItems_Old();
 #ifndef EQC_SHAREDMEMORY
 	bool	LoadItems();
+	bool	LoadDoors();
 #endif
 	bool	LoadNPCTypes(char* zone_name);
 	Item_Struct*	GetItem(uint32 id);
@@ -213,6 +214,8 @@ public:
 #ifndef EQC_SHAREDMEMORY
 	uint32			max_item;
 	Item_Struct**	item_array;
+	uint32			max_door;
+	Door_Struct**	door_array;
 #endif
 	uint32			max_npc_type;
 	NPCType**		npc_type_array;

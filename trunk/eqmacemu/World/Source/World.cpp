@@ -91,6 +91,9 @@ int main(int argc, char** argv) // This is going to be moved to the WorldServer.
 	EQC::Common::PrintF(CP_WORLDSERVER, "Loading items... ");
 	Database::Instance()->LoadItems();
 	EQC::Common::PrintF(CP_GENERIC, "Done.\n");
+	EQC::Common::PrintF(CP_WORLDSERVER, "Loading doors... ");
+	Database::Instance()->LoadDoors();
+	EQC::Common::PrintF(CP_GENERIC, "Done.\n");
 #endif
 	// Load Items
 

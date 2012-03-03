@@ -54,6 +54,8 @@ Database::Database ()
 #ifndef EQC_SHAREDMEMORY
 	item_array = 0;
 	max_item = 0;
+	door_array = 0;
+	max_door = 0;
 #endif
 	max_npc_type = 0;
 	npc_type_array = 0;
@@ -137,6 +139,8 @@ Database::Database(const char* host, const char* user, const char* passwd, const
 #ifndef EQC_SHAREDMEMORY
 	item_array = 0;
 	max_item = 0;
+	door_array = 0;
+	max_door = 0;
 #endif
 	max_npc_type = 0;
 	npc_type_array = 0;
@@ -161,6 +165,17 @@ Database::~Database()
 			}
 		}
 		safe_delete(item_array);//delete item_array;
+	}
+		if (door_array != 0)
+	{
+		for (x=0; x <= max_door; x++)
+		{
+			if (door_array[x] != 0)
+			{
+				safe_delete(door_array[x]);//delete item_array[x];
+			}
+		}
+		safe_delete(door_array);//delete item_array;
 	}
 #endif
 
@@ -1600,6 +1615,79 @@ bool Database::LoadItems()
 	}
 
 
+	return true;
+}
+
+bool Database::LoadDoors(){
+	char errbuf[MYSQL_ERRMSG_SIZE];
+	char *query = 0;
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	query = new char[256];
+	strcpy(query, "SELECT MAX(id) FROM doors");
+
+	if (RunQuery(query, strlen(query), errbuf, &result)) {
+		safe_delete(query);
+		row = mysql_fetch_row(result);
+		if (row != 0 && row[0] > 0)
+		{ 
+			max_door = atoi(row[0]);
+			door_array = new Door_Struct*[max_door+1];
+			for(int i=0; i<max_door; i++)
+			{
+				door_array[i] = 0;
+			}
+			mysql_free_result(result);
+
+			MakeAnyLenString(&query, "SELECT name,pos_x,pos_y,pos_z,heading,opentype,doorid,triggerdoor,triggertype,door_param,incline,doorisopen,invert_state,lockpick,keyitem,dest_zone,dest_x,dest_y,dest_z,dest_heading,id FROM doors");
+
+			if (RunQuery(query, strlen(query), errbuf, &result))
+			{
+				safe_delete_array(query);//delete[] query;
+				while(row = mysql_fetch_row(result))
+				{
+					door_array[atoi(row[20])] = new Door_Struct;
+					memcpy(door_array[atoi(row[20])], row[20], sizeof(Door_Struct));
+					strcpy(door_array[atoi(row[20])]->name, row[0]);
+					door_array[atoi(row[20])]->xPos = (float)atof(row[1]);
+					door_array[atoi(row[20])]->yPos = (float)atof(row[2]);
+					door_array[atoi(row[20])]->zPos = (float)atof(row[3]);
+					door_array[atoi(row[20])]->heading = (float)atof(row[4]);
+					door_array[atoi(row[20])]->opentype = atoi(row[5]);
+					door_array[atoi(row[20])]->doorid = (uint8)atoi(row[6]);
+					door_array[atoi(row[20])]->triggerID = atoi(row[7]);
+					door_array[atoi(row[20])]->triggerType = atoi(row[8]);
+					door_array[atoi(row[20])]->parameter = atoi(row[9]);
+					door_array[atoi(row[20])]->incline = (float)atof(row[10]);
+					door_array[atoi(row[20])]->doorIsOpen = atoi(row[11]);
+					door_array[atoi(row[20])]->inverted = atoi(row[12]);
+					door_array[atoi(row[20])]->lockpick = atoi(row[13]);
+					door_array[atoi(row[20])]->keyRequired = atoi(row[14]);
+					strcpy(door_array[atoi(row[20])]->zoneName, row[15]);
+					door_array[atoi(row[20])]->destX = (float)atof(row[16]);
+					door_array[atoi(row[20])]->destY = (float)atof(row[17]);
+					door_array[atoi(row[20])]->destZ = (float)atof(row[18]);
+					door_array[atoi(row[20])]->destHeading = (float)atof(row[19]);
+
+					Sleep(0);
+				}
+				mysql_free_result(result);
+			}
+			else {
+				cerr << "Error in PopulateZoneLists query '" << query << "' " << errbuf << endl;
+				safe_delete_array(query);//delete[] query;
+				return false;
+			}
+		}
+		else {
+			mysql_free_result(result);
+		}
+	}
+	else {
+		cerr << "Error in PopulateZoneLists query '" << query << "' " << errbuf << endl;
+		safe_delete_array(query);//delete[] query;
+		return false;
+	}
 	return true;
 }
 #endif
@@ -3145,11 +3233,10 @@ bool Database::LoadDoorData(LinkedList<Door_Struct*>* door_list, char* zonename)
 			door->opentype = atoi(row[5]);
 			door->doorid = (uint8)atoi(row[6]);
 			door->triggerID = atoi(row[7]);
-			//door->triggerType = atoi(row[8]);
+			door->triggerType = atoi(row[8]);
 			door->parameter = atoi(row[9]);
 			door->incline = (float)atof(row[10]);
-			//door->doorIsOpen = atoi(row[11]);
-			door->doorIsOpen = 1;
+			door->doorIsOpen = atoi(row[11]);
 			//Yeahlight: Trap type doors need inverted set to 1 to work properly
 			if(door->opentype >= 115)
 				door->inverted = 1;
