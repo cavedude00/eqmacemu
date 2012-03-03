@@ -4,12 +4,20 @@
 
 void Client::ProcessOP_Beg(APPLAYER* pApp)
 {
-	if(pApp->size != sizeof(Beg_Struct))
+/*	if(pApp->size != sizeof(Beg_Struct))
 	{
 		cout << "Wrong size on OP_Beg. Got: " << pApp->size << ", Expected: " << sizeof(Beg_Struct) << endl;
 		return;
+	}*
+	if(pApp->size = sizeof(Beg_Struct))
+	{
+		Beg_Struct* beg_info = (Beg_Struct*)pApp->pBuffer;
+		Message(BLACK,"Begging makes zone a sad panda :( (Our struct is wrong)");
+		beg_info->success = 0;
+		QueuePacket(pApp);
 	}
-
+	else 
+	{
 	//Yeahlight: Purge client's invisibility
 	CancelAllInvisibility();
 	
@@ -153,4 +161,5 @@ void Client::ProcessOP_Beg(APPLAYER* pApp)
 	}
 	
 	QueuePacket(pApp);
+}
 }

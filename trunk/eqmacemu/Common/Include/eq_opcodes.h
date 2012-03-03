@@ -142,6 +142,7 @@
 #define OP_Track		   0x8441 //cavedude: ShowEQ 4.3.4.
 #define OP_Sneak           0x8541
 #define OP_Hide            0x8641
+#define OP_Beg			   0x2541
 #define OP_SenseTraps      0x8841
 #define OP_WearChange      0x9240
 #define OP_BindWound      0x9340 //Baron-Sprite: Bind Wound.
@@ -250,7 +251,7 @@
 #define OP_ENVDAMAGE2		0x1e40
 #define OP_Report			0xbd41
 
-#define OP_AAPoints		 0x1522 //ShowEQ 4.3.4
+//#define OP_AAPoints		 0x1522 //ShowEQ 4.3.4
 #define OP_UpdateAA      0x1442
 #define OP_RespondAA     0x1542
 #define OP_SendAAStats   0x2342
@@ -270,37 +271,38 @@
 #define OP_SenseTrap    0x8841
 
 // Unknowns: Some of these we may have above under a different name, or may be in SEQ source. Just trying to get us to copile atm.
-#define OP_Beg				0x0000
-#define OP_DropItem			0x0000
-#define OP_PickupItem		0x0000
-#define OP_SplitMoney		0x0000
+#define OP_DropItem			0x3540
+#define OP_PickupItem		0x3620
+#define OP_SplitMoney		0x3141
 #define OP_BackSlashTarget	0x0000
 #define OP_BugReport		0x0000
-#define OP_Fishing			0x0000
-#define OP_MBRetrieveMessages 0x0000
-#define OP_MBPostMessage	0x0000
-#define OP_MBEraseMessage	0x0000
-#define OP_MBRetrieveMessage 0x0000
-#define OP_ClientError		0x0000
-#define OP_ApplyPoison		0x0000
-#define OP_PlayerDeath		0x0000
-#define OP_PlayerSave		0x0000
-#define OP_PlayerSave2		0x0000
-#define OP_ItemMissing		0x0000
-#define OP_CleanStation		0x0000
-#define OP_QuestCompletedMoney		0x0000
-#define OP_StationItem		0x0000
-#define OP_PetitionClientUpdate		0x0000
-#define OP_InitiateConsume		0x0000
+#define OP_Fishing			0x8f41
+#define OP_MBRetrieveMessages			0x0841		// Comment: Player clicks on a Message Board or on a category GENERAL/Sales etc (Harakiri)
+#define OP_MBRetrieveMessage			0x0941		// Comment: Player right clicks on a specific message (Harakiri)
+#define OP_MBSendMessageToClient		0x0a41		// Comment: Send 1 Message each time to Client for Message Board Message List (Harakiri)
+#define OP_MBMessageDetail				0x0b41		// Comment: Server signals that message detail was sent, now open detail popup (Harakiri)
+#define OP_MBPostMessage				0x0c41		// Comment: Client sents a post request for a messsage (Harakiri)
+#define OP_MBEraseMessage				0x0d41		// Comment: Client sents a delete request for a messsage (Harakiri)
+#define OP_MBDataSent_OpenMessageBoard	0x0e41		// Comment: Signal the client that all available messages have been sent or a erase/post request was successful, show now the message board
+#define OP_ClientError		0x4741
+#define OP_ApplyPoison		0xba41
+#define OP_PlayerDeath		0x2941
+#define OP_PlayerSave		0x5441
+#define OP_PlayerSave2		0x5541
+#define OP_ItemMissing		0x2F41
+#define OP_CleanStation		0x0542
+#define OP_TeleportPC				0x4D41
+#define OP_QuestCompletedMoney		0x8040
+#define OP_StationItem		0xfb40
+#define OP_PetitionClientUpdate		0x0f40
+#define OP_InitiateConsume		0x9041
 #define OP_SplitResponse	0x0000
-#define OP_SpawnProjectile	0x0000
-#define OP_TradeCoins		0x0000
-#define OP_MBSendMessageToClient		0x0000
-#define OP_MBDataSent_OpenMessageBoard		0x0000
-#define OP_MBMessageDetail		0x0000
-#define OP_ConsentResponse	0x0000
-#define OP_CraftingStation	0x1000 // Wrong just using so Client_Process compiles.
-#define OP_PoisonComplete	0x0000
+#define OP_SpawnProjectile	0x4540
+#define OP_TradeCoins		0xe440
+#define OP_ConsentRequest	0xb740
+#define OP_ConsentResponse	0xb741
+#define OP_CraftingStation	0xd740
+#define OP_PoisonComplete	0xba41
 
 #define SUB_ChangeChar 00000
 

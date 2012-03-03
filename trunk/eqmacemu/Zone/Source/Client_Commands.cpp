@@ -536,7 +536,7 @@ void command_help(Client *c, const Seperator *sep)
 void command_goto(Client *c, const Seperator *sep)
 {
 		if (sep->arg[1][0] == 0 && c->GetTarget() != 0) {
-			c->MovePC(0, c->GetTarget()->GetY(), c->GetTarget()->GetX(), c->GetTarget()->GetZ());
+			c->MovePC(0, c->GetTarget()->GetX(), c->GetTarget()->GetY(), c->GetTarget()->GetZ());
 		}
 		else if (!(sep->IsNumber(1) && sep->IsNumber(2) && sep->IsNumber(3))) {
 			c->Message(BLACK, "Usage: #goto [x y z].");
@@ -1068,6 +1068,7 @@ void command_teleport(Client *c, const Seperator *sep)
 			c->Message(BLACK, "Teleporting you to zone name = %s, x = %f, y = %f, z = %f", sep->arg[1], x, y, z);
 
 			c->MovePC(sep->arg[1], x, y, z,heading);
+			//c->TeleportPC(sep->arg[1], x, y, z,heading);
 		}
 
 }

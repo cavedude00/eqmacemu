@@ -3070,7 +3070,7 @@ APPLAYER* Client::CreateTimeOfDayPacket(int8 Hour, int8 Minute, int8 Day, int8 M
 
 void Client::Handle_Connect5GDoors()
 {
-	uchar buffer1[sizeof(Door_Struct) - 40];
+	uchar buffer1[sizeof(Door_Struct) - 41];
 	uchar buffer2[7000];
 	int16 length = 0;
 	int16 qty = 0;
@@ -3085,8 +3085,8 @@ void Client::Handle_Connect5GDoors()
 			if (iterator.GetData()->doorid != 0)
 			{
 			Door_Struct* nd = (Door_Struct*)buffer1;
-			memset(nd,0,sizeof(Door_Struct) - 40);
-			
+
+			memset(nd,0,sizeof(Door_Struct) - 41);
 			nd->doorid = iterator.GetData()->doorid;
 			memcpy(nd->name,iterator.GetData()->name,16);
 			nd->opentype = iterator.GetData()->opentype;
@@ -3094,6 +3094,10 @@ void Client::Handle_Connect5GDoors()
 			nd->yPos = iterator.GetData()->yPos;
 			nd->zPos = iterator.GetData()->zPos;
 			nd->heading = iterator.GetData()->heading;
+			nd->incline = iterator.GetData()->incline;
+			nd->doorIsOpen = iterator.GetData()->doorIsOpen;
+			nd->inverted = iterator.GetData()->inverted;
+			nd->parameter = iterator.GetData()->parameter;
 
 			memcpy(buffer2+length,buffer1,44);
 			length = length + 44;
@@ -3125,40 +3129,6 @@ void Client::Handle_Connect5GDoors()
 
 		//return;
 }
-
-/*void Client::Handle_Connect5GDoors()
-{
-	EQC::Common::PrintF(CP_ZONESERVER, "Sending doors one at a time.\n");
-	LinkedListIterator<Door_Struct*> iterator(zone->door_list);
-
-	iterator.Reset();
-
-	while(iterator.MoreElements())	
-	{
-		Door_Struct* nd = iterator.GetData();
-
-			nd->doorid = iterator.GetData()->doorid;
-			memcpy(nd->name,iterator.GetData()->name,16);
-			nd->opentype = iterator.GetData()->opentype;
-			nd->xPos = iterator.GetData()->xPos;
-			nd->yPos = iterator.GetData()->yPos;
-			nd->zPos = iterator.GetData()->zPos;
-			nd->heading = iterator.GetData()->heading;
-
-		//Yeahlight: TODO: Remove the excess, serverside data from the door struct
-		APPLAYER* outapp = new APPLAYER(OP_SpawnDoor, sizeof(Door_Struct) - 40);
-		memcpy(outapp->pBuffer, nd, sizeof(Door_Struct) - 40);
-
-		QueuePacket(outapp);
-
-		safe_delete(outapp);//delete outapp;
-
-		iterator.Advance();
-		//Yeahlight: Zone freeze debug
-		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
-			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
-	}
-}*/
 
 void Client::Handle_Connect5Objects()
 {
@@ -3703,6 +3673,73 @@ void Client::CreateZoneLineNode(char* zoneName, char* connectingZoneName, int16 
 }
 
 //o--------------------------------------------------------------
+//| TeleportPC; Harakiri, September 16, 2009
+//o--------------------------------------------------------------
+//| Teleports the player, the client automatically issues a changezone
+//| request if the player is not already in the zone
+//| when the player is already in the zone, the client automatically 
+//| moves the player
+//| This method should now used for all moving/zoning EXCEPT translocate
+//| The teleportPC function in the game client at offset 00495996
+//| will call the same function as zonePC at offset 004DC1B5
+//| when the player is not already in the zone
+//| note: for negative x y the client always adds +1 to the coords when
+//| moving in the same zone
+//o--------------------------------------------------------------
+void Client::TeleportPC(char* zonename, float x, float y, float z, float heading)
+{	
+	EQC::Common::Log(EQCLog::Debug,CP_CLIENT,"Client::TeleportPC(zone name = %s, x = %f, y = %f, z = %f, heading = %f)", zonename, x, y, z,heading);
+	APPLAYER* outapp = new APPLAYER(OP_TeleportPC, sizeof(TeleportPC_Struct));	
+	if(outapp->size != sizeof(TeleportPC_Struct))
+	{
+		cout << "Wrong size on OP_TeleportPC. Got: " << outapp->size << ", Expected: " << sizeof(TeleportPC_Struct) << endl;
+	}
+	// if not in this zone, memorize coords, client will issue a ProcessOP_ZoneChange shortly
+	if(strcmp(zone->GetShortName(), zonename) != 0)
+	{
+		this->usingSoftCodedZoneLine = true;
+		this->isZoning = true;
+		this->zoningX = (sint32)x;
+		this->zoningY = (sint32)y;
+		this->zoningZ = (sint32)z;
+		this->tempHeading = (int8)heading;
+	// reset
+	} else {	
+		this->isZoningZP = false;
+		this->isZoning = false;
+		this->usingSoftCodedZoneLine = false;
+	}
+	
+	
+
+	TeleportPC_Struct* tls = (TeleportPC_Struct*)outapp->pBuffer;
+	memset(outapp->pBuffer, 0, sizeof(TeleportPC_Struct));
+	strcpy(tls->zone, zonename);			
+	tls->xPos = x;
+	tls->yPos = y;	
+	
+	// Harakiri - the client does not sometimes like going to 0 z at a specific point in a zone
+	// example in qeynos2 standing infront of the gates and going to 0 0 0 will teleport to a random location sometimes
+	// the closer you walk to 0 0 0 tho, teleport 0 0 0 will always work
+	// however, i figured if z is not 0, like a small value, it will always work
+	// translocate does not have this issue tho, only teleport
+	if(z==0) {
+		// workaround
+		tls->zPos = 0.1f;
+	} else {
+		tls->zPos = z;
+	}
+
+	if(heading!=0) {
+		tls->heading = heading*2; // Harakiri client will divide this by 2
+	}
+
+	QueuePacket(outapp);
+	safe_delete(outapp);
+	
+}
+
+//o--------------------------------------------------------------
 //| TranslocatePC; Harakiri, September 16, 2009
 //o--------------------------------------------------------------
 //| Difference to TeleportPC, 
@@ -3766,6 +3803,7 @@ void Client::ZonePC(char* zonename, float x, float y, float z)
 
 	// Harakiri Client will automatically do local movepc if the client is already in the target zone
 	MovePC(zonename,x,y,z);
+	//TeleportPC(zonename,x,y,z);
 
 	CAST_CLIENT_DEBUG_PTR(this)->Log(CP_UPDATES, "Client::ZonePC(zone name = %s, x = %f, y = %f, z = %f)", zonename, x, y, z);
 }
