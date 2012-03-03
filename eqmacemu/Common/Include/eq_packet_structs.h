@@ -637,7 +637,7 @@ struct Beg_Struct
 	int8	skill;		// The player's begging skill level.
 	int8	success;	// -1 = request | 0 = failure | 1 = plat | 2 = gold | 3 = silver | 4 = copper
 	int16	unknown1;		// This is the time since player logged in.
-	int32	unknown2;		// The number of coins.  Whatever success is set to.
+	int32	coins;		// The number of coins.  Whatever success is set to.
 	int8	unknown3[6];	// Not sure.  Maybe we'll find out one day.
 };
 

@@ -8,7 +8,7 @@ void Client::ProcessOP_Beg(APPLAYER* pApp)
 	{
 		cout << "Wrong size on OP_Beg. Got: " << pApp->size << ", Expected: " << sizeof(Beg_Struct) << endl;
 		return;
-	}*
+	}*/
 	if(pApp->size = sizeof(Beg_Struct))
 	{
 		Beg_Struct* beg_info = (Beg_Struct*)pApp->pBuffer;
