@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClCompile Include="Source\DLLMain.cpp" />
     <ClCompile Include="Source\SharedMemory.cpp" />
+    <ClCompile Include="Source\SharedMemoryDoors.cpp" />
     <ClCompile Include="Source\SharedMemoryItems.cpp" />
     <ClCompile Include="..\Common\Source\database.cpp" />
     <ClCompile Include="..\Common\Source\DatabaseHandler.cpp" />

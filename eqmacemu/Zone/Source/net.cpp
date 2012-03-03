@@ -124,6 +124,8 @@ int main(int argc, char** argv)
 #else
 	EQC::Common::PrintF(CP_ZONESERVER, "Loading items...\n");
 	Database::Instance()->LoadItems();
+	EQC::Common::PrintF(CP_ZONESERVER, "Loading doors...\n");
+	Database::Instance()->LoadDoors();
 #endif
 
 

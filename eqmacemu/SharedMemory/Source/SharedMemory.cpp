@@ -80,6 +80,7 @@ bool SharedMemory::Load()
 	if (firstInit) {
 		memset(lpvSharedMem, 0, SHMEMSIZE);
 		LoadItems();
+		LoadDoors();
 	}
 
 	if (isLoaded())
@@ -119,6 +120,7 @@ void SharedMemory::Unload()
 	if (isLoaded()) return;
 
 	UnloadItems();
+	UnloadDoors();
 	// Unmap shared memory from the process's address space
 	UnmapViewOfFile(lpvSharedMem); 
 	lpvSharedMem = NULL;

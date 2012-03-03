@@ -50,6 +50,9 @@
     <ClCompile Include="..\Common\Source\Mutex.cpp">
       <Filter>Common Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SharedMemoryDoors.cpp">
+      <Filter>SharedMem Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\SharedMemory.hpp">
