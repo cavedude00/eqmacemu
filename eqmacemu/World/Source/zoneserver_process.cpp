@@ -197,7 +197,7 @@ void ZoneServer::ProcessServerOP_ZoneShutdown(ServerPacket* pack)
 {
 	ServerZoneStateChange_struct* s = (ServerZoneStateChange_struct *) pack->pBuffer;
 	ZoneServer* zs = 0;
-	char* zonename;
+	char* zonename = "";
 	strcpy(zonename, Database::Instance()->GetZoneName(s->zoneid));
 	if (s->ZoneServerID != 0)
 	{
