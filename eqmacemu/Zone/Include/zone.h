@@ -63,8 +63,6 @@ struct PatrollingNode
 	int16	pause;
 };
 
-extern EntityList entity_list;
-
 enum WeatherTypesEnum : int8
 {
 	WEATHER_OFF = 0,
@@ -72,6 +70,8 @@ enum WeatherTypesEnum : int8
 	WEATHER_SNOW = 2,
 	WEATHER_MANUAL = 3
 };
+
+extern EntityList entity_list;
 
 class Zone
 {
@@ -93,6 +93,8 @@ public:
 	float	safe_x() { return psafe_x; }
 	float	safe_y() { return psafe_y; }
 	float	safe_z() { return psafe_z; }
+
+	void	LoadZoneDoors(const char* zone);
 
 	int32	CountSpawn2();
 	ZonePoint* GetClosestZonePoint(float x, float y, float z, char* to_name);

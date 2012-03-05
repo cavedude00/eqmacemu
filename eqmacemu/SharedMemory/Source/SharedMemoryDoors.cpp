@@ -32,7 +32,7 @@ bool SharedMemory::LoadDoors(){
 			memset(&getPtr()->door_array, 0, sizeof(getPtr()->door_array));
 			mysql_free_result(result);
 
-			MakeAnyLenString(&query, "SELECT name,pos_x,pos_y,pos_z,heading,opentype,doorid,triggerdoor,triggertype,door_param,incline,doorisopen,invert_state,lockpick,keyitem,dest_zone,dest_x,dest_y,dest_z,dest_heading,id FROM doors");
+			MakeAnyLenString(&query, "SELECT name,pos_x,pos_y,pos_z,heading,opentype,doorid,triggerdoor,triggertype,door_param,incline,doorisopen,invert_state,lockpick,keyitem,dest_zone,dest_x,dest_y,dest_z,dest_heading,id,zone FROM doors");
 
 			if (Database::Instance()->RunQuery(query, strlen(query), errbuf, &result))
 			{
@@ -41,27 +41,31 @@ bool SharedMemory::LoadDoors(){
 				{
 					
 					id = atoi(row[20]);
-					memset(&getPtr()->door_array[id], 0, sizeof(Door_Struct));
+					memset(&getPtr()->door_array[id], 0, sizeof(Door));
 					strcpy(getPtr()->door_array[id].name, row[0]);
+					strcpy(getPtr()->door_array[id].zoneName, row[21]);
+					getPtr()->door_array[id].db_id = atoi(row[20]);
 					getPtr()->door_array[id].xPos = (float)atof(row[1]);
 					getPtr()->door_array[id].yPos = (float)atof(row[2]);
 					getPtr()->door_array[id].zPos = (float)atof(row[3]);
 					getPtr()->door_array[id].heading = (float)atof(row[4]);
 					getPtr()->door_array[id].opentype = atoi(row[5]);
-					getPtr()->door_array[id].doorid = (uint8)atoi(row[6]);
+					getPtr()->door_array[id].doorid = atoi(row[6]);
 					getPtr()->door_array[id].triggerID = atoi(row[7]);
 					getPtr()->door_array[id].triggerType = atoi(row[8]);
 					getPtr()->door_array[id].parameter = atoi(row[9]);
 					getPtr()->door_array[id].incline = (float)atof(row[10]);
 					getPtr()->door_array[id].doorIsOpen = atoi(row[11]);
-					getPtr()->door_array[id].inverted = atoi(row[12]);
+					getPtr()->door_array[id].inverted = (uint8)atoi(row[12]);
 					getPtr()->door_array[id].lockpick = atoi(row[13]);
 					getPtr()->door_array[id].keyRequired = atoi(row[14]);
-					strcpy(getPtr()->door_array[id].zoneName, row[15]);
+					strcpy(getPtr()->door_array[id].dest_zone, row[15]);
 					getPtr()->door_array[id].destX = (float)atof(row[16]);
 					getPtr()->door_array[id].destY = (float)atof(row[17]);
 					getPtr()->door_array[id].destZ = (float)atof(row[18]);
 					getPtr()->door_array[id].destHeading = (float)atof(row[19]);
+					getPtr()->door_array[id].entity_id = 0;
+					getPtr()->door_array[id].pLastClick = 0;
 
 					Sleep(0);
 				}
@@ -89,7 +93,7 @@ bool SharedMemory::LoadDoors(){
 void SharedMemory::UnloadDoors() {
 }
 
-Door_Struct* SharedMemory::getDoor(uint32 id) {
+Door* SharedMemory::getDoor(uint32 id) {
 	if (isLoaded() && id < SharedMemory::getMaxDoor())
 		return &getPtr()->door_array[id];
 	else

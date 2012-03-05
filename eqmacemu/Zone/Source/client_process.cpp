@@ -39,6 +39,7 @@
 #include "itemtypes.h"
 #include "projectile.h"
 #include "Item.h"
+#include "doors.h"
 
 using namespace std;
 using namespace EQC::Zone;
@@ -4824,169 +4825,38 @@ void Client::ProcessOP_MBRetrieveMessage(APPLAYER* pApp) {
 //o--------------------------------------------------------------
 void Client::ProcessOP_ClickDoor(APPLAYER* pApp)
 {
+	if(pApp->size != sizeof(ClickDoor_Struct)){
+		  cout << "Wrong size on OP_ClickDoor. Got: " << pApp->size << ", Expected: " << sizeof(ClickDoor_Struct) << endl;
+		  DumpPacket(pApp);
+	  }
+
 	bool debugFlag = true;
 
-	LinkedListIterator<Door_Struct*> iterator(zone->door_list);
-
-	iterator.Reset();
-
-	while(iterator.MoreElements())	
-	{
-		Door_Struct* door = iterator.GetData();
-		ClickDoor_Struct* clicked = (ClickDoor_Struct*) pApp->pBuffer;
-		if(!clicked->doorid)
+	 ClickDoor_Struct* cd = (ClickDoor_Struct*)pApp->pBuffer;
+      Doors* currentdoor = entity_list.FindDoor(cd->doorid);
+		if(!currentdoor)
 		{
-		Message(RED,"Unable to find door, please notify a GM (DoorID: %i).",door->doorid);
+			Message(RED,"Unable to find door, please notify a GM.");
+			if(debugFlag && GetDebugMe())
+				Message(WHITE,"Debug: You (%i) clicked a door: #%i, parameter: %i. Door was last clicked at %i", cd->playerid, cd->doorid, 0, 0);
+				DumpPacket(pApp);
+			return;
+		}
+		if(currentdoor->GetDoorID() == cd->doorid)
+		{
+			//currentdoor->HandleClick(this, cd->keyinhand);
+			currentdoor->HandleClick(this, cd->keyid);
+		}
+		else
+		{
+		Message(RED,"Unable to find door, please notify a GM (DoorID: %i).",currentdoor->GetDoorID());
 		if(debugFlag && GetDebugMe())
-				Message(WHITE,"Debug: You (%i) clicked a door: #%i, parameter: %i. Door was last clicked at %i", clicked->playerid, clicked->doorid, door->parameter, door->pLastClick);
+			Message(WHITE,"Debug: You (%i) clicked a door: #%i, parameter: %i. Door was last clicked at %i", cd->playerid, cd->doorid, 0, 0);
+			DumpPacket(pApp);
 		return;
 		}
-		if(door->doorid == clicked->doorid) 
-		{
-			//Yeahlight: If the door has not been touched in twelve seconds, then return it to the closed state
-			if(time(0) - door->pLastClick >= 12)
-				door->doorIsOpen = false;
-			//Yeahlight: Record the time this door was touched
-			door->pLastClick = time(0);
-			if(debugFlag && GetDebugMe())
-				Message(WHITE,"Debug: You clicked a door: #%i, parameter: %i. Door was last clicked at %i", clicked->doorid, door->parameter, door->pLastClick);
-			APPLAYER* outapp = new APPLAYER(OP_OpenDoor, sizeof(DoorOpen_Struct));
-			APPLAYER* outapp2 = new APPLAYER(OP_OpenDoor, sizeof(DoorOpen_Struct));
-			DoorOpen_Struct* od = (DoorOpen_Struct*)outapp->pBuffer;
-			//Yeahlight: Door is a trigger for another door.
-			//Yeahlight: TODO: Are any triggers "locked"?
-			if(door->triggerID > 0)
-			{
-				DoorOpen_Struct* od2 = (DoorOpen_Struct*)outapp2->pBuffer;
-				od2->doorid = door->triggerID;
-				od2->action = 0x02;
-				entity_list.QueueClients(this, outapp2, false);
-			}
-			//Yeahlight: Door is locked
-			if(door->keyRequired > 0 || door->lockpick > 0)
-			{
-				//Yeahlight: Compare required key to item on cursor
-				if(clicked->keyinhand == door->keyRequired)
-				{
-					//Yeahlight: Door is a teleporter
-					if(strcmp(door->zoneName, "NONE") != 0)
-					{
-						if(debugFlag && GetDebugMe())
-							Message(LIGHTEN_BLUE, "Debug: You touched a locked TP object: %s", door->zoneName);
-						if(strcmp(zone->GetShortName(), door->zoneName) != 0)
-						{
-							//Yeahlight: Locked door TPs player to different zone
-							MovePC(door->zoneName, door->destX, door->destY, door->destZ);
-						}
-						else
-						{
-							//Yeahlight: Locked door TPs player to different location in same zone
-							MovePC(0, door->destX, door->destY, door->destZ);
-						}
-					}
-					//Yeahlight Door is a legit "door" and needs to be opened for players
-					else
-					{
-						if(!door->doorIsOpen == 1)
-						{
-							Message(DARK_BLUE,"The door swings open!");
-							od->doorid = door->doorid;
-							od->action = 0x02;
-							door->doorIsOpen = 1;
-						}
-						else
-						{
-							od->doorid = door->doorid;
-							od->action = 0x03;
-							door->doorIsOpen = 0;
-						}
-						entity_list.QueueClients(this, outapp, false);
-					}
-				//Yeahlight: Lockpick attempt
-				}else if(door->lockpick > 0 && clicked->keyinhand == 13010){
-					if(PickLock_timer->Check())
-					{
-						//Yeahlight: 10 seconds is the lockout on the "Pick Lock" skill button
-						PickLock_timer->Start(10000);
-						if(GetSkill(PICK_LOCK) >= door->lockpick)
-						{
-							if(!door->doorIsOpen == 1){
-								Message(DARK_BLUE,"The door swings open!");
-								od->doorid = door->doorid;
-								od->action = 0x02;
-								door->doorIsOpen = 1;
-							}
-							else
-							{
-								od->doorid = door->doorid;
-								od->action = 0x03;
-								door->doorIsOpen = 0;
-							}
-							entity_list.QueueClients(this, outapp, false);
-							//Yeahlight: TODO: Research the range for which skilling up is possible. Set at door trivial + 15 for now
-							if((GetSkill(PICK_LOCK) - door->lockpick) <= 15)
-								CheckAddSkill(PICK_LOCK, 10);
-						}
-						else
-						{
-							Message(DARK_BLUE,"You were unable to pick this lock");
-						}
-					}
-				}
-				else
-				{
-					Message(RED, "You do not have the required key in hand to open this door");
-					if(debugFlag && GetDebugMe())
-					{
-						Message(LIGHTEN_BLUE, "Debug: Key Required: (%i)",door->keyRequired);
-						if(door->lockpick > 0)
-							Message(LIGHTEN_BLUE, "Debug: This door may be picked (%i)",door->lockpick);
-					}
-				}
-			}
-			//Yeahlight: Door is a teleporter
-			else if(strcmp(door->zoneName, "NONE") != 0)
-			{
-				if(debugFlag && GetDebugMe())
-					Message(LIGHTEN_BLUE, "Debug: You touched a TP object: %s", door->zoneName);
-				if(strcmp(zone->GetShortName(), door->zoneName) != 0)
-				{
-					//Yeahlight: Door TPs player to different zone
-					MovePC(door->zoneName, door->destX, door->destY, door->destZ);
-				}
-				else
-				{
-					//Yeahlight: Door TPs player to different location in same zone
-					MovePC(0, door->destX, door->destY, door->destZ);
-				}
-			}
-			//Yeahlight: Normal door, open for all other players
-			else
-			{
-				if(!door->doorIsOpen == 1)
-				{
-					od->doorid = door->doorid;
-					od->action = 0x02;
-					door->doorIsOpen = 1;
-				}
-				else
-				{
-					od->doorid = door->doorid;
-					od->action = 0x03;
-					door->doorIsOpen = 0;
-				}
-				entity_list.QueueClients(this, outapp, false);
-			}
-			safe_delete(outapp);//delete outapp;
-			safe_delete(outapp2);//delete outapp2;
-			break;
-		}
-		iterator.Advance();
-		//Yeahlight: Zone freeze debug
-		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
-			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
-	}
 }
+
 
 //o--------------------------------------------------------------
 //| ProcessOP_DropCoin; Yeahlight, Jan 04, 2009
@@ -6169,10 +6039,9 @@ void Client::Process_ClientConnection3(APPLAYER *app)
 	{
 		QueuePacket(app);
 	}
-	/*else if(app->opcode == 0x4841)
-	{
+	else if(app->opcode == 0x2841) {
 		QueuePacket(app);
-	}*/
+	}
 	else {
 		cout << "Unexpected packet during CLIENT_CONNECTING3: OpCode: 0x" << hex << setw(4) << setfill('0') << app->opcode << dec << ", size: " << app->size << endl;
 		DumpPacket(app);
@@ -6210,7 +6079,14 @@ void Client::Process_ClientConnection4(APPLAYER *app)
 		entity_list.SendZoneSpawnsBulk(this);
 
 		// Doors and objects
-		this->Handle_Connect5GDoors();
+		if (entity_list.MakeDoorSpawnPacket(outapp)) 
+		{
+			QueuePacket(outapp);
+		}
+		else
+		{
+			EQC::Common::PrintF(CP_CLIENT, "Doors failed to load.");
+		}
 		this->Handle_Connect5Objects();
 
 		client_state = CLIENT_CONNECTING5;

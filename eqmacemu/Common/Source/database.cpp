@@ -533,45 +533,80 @@ void Database::GetCharSelectInfo(int32 account_id, CharacterSelect_Struct* cs, C
 				cs->gender[char_num] = pp->gender;
 				cs->face[char_num] = pp->face;
 				cs->zone[char_num] = LoadZoneID(row[2]);
+				cs->beard[char_num] = pp->beard_t;
+				cs->beardcolor[char_num] = pp->beardcolor;
+				cs->eyecolor1[char_num] = pp->eyecolor1;
+				cs->eyecolor2[char_num]	= pp->eyecolor2;
+				cs->deity[char_num] = pp->deity;
+				cs->hair[char_num] = pp->hairstyle;
+				cs->haircolor[char_num] = pp->haircolor;
 				
-				// Coder_01 - REPLACE with item info when available.
-			/*	Item_Struct* item = 0;
-				item = GetItem(pp->inventory[2]);
+				
+				const Item_Struct* item = GetItem(pp->inventory[2]);
+				//				LoadAItem(pp->inventory[2],&cs->equip[char_num][0],&cs->cs_colors[char_num][0]);
 				if (item != 0) {
 					cs->equip[char_num][0] = item->common.material;
 					cs->cs_colors[char_num][0] = item->common.color;
 				}
+				//delete item;
 				item = GetItem(pp->inventory[17]);
+				//LoadAItem(pp->inventory[17],&cs->equip[char_num][1],&cs->cs_colors[char_num][1]);
 				if (item != 0) {
 					cs->equip[char_num][1] = item->common.material;
 					cs->cs_colors[char_num][1] = item->common.color;
 				}
+				//delete item;
 				item = GetItem(pp->inventory[7]);
+				//LoadAItem(pp->inventory[7],&cs->equip[char_num][2],&cs->cs_colors[char_num][2]);
 				if (item != 0) {
 					cs->equip[char_num][2] = item->common.material;
 					cs->cs_colors[char_num][2] = item->common.color;
 				}
+				//delete item;
 				item = GetItem(pp->inventory[10]);
+				//LoadAItem(pp->inventory[10],&cs->equip[char_num][3],&cs->cs_colors[char_num][3]);
 				if (item != 0) {
+
 					cs->equip[char_num][3] = item->common.material;
 					cs->cs_colors[char_num][3] = item->common.color;
 				}
+				//delete item;
 				item = GetItem(pp->inventory[12]);
+				//LoadAItem(pp->inventory[12],&cs->equip[char_num][4],&cs->cs_colors[char_num][4]);
 				if (item != 0) {
 					cs->equip[char_num][4] = item->common.material;
 					cs->cs_colors[char_num][4] = item->common.color;
 				}
+				//delete item;
 				item = GetItem(pp->inventory[18]);
+				//LoadAItem(pp->inventory[18],&cs->equip[char_num][5],&cs->cs_colors[char_num][5]);
 				if (item != 0) {
 					cs->equip[char_num][5] = item->common.material;
 					cs->cs_colors[char_num][5] = item->common.color;
 				}
+				//delete item;
 				item = GetItem(pp->inventory[19]);
+				//LoadAItem(pp->inventory[19],&cs->equip[char_num][6],&cs->cs_colors[char_num][6]);
 				if (item != 0) {
 					cs->equip[char_num][6] = item->common.material;
 					cs->cs_colors[char_num][6] = item->common.color;
-				}*/
-
+				}
+				//delete item;
+				item = GetItem(pp->inventory[13]);
+				//LoadAItem(pp->inventory[13],&cs->equip[char_num][7],&cs->cs_colors[char_num][7]); // Mainhand
+				if (item != 0) {
+					cs->equip[char_num][7] = item->common.material;
+					cs->cs_colors[char_num][7] = item->common.color;
+				}
+				//delete item;
+				item = GetItem(pp->inventory[14]);
+				//LoadAItem(pp->inventory[14],&cs->equip[char_num][8],&cs->cs_colors[char_num][8]); // Offhand
+				if (item != 0) {
+					cs->equip[char_num][8] = item->common.material;
+					cs->cs_colors[char_num][8] = item->common.color;
+				}
+				cs->melee[char_num][0] = pp->inventory[13];
+				cs->melee[char_num][1] = pp->inventory[14];
 				weapons->righthand[char_num]=pp->inventory[13];
 				weapons->lefthand[char_num]=pp->inventory[14];
 
@@ -1632,7 +1667,7 @@ bool Database::LoadDoors(){
 		if (row != 0 && row[0] > 0)
 		{ 
 			max_door = atoi(row[0]);
-			door_array = new Door_Struct*[max_door+1];
+			door_array = new Door*[max_door+1];
 			for(int i=0; i<max_door; i++)
 			{
 				door_array[i] = 0;
@@ -1646,7 +1681,7 @@ bool Database::LoadDoors(){
 				safe_delete_array(query);//delete[] query;
 				while(row = mysql_fetch_row(result))
 				{
-					door_array[atoi(row[20])] = new Door_Struct;
+					door_array[atoi(row[20])] = new Door;
 					memcpy(door_array[atoi(row[20])], row[20], sizeof(Door_Struct));
 					strcpy(door_array[atoi(row[20])]->name, row[0]);
 					door_array[atoi(row[20])]->xPos = (float)atof(row[1]);
@@ -2344,6 +2379,30 @@ Item_Struct* Database::GetItem(uint32 id)
 		return 0;
 	}
 }
+
+Door* Database::GetDoor(uint32 db_id) 
+{
+	if (SharedMemory::isLoaded() && db_id < SharedMemory::getMaxDoor())
+	{
+		return SharedMemory::getDoor(db_id);
+	}
+	else
+	{	
+		return 0;
+	}
+}
+
+uint32 Database::GetMaxDoor() 
+{
+	if (SharedMemory::isLoaded())
+	{
+		return SharedMemory::getMaxDoor();
+	}
+	else
+	{	
+		return 0;
+	}
+}
 #else
 Item_Struct* Database::GetItem(uint32 id)
 {
@@ -2353,6 +2412,28 @@ Item_Struct* Database::GetItem(uint32 id)
 	}
 	else
 	{
+		return 0;
+	}
+}
+Door* Database::GetDoor(uint32 db_id) 
+{
+	if (door_array && db_id <= max_door)
+	{
+		return door_array[db_id];
+	}
+	else
+	{
+		return 0;
+	}
+}
+uint32 Database::GetMaxDoor() 
+{
+	if (door_array)
+	{
+		return max_door;
+	}
+	else
+	{	
 		return 0;
 	}
 }
@@ -3208,102 +3289,6 @@ bool Database::GetNPCPrimaryFaction(int32 npc_id, int32* faction_id, sint32* val
 
 	return true;
 }*/
-
-bool Database::LoadDoorData(LinkedList<Door_Struct*>* door_list, char* zonename)
-{
-	char errbuf[MYSQL_ERRMSG_SIZE];
-	char* query = 0;
-	MYSQL_RES *result;
-	MYSQL_ROW row;
-
-	if(RunQuery(query, MakeAnyLenString(&query, "SELECT name,pos_x,pos_y,pos_z,heading,opentype,doorid,triggerdoor,triggertype,door_param,incline,doorisopen,invert_state,lockpick,keyitem,dest_zone,dest_x,dest_y,dest_z,dest_heading FROM doors WHERE zone = '%s'", zonename), errbuf, &result))
-	{
-		safe_delete_array(query);//delete[] query;
-
-		while(row = mysql_fetch_row(result))
-		{
-			Door_Struct* door = new Door_Struct;
-			memset(door, 0, sizeof(Door_Struct));
-			
-			strcpy(door->name, row[0]);
-			door->xPos = (float)atof(row[1]);
-			door->yPos = (float)atof(row[2]);
-			door->zPos = (float)atof(row[3]);
-			door->heading = (float)atof(row[4]);
-			door->opentype = atoi(row[5]);
-			door->doorid = (uint8)atoi(row[6]);
-			door->triggerID = atoi(row[7]);
-			door->triggerType = atoi(row[8]);
-			door->parameter = atoi(row[9]);
-			door->incline = (float)atof(row[10]);
-			door->doorIsOpen = atoi(row[11]);
-			//Yeahlight: Trap type doors need inverted set to 1 to work properly
-			if(door->opentype >= 115)
-				door->inverted = 1;
-			else
-			door->inverted = atoi(row[12]);
-			door->lockpick = atoi(row[13]);
-			door->keyRequired = atoi(row[14]);
-			strcpy(door->zoneName, row[15]);
-			door->destX = (float)atof(row[16]);
-			door->destY = (float)atof(row[17]);
-			door->destZ = (float)atof(row[18]);
-			door->destHeading = (float)atof(row[19]);
-
-			door_list->Insert(door);
-		}
-		mysql_free_result(result);
-		return true;
-	}
-	else 
-	{
-		cerr << "LoadDoorData failed with a bad query: '" << query << "' " << errbuf << endl;
-		safe_delete_array(query);//delete[] query;
-	}
-
-	//Yeahlight: Loops used to help find mystery door types
-	//int counter = 0;
-	//int counter2 = 0;
-	//for(int i = 170; i < 205; i++){
-	////for(int i = 35; i < 36; i++){
-	//	Door_Struct* door = new Door_Struct;
-	//	memset(door, 0, sizeof(Door_Struct));
-
-	//	strcpy(door->name, "");
-
-	//	//if(i == 40 || i == 45)
-	//	//	continue;
-
-	//	door->xPos = 548 - counter2 * 45;
-	//	door->yPos = 15 - counter * 45;
-	//	counter++;
-	//	if(counter == 5){
-	//		counter = 0;
-	//		counter2++;
-	//	}
-	//	door->zPos = 5;
-	//	door->heading = 0;
-	//	door->opentype = 53;
-	//	door->doorid = i+1;
-	//	door->triggerID = 0;
-	//	//door->triggerType = atoi(row[8]);
-	//	door->parameter = i;//atoi(row[9]);
-	//	door->incline = 0;		
-	//	door->doorIsOpen = 1;
-	//	//Yeahlight: Trap doors need inverted set to 1 to work properly
-	//	door->inverted = 1;
-	//	door->lockpick = 0;
-	//	door->keyRequired = 0;
-	//	strcpy(door->zoneName, "eastkarana");
-	//	door->destX = 0;
-	//	door->destY = 0;
-	//	door->destZ = 0;
-	//	door->destHeading = 0;
-
-	//	door_list->Insert(door);
-	//}
-	return false;
-}
 
 bool Database::LoadObjects(vector<Object_Struct*>* object_list, char* zonename)
 {

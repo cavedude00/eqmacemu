@@ -25,11 +25,15 @@ public:
 	Corpse* GetCorpseByID(int16 id);
 	void	ClearClientPetitionQueue();
 
+	Doors*	FindDoor(int8 door_id);
+	bool	MakeDoorSpawnPacket(APPLAYER* app);
+
 	void    AddClient(Client*);
 	void    AddNPC(NPC*, bool SendSpawnPacket = true);
 	int		GetNPCTypeCount(int NPCTypeID); // Kibanu - Added for spawn_limit checks
 	void	AddCorpse(Corpse* pc, int32 in_id = 0xFFFFFFFF);
 	void	AddObject(Object* obj, bool SendSpawnPacket);
+	void	AddDoor(Doors* door);
 	void	AddProjectile(Projectile* p);
 	void	Clear();
 
@@ -104,6 +108,7 @@ private:
 	int8	takenIDs[MAX_ENTITY_LIST_IDS];
 	LinkedList<Entity*> list;
 	int16 last_insert_id;
+
 };
 
 

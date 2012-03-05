@@ -132,6 +132,33 @@ struct DBPlayerCorpse_Struct {
 	ServerLootItem_Struct	items[0];
 };
 
+struct Door {
+int32	db_id;
+int8	doorid;
+char	zoneName[16];
+char	name[16];
+float	xPos;
+float	yPos;
+float	zPos;
+float	heading;
+int8	opentype;
+int16	lockpick;
+int16	keyRequired;
+int8	triggerID;
+int8	triggerType;
+bool	doorIsOpen;
+int32	pLastClick;
+uint8	inverted;
+int16	parameter;
+int32	entity_id;
+float	incline;
+char    dest_zone[16];
+float   destX;
+float   destY;
+float   destZ;
+float   destHeading;
+
+};
 
 #pragma pack()
 

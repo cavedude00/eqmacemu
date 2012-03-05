@@ -11,6 +11,8 @@
 #include "EQCUtils.hpp"
 #include "eq_packet_structs.h"
 #include "types.h"
+#include "../../zone/include/zonedump.h"
+
 using namespace std;
 
 const uint32	MAXITEMID = 33000;
@@ -24,7 +26,7 @@ public:
 
 	struct ShMemData_Struct {
 		Item_Struct item_array[MAXITEMID];
-		Door_Struct door_array[MAXDOORID];
+		Door		door_array[MAXDOORID];
 		uint32		max_item;
 		uint32		max_door;
 	};
@@ -34,7 +36,7 @@ public:
 	static void	Unload();
 	
 	static Item_Struct*	getItem(uint32 id);
-	static Door_Struct*	getDoor(uint32 id);
+	static Door*		getDoor(uint32 id);
 	static int			getMaxItem();
 	static int			getMaxDoor();
 

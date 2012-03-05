@@ -27,6 +27,7 @@
 #include "config.h"
 #include "groups.h"
 #include "object.h"
+#include "doors.h"
 #include "ZoneGuildManager.h"
 #include "projectile.h"
 
@@ -303,14 +304,16 @@ void EntityList::SendZoneSpawns(Client* client)
 
 void EntityList::Save()
 {
-	LinkedListIterator<Entity*> iterator(list);
+	LinkedListIterator<Entity*> iterator(list); //cavedude door class problems
 
 	iterator.Reset();
 	while(iterator.MoreElements())
 	{
+		if(iterator.GetData()->IsClient()){
 		iterator.GetData()->Save();
 		iterator.Advance();
-	}	
+		}
+	}
 }
 
 void EntityList::RemoveFromTargets(Mob* mob)
@@ -775,6 +778,9 @@ void EntityList::Process()
 				iterator.RemoveCurrent();
 			}
 			else if (iterator.GetData()->IsProjectile()){
+				iterator.RemoveCurrent();
+			}
+			else if (iterator.GetData()->IsDoor()){
 				iterator.RemoveCurrent();
 			}
 		}
@@ -1403,6 +1409,19 @@ void EntityList::AddObject(Object* obj, bool SendSpawnPacket) {
 	}
 }
 
+void EntityList::AddDoor(Doors* door)
+{
+	if(door != NULL)
+	{
+		door->SetID(GetFreeID());
+		list.Insert(door);
+	}
+	else
+	{
+		cout << "Error: NULL object passed to EntityList::AddDoor";
+	}
+}
+
 void EntityList::AddProjectile(Projectile* p)
 {
 	if(p != NULL)
@@ -1596,4 +1615,91 @@ Corpse* EntityList::GetCorpseByID(int16 id){
 		iterator.Advance();
 	}
 	return 0;
+}
+
+Doors* EntityList::FindDoor(int8 door_id)
+{
+	if (door_id == 0)
+		return 0;
+	LinkedListIterator<Entity*> iterator(list);
+	
+	iterator.Reset();
+	while(iterator.MoreElements())
+	{
+		if (iterator.GetData()->IsDoor())
+		{
+			if(iterator.GetData()->CastToDoors()->GetDoorID() == door_id)
+			{
+			return iterator.GetData()->CastToDoors();
+			}
+		}
+		iterator.Advance();
+	}
+	return 0;
+}
+
+bool EntityList::MakeDoorSpawnPacket(APPLAYER* app){
+	uchar buffer1[sizeof(Door_Struct)];
+	uchar buffer2[7000];
+	int16 length = 0;
+	int16 qty = 0;
+
+	LinkedListIterator<Entity*> iterator(list);
+
+	iterator.Reset();
+	while(iterator.MoreElements())
+	{
+		if(iterator.GetData()->IsDoor())
+		{
+			if (iterator.GetData()->CastToDoors() != 0)
+			{
+				if(iterator.GetData()->CastToDoors()->GetDoorID() != 0)
+				{
+				Door_Struct* nd = (Door_Struct*)buffer1;
+				memset(nd,0,sizeof(Door_Struct));
+			
+				nd->doorid = iterator.GetData()->CastToDoors()->GetDoorID();
+				memcpy(nd->name,iterator.GetData()->CastToDoors()->GetDoorName(),16);
+				nd->opentype = iterator.GetData()->CastToDoors()->GetOpenType();
+				nd->xPos = iterator.GetData()->CastToDoors()->GetX();
+				nd->yPos = iterator.GetData()->CastToDoors()->GetY();
+				nd->zPos = iterator.GetData()->CastToDoors()->GetZ();
+				nd->heading = iterator.GetData()->CastToDoors()->GetHeading();
+				nd->incline = iterator.GetData()->CastToDoors()->GetIncline();
+				nd->doorIsOpen = iterator.GetData()->CastToDoors()->IsDoorOpen();
+				nd->inverted = iterator.GetData()->CastToDoors()->GetInvertedState();
+				nd->parameter = iterator.GetData()->CastToDoors()->GetParameter();
+				nd->opentype = iterator.GetData()->CastToDoors()->GetOpenType();
+
+				memcpy(buffer2+length,buffer1,44);
+				length = length + 44;
+
+				qty++;
+				EQC::Common::PrintF(CP_ZONESERVER,"doorid %i name %s xPos %f yPos %f.",nd->doorid, nd->name, nd->xPos, nd->yPos);
+				}
+			}
+		}
+		iterator.Advance();
+	}
+		EQC::Common::PrintF(CP_ZONESERVER,"MakeDoorPacket() packet length:%i", length);
+
+		if (qty == 0)
+			return false;
+
+		APPLAYER *outapp;
+		outapp = new APPLAYER;
+		app->opcode = OP_SpawnDoor;
+		app->pBuffer = new uchar[7000];
+		length = DeflatePacket(buffer2,length,app->pBuffer+2,7000);
+		app->size = length+2;
+		DoorSpawns_Struct* ds = (DoorSpawns_Struct*)app->pBuffer;
+
+		ds->count = qty;
+		EQC::Common::PrintF(CP_ZONESERVER,"%i Doors successfully spawned.",qty);
+
+		//Yeahlight: Zone freeze debug
+		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
+			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
+
+		return true;
 }

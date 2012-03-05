@@ -27,6 +27,7 @@
 #include "petitions.h"
 #include "questmgr.h"
 #include "Client_Commands.h"
+#include "doors.h"
 
 #ifdef EMBPERL
 	#include "embparser.h"
@@ -274,9 +275,7 @@ bool Zone::Init() {
 		zone->thisZonesZoneLines[i]->keepZ = zone->zone_line_data.at(i)->keepZ;
 	}
 	EQC::Common::PrintF(CP_ZONESERVER, "Loading doors for '%s'\n", short_name);
-
-	if (!Database::Instance()->LoadDoorData(&door_list, short_name))
-		cout<<"DOOR load failed.\n";
+	zone->LoadZoneDoors(zone->GetShortName());
 
 	EQC::Common::PrintF(CP_ZONESERVER, "Loading objects...\n");
 
@@ -570,11 +569,11 @@ bool Database::PopulateZoneLists(char* zone_name, LinkedList<ZonePoint*>* zone_p
 		while(row = mysql_fetch_row(result))
 		{
 			ZonePoint* zp = new ZonePoint;
-			zp->x = atof(row[0]);
-			zp->y = atof(row[1]);
+			zp->x = atof(row[1]);
+			zp->y = atof(row[0]);
 			zp->z = atof(row[2]);
-			zp->target_x = atof(row[3]);
-			zp->target_y = atof(row[4]);
+			zp->target_x = atof(row[4]);
+			zp->target_y = atof(row[3]);
 			zp->target_z = atof(row[5]);
 			strncpy(zp->target_zone, row[6], 16);
 			zp->heading = atoi(row[7]);
@@ -1588,4 +1587,28 @@ bool Zone::IsDaytime() {
 	return is_daytime;
 }
 
-
+void Zone::LoadZoneDoors(const char* zone)
+{
+	int qty = 0;
+	EQC::Common::PrintF(CP_CLIENT, "Loading doors for %s ...", zone);
+	for(uint32 i=0;i<Database::Instance()->GetMaxDoor();i++)
+	{
+		const Door* door = 0;
+		door = Database::Instance()->GetDoor(i);	
+		if(door == 0 || door->db_id == 0 || strcasecmp(door->zoneName, zone)){
+			if(door&&!strcasecmp(door->zoneName, zone))
+			EQC::Common::PrintF(CP_CLIENT, "Database errror, Not Sending door: i:%i door:%s db_id:%i zone_name:%s zone:%s door_id:%i",
+				i, door->name, door->db_id, door->zoneName, zone, door->doorid);
+			continue;
+		}
+		Doors* newdoor = new Doors(door);
+		if(newdoor){
+		entity_list.AddDoor(newdoor);
+		qty++;
+		}
+		else {
+		EQC::Common::PrintF(CP_CLIENT, "Could not add door to entity list!");
+		}
+	}
+	EQC::Common::PrintF(CP_CLIENT, "Done loading doors(%i) for %s ...", qty, zone);
+}
