@@ -361,12 +361,13 @@ public:
 	APPLAYER* CreateTimeOfDayPacket(int8 Hour = 9, int8 Minute = 0, int8 Day = 1, int8 Month = 1, long Year = 1);
 	void	RemoveOneCharge(uint32 slotid, bool deleteItemOnLastCharge=false);	
 	void	SendItemMissing(int32 itemID, int8 itemType);
+	bool	CheckAddSkillPickLock(int16 skill_mod = 0);
 protected:
 	friend class Mob;
 	void ProcessCommand(char* message);
-	bool CheckAddSkill(int skill_num, int16 skill_mod = 0);
 	void CalcItemBonuses(StatsStruct* newbon);
 	void MakeBuffFadePacket(Spell* spell, int8 slot_id);
+	bool CheckAddSkill(int skill_num, int16 skill_mod = 0);
 private:
 	bool QuagmireGhostCheck(APPLAYER *app);
 	void SendNewZone(NewZone_Struct newzone_data);

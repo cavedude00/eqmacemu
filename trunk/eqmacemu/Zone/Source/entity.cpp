@@ -27,6 +27,7 @@
 #include "object.h"
 #include "ZoneGuildManager.h"
 #include "projectile.h"
+#include "doors.h"
 
 using namespace std;
 using namespace EQC::Zone;
@@ -109,6 +110,14 @@ Projectile* Entity::CastToProjectile()
 		EQC_MOB_EXCEPT("Projectile* Entity::CastToProjectile()", "Casting to a Projectile while it's not a Projectile!");
 
 	return static_cast<Projectile*>(this);
+}
+
+Doors* Entity::CastToDoors()
+{
+	if(!this->IsDoor()){
+		EQC_MOB_EXCEPT("Doors* Entity::CastToDoors()", "Casting to a Door while it's not a Door!");
+	}
+	return static_cast<Doors*>(this);
 }
 
 #define MAX_SPAWNS_PER_PACKET	50

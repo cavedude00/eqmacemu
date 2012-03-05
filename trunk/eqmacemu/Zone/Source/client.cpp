@@ -2983,6 +2983,30 @@ bool Client::CheckAddSkill(int skill_num, int16 skill_mod)
 	return false;
 }
 
+bool Client::CheckAddSkillPickLock(int16 skill_mod)
+{
+	/* TODO: If the player is charmed, don't even bother with the check.
+	if(IsCharmed())
+	return false;
+	*/
+	//Yeahlight: Current skill is lower than the maximum for this character combination
+	if(GetSkill(PICK_LOCK) < CheckMaxSkill(PICK_LOCK, pp.race, pp.class_, pp.level)) 
+	{
+		sint16 nChance = 10 + skill_mod + ((252 - GetSkill(PICK_LOCK)) / 20);	//Grabbed this formula from eqemu 5.0
+		//Check for a negative chance, change it to one so we still have a shot at a skill-up.
+		if(nChance < 1)
+			nChance = 1;
+		if(MakeRandomInt(0, 99) < nChance)	
+		{	//Award the player a skill point.
+			SetSkill(PICK_LOCK,GetSkill(PICK_LOCK)+1);
+			CalcBonuses();
+			CAST_CLIENT_DEBUG_PTR(this)->Log(CP_UPDATES, "Client::CheckAddSkill(skill = %i, mod = %i)", PICK_LOCK, skill_mod);
+			return true;
+		}
+	}
+	return false;
+}
+
 void Client::SendClientMoneyUpdate(int8 type,int32 amount){
 	//cout<<"Sending Client Money Update"<<endl;
 	CAST_CLIENT_DEBUG_PTR(this)->Log(CP_UPDATES, "Client::SendClientMoneyUpdate(type = %i, amount = %i)", (int)type, amount);
@@ -3068,67 +3092,7 @@ APPLAYER* Client::CreateTimeOfDayPacket(int8 Hour, int8 Minute, int8 Day, int8 M
 	return outapp;
 }
 
-void Client::Handle_Connect5GDoors()
-{
-	uchar buffer1[sizeof(Door_Struct) - 41];
-	uchar buffer2[7000];
-	int16 length = 0;
-	int16 qty = 0;
 
-	LinkedListIterator<Door_Struct*> iterator(zone->door_list);
-
-	iterator.Reset();
-	while(iterator.MoreElements())
-	{
-		if(iterator.GetData() != 0)
-		{
-			if (iterator.GetData()->doorid != 0)
-			{
-			Door_Struct* nd = (Door_Struct*)buffer1;
-
-			memset(nd,0,sizeof(Door_Struct) - 41);
-			nd->doorid = iterator.GetData()->doorid;
-			memcpy(nd->name,iterator.GetData()->name,16);
-			nd->opentype = iterator.GetData()->opentype;
-			nd->xPos = iterator.GetData()->xPos;
-			nd->yPos = iterator.GetData()->yPos;
-			nd->zPos = iterator.GetData()->zPos;
-			nd->heading = iterator.GetData()->heading;
-			nd->incline = iterator.GetData()->incline;
-			nd->doorIsOpen = iterator.GetData()->doorIsOpen;
-			nd->inverted = iterator.GetData()->inverted;
-			nd->parameter = iterator.GetData()->parameter;
-
-			memcpy(buffer2+length,buffer1,44);
-			length = length + 44;
-			qty++;
-			}
-		}
-		iterator.Advance();
-	}
-		if (qty == 0)
-			return;
-		
-		APPLAYER *outapp;
-		outapp = new APPLAYER;
-		outapp->opcode = OP_SpawnDoor;
-		outapp->pBuffer = new uchar[7000];
-		length = DeflatePacket(buffer2,length,outapp->pBuffer+2,7000);
-		outapp->size = length+2;
-		DoorSpawns_Struct* ds = (DoorSpawns_Struct*)outapp->pBuffer;
-
-		ds->count = qty;
-		EQC::Common::PrintF(CP_ZONESERVER,"%i Doors Spawned.\n",ds->count);
-
-		QueuePacket(outapp);
-		safe_delete(outapp);//delete outapp;
-		
-		//Yeahlight: Zone freeze debug
-		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
-			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
-
-		//return;
-}
 
 void Client::Handle_Connect5Objects()
 {

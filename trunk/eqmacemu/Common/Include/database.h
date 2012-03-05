@@ -99,7 +99,6 @@ public:
 	int32	UpdatePlayerCorpse(int32 dbid, int32 charid, char* charname, char* zonename, uchar* data, int32 datasize, float x, float y, float z, float heading, bool rezed, int32 rezExp);
 	bool	DeletePlayerCorpse(int32 dbid);
 	bool	LoadPlayerCorpses(char* zonename);
-	bool	LoadDoorData(LinkedList<Door_Struct*>* door_list, char* zonename);
 	bool	LoadObjects(vector<Object_Struct*>* object_list, char* zonename);
 	bool	GetZoneLongName(char* short_name, char** long_name, char* file_name = 0, float* safe_x = 0, float* safe_y = 0, float* safe_z = 0);
 	int32	GetAuthentication(char* char_name, char* zone_name, int32 ip);
@@ -162,6 +161,8 @@ public:
 #endif
 	bool	LoadNPCTypes(char* zone_name);
 	Item_Struct*	GetItem(uint32 id);
+	Door*			GetDoor(uint32 id);
+	uint32			GetMaxDoor();
 	NPCType*		GetNPCType(uint32 id);
 
 	// -- Faction --
@@ -215,7 +216,7 @@ public:
 	uint32			max_item;
 	Item_Struct**	item_array;
 	uint32			max_door;
-	Door_Struct**	door_array;
+	Door**			door_array;
 #endif
 	uint32			max_npc_type;
 	NPCType**		npc_type_array;

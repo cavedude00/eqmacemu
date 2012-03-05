@@ -157,7 +157,15 @@ struct CharacterSelect_Struct
 /*0730*/	int8	face[10];			// Characters Face Type
 /*0740*/	int32	equip[10][9];		// 0=helm, 1=chest, 2=arm, 3=bracer, 4=hand, 5=leg, 6=boot, 7=melee1, 8=melee2
 /*1100*/	int32	cs_colors[10][9];	// Characters Equipment Colors (RR GG BB 00)
-/*1460*/	int8	cs_unknown[160];	// ***Placeholder
+/*1480*/	int32	deity[10];			// Characters Deity
+/*1520*/	int32	melee[2][10];		// Characters primary and secondary IDFile number
+/*1600*/	int8	haircolor[10];	// vesuvias - found values
+/*1610*/	int8	beardcolor[10];
+/*1620*/	int8	eyecolor2[10];
+/*1630*/	int8	eyecolor1[10];
+/*1640*/	int8	hair[10];
+/*1650*/	int8	beard[10];
+///*1460*/	int8	cs_unknown[160];	// ***Placeholder
 };
 
 //Tazadar : This is used to show weapons on char select screen
@@ -640,6 +648,7 @@ struct Beg_Struct
 	int32	coins;		// The number of coins.  Whatever success is set to.
 	int8	unknown3[6];	// Not sure.  Maybe we'll find out one day.
 };
+
 
 /*
 ** Type:   Zone Change Request (before hand)
@@ -1747,8 +1756,6 @@ enum MESSAGEBOARD_CATEGORY
 	GUILDS 
 };
 
-
-//Yeahlight: TODO: This struct will obviously not work when we get into sending bulk door spawns
 struct Door_Struct{
 /*0000*/ char    name[16];      // Filename of Door
 /*0016*/ float   yPos;          // y loc
@@ -1765,17 +1772,8 @@ struct Door_Struct{
 /*0044*/ int8	 unknown0044;
 /*0045*/ int8    auto_return;
 /*0046*/ int8	 unknown0046;
-/*????*/ //Yeahlight: I could not find the correct locations in the struct for the below variables, which probably means they are safe here:
-/*0047*/ uint8	 triggerID;     //Yeahlight: ID of door this "door" triggers (0 means no doors triggered)
-		 uint8	 lockpick;		//Yeahlight: Skill required to pick this lock (0 means no lock on door or door is unpickable if a key exists [below])
-		 int16	 keyRequired;	//Yeahlight: Key required to open the lock, item ID #
-		 char	 zoneName[16];  //Yeahlight: Destination zone name for clickies ("NONE" is default)
-		 float	 destX;			//Yeahlight: Destination coordinates (x,y,z,heading)
-		 float	 destY;
-		 float	 destZ;
-		 float   destHeading;
-		 int32	 pLastClick;
-		 uint8	 triggerType;
+
+
 
 /******Useful Open Types*******/
 //53: Spell Particle Effect
@@ -1874,7 +1872,7 @@ struct DoorSpawns_Struct	//SEQ
 struct ClickDoor_Struct {
 	int8	doorid;
 	int8	unknown[3];
-	int16	keyinhand;
+	int16	keyid;
 	int16	playerid;
 };
 

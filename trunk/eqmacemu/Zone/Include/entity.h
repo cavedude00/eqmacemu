@@ -15,6 +15,7 @@ class Petition;
 class Group;
 class Object;
 class Projectile;
+class Doors;
 
 using namespace EQC::Common::Network;
 
@@ -35,6 +36,7 @@ public:
 	virtual bool IsGroup()			{ return false; }
 	virtual bool IsObject()			{ return false; }
 	virtual bool IsProjectile()		{ return false; }
+	virtual bool IsDoor()			{ return false; }
 
 	virtual bool Process()  { return false; }
 	virtual bool Save() { return true; }
@@ -47,9 +49,10 @@ public:
 	Group*	CastToGroup();
 	Object* CastToObject();
 	Projectile* CastToProjectile();
+	Doors*	CastToDoors();
 
 	inline int16 GetID()	{ return id; }
-	virtual char* GetName() = 0;
+	virtual char* GetName() { return ""; }
 	
 	bool CheckCoordLosNoZLeaps(float cur_x, float cur_y, float cur_z, float trg_x, float trg_y, float trg_z, float perwalk=1);
 	bool CheckCoordLos(float cur_x, float cur_y, float cur_z, float trg_x, float trg_y, float trg_z, float perwalk=1);

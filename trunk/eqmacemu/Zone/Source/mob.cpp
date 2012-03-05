@@ -285,6 +285,8 @@ void Mob::CreateSpawnPacket(APPLAYER* app, Mob* ForWho)
 
 void Mob::FillSpawnStruct(NewSpawn_Struct* ns, Mob* ForWho)
 {
+	if(size < 1)
+		size = 1;
 	ns->spawn.size = size;
 	ns->spawn.walkspeed = walkspeed;
 	ns->spawn.runspeed = runspeed;
