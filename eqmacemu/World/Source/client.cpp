@@ -295,7 +295,7 @@ namespace EQC
 			if (this->timeout_timer->Check())
 			{
 				//cout << "Client timeout" << endl;
-				return false; // bail out, timer has expired cavedude_err ?
+				return false; // bail out, timer has expired
 			}
 
 			// Check packet managers timers
