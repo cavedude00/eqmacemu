@@ -565,6 +565,9 @@
     <ClCompile Include="Source\perl_npc.cpp">
       <Filter>Zone Sources\Perl Mappings</Filter>
     </ClCompile>
+    <ClCompile Include="Source\doors.cpp">
+      <Filter>Zone Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\World\World Class Diagram.cd" />
