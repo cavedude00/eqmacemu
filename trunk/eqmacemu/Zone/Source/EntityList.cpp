@@ -304,7 +304,7 @@ void EntityList::SendZoneSpawns(Client* client)
 
 void EntityList::Save()
 {
-	LinkedListIterator<Entity*> iterator(list); //cavedude door class problems
+	LinkedListIterator<Entity*> iterator(list);
 
 	iterator.Reset();
 	while(iterator.MoreElements())
