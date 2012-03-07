@@ -3525,8 +3525,8 @@ bool Database::loadZoneLines(vector<zoneLine_Struct*>* zone_line_data, char* zon
 			zoneLine->y = (float)atof(row[2]);
 			zoneLine->z = (float)atof(row[3]);
 			strcpy(zoneLine->target_zone, row[4]);
-			zoneLine->target_x = (float)atof(row[5]);
-			zoneLine->target_y = (float)atof(row[6]);
+			zoneLine->target_x = (float)atof(row[6]);
+			zoneLine->target_y = (float)atof(row[5]);
 			zoneLine->target_z = (float)atof(row[7]);
 			zoneLine->range = atoi(row[8]);
 			zoneLine->heading = (int8)atof(row[9]);

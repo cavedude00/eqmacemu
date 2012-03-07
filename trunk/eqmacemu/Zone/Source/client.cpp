@@ -303,8 +303,8 @@ bool Client::Save()
 			//Yeahlight: Database is supplying custom x, y, z coordinates
 			if(zoningX != 0 && zoningY != 0 && zoningZ != 0)
 			{
-				pp.y = zoningX;
-				pp.x = zoningY;
+				pp.x = zoningX;
+				pp.y = zoningY;
 				pp.z = zoningZ;
 			}
 			else
@@ -3790,13 +3790,13 @@ void Client::ScanForZoneLines()
 		int16 zDiff = zone->thisZonesZoneLines[i]->maxZDiff;
 		if(zDiff == 0)
 			zDiff = 50000;
-		if(abs(this->GetX() - zone->thisZonesZoneLines[i]->x) > range || abs(this->GetY() - zone->thisZonesZoneLines[i]->y) > range || abs(this->GetZ() - zone->thisZonesZoneLines[i]->z) > zDiff || (GetZ() + 10) < zone->thisZonesZoneLines[i]->z)
+		if(abs(this->GetY() - zone->thisZonesZoneLines[i]->x) > range || abs(this->GetX() - zone->thisZonesZoneLines[i]->y) > range || abs(this->GetZ() - zone->thisZonesZoneLines[i]->z) > zDiff || (GetZ() + 10) < zone->thisZonesZoneLines[i]->z)
 		{
 			continue;
 		}
 		else
 		{
-			if(CheckCoordLos(GetX(), GetY(), GetZ(), zone->thisZonesZoneLines[i]->x, zone->thisZonesZoneLines[i]->y, zone->thisZonesZoneLines[i]->z))
+			if(CheckCoordLos(GetY(), GetX(), GetZ(), zone->thisZonesZoneLines[i]->x, zone->thisZonesZoneLines[i]->y, zone->thisZonesZoneLines[i]->z))
 			{
 				if(debugFlag && GetDebugMe())
 					this->Message(WHITE,"Debug: You have come in contact with zoneline node: %i",zone->thisZonesZoneLines[i]->id);

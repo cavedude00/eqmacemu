@@ -82,15 +82,14 @@ void Doors::HandleClick(Client* sender, int16 key)
 				if(key == keyRequired)
 				{
 					//Yeahlight: Door is a teleporter
-					if(strcmp(zoneName, "NONE") != 0)
+					if(strcmp(dest_zone, "NONE") != 0)
 					{
 						if(debugFlag && sender->GetDebugMe())
-							sender->Message(LIGHTEN_BLUE, "Debug: You touched a locked TP object: %s", zoneName);
-						if(strcmp(zone->GetShortName(), zoneName) != 0)
+							sender->Message(LIGHTEN_BLUE, "Debug: You touched a locked TP object: %s", dest_zone);
+						if(strcmp(zone->GetShortName(), dest_zone) != 0)
 						{
-							
 							//Yeahlight: Locked door TPs player to different zone
-							sender->MovePC(zoneName, destX, destY, destZ);
+							sender->MovePC(dest_zone, destX, destY, destZ);
 						}
 						else
 						{
@@ -117,7 +116,8 @@ void Doors::HandleClick(Client* sender, int16 key)
 						entity_list.QueueClients(sender, outapp, false);
 					}
 				//Yeahlight: Lockpick attempt
-				}else if(lockpick > 0 && key == 13010){
+				}
+				else if(lockpick > 0 && key == 13010){
 					if(PickLock_timer->Check())
 					{
 						//Yeahlight: 10 seconds is the lockout on the "Pick Lock" skill button
@@ -159,14 +159,14 @@ void Doors::HandleClick(Client* sender, int16 key)
 				}
 			}
 			//Yeahlight: Door is a teleporter
-			else if(strcmp(zoneName, "NONE") != 0)
+			else if(strcmp(dest_zone, "NONE") != 0)
 			{
 				if(debugFlag && sender->GetDebugMe())
-					sender->Message(LIGHTEN_BLUE, "Debug: You touched a TP object: %s", zoneName);
-				if(strcmp(zone->GetShortName(), zoneName) != 0)
+					sender->Message(LIGHTEN_BLUE, "Debug: You touched a TP object: %s", dest_zone);
+				if(strcmp(zone->GetShortName(), dest_zone) != 0)
 				{
 					//Yeahlight: Door TPs player to different zone
-					sender->MovePC(zoneName, destX, destY, destZ);
+					sender->MovePC(dest_zone, destX, destY, destZ);
 				}
 				else
 				{
@@ -182,12 +182,14 @@ void Doors::HandleClick(Client* sender, int16 key)
 					od->doorid = doorid;
 					od->action = 0x02;
 					doorIsOpen = 1;
+					sender->Message(LIGHTEN_BLUE, "Regular Door: IsOpen");
 				}
 				else
 				{
 					od->doorid = doorid;
 					od->action = 0x03;
 					doorIsOpen = 0;
+					sender->Message(LIGHTEN_BLUE, "Regular Door: Is Not Open");
 				}
 				entity_list.QueueClients(sender, outapp, false);
 			}

@@ -225,6 +225,9 @@ bool Zone::Init() {
 	if (!Database::Instance()->LoadPatrollingNodes(zoneID))
 	cout<<"PATROLLINGNODE load failed"<<endl;
 
+	if (!Database::Instance()->LoadStaticZonePoints(&zone_point_list, short_name)) {
+		return false;
+	}
 	spawn_group_list = new SpawnGroupList();
 	if (!Database::Instance()->PopulateZoneLists(short_name, &zone_point_list, spawn_group_list))
 		return false;
@@ -527,31 +530,115 @@ void Zone::Repop(int32 delay) {
 	MZoneLock.unlock();
 }
 
-ZonePoint* Zone::GetClosestZonePoint(float x, float y, float z, char* to_name)
-{
+ZonePoint* Zone::GetClosestZonePoint(float x, float y, float z, int32 to, Client* client, float max_distance) {
 	LinkedListIterator<ZonePoint*> iterator(zone_point_list);
 	ZonePoint* closest_zp = 0;
 	float closest_dist = FLT_MAX;
-
+	float max_distance2 = max_distance*max_distance;
 	iterator.Reset();
-	while(iterator.MoreElements())	
+	while(iterator.MoreElements())
 	{
 		ZonePoint* zp = iterator.GetData();
-		if (strcmp(zp->target_zone, to_name) == 0)
+
+		if (zp->target_zone_id == to)
 		{
-			float dist = (zp->x-x)*(zp->x-x)+(zp->y-y)*(zp->y-y)+(zp->z-z)*(zp->z-z);
+			float delta_x = zp->x - x;
+			float delta_y = zp->y - y;
+			if(zp->x == 999999 || zp->x == -999999)
+				delta_x = 0;
+			if(zp->y == 999999 || zp->y == -999999)
+				delta_y = 0;
+
+			float dist = delta_x*delta_x+delta_y*delta_y;
 			if (dist < closest_dist)
 			{
 				closest_zp = zp;
-				closest_dist = dist;	
+				closest_dist = dist;
 			}
 		}
 		iterator.Advance();
-		//Yeahlight: Zone freeze debug
-		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
-			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
 	}
+	
+	if(closest_dist > max_distance2)
+		closest_zp = NULL;
+	
+	if(!closest_zp)
+		closest_zp = GetClosestZonePointWithoutZone(x,y,z, client);
+
 	return closest_zp;
+}
+
+ZonePoint* Zone::GetClosestZonePointWithoutZone(float x, float y, float z, Client* client, float max_distance) {
+	LinkedListIterator<ZonePoint*> iterator(zone_point_list);
+	ZonePoint* closest_zp = 0;
+	float closest_dist = FLT_MAX;
+	float max_distance2 = max_distance*max_distance;
+	iterator.Reset();
+	while(iterator.MoreElements())
+	{
+		ZonePoint* zp = iterator.GetData();
+
+		float delta_x = zp->x - x;
+		float delta_y = zp->y - y;
+		if(zp->x == 999999 || zp->x == -999999)
+			delta_x = 0;
+		if(zp->y == 999999 || zp->y == -999999)
+			delta_y = 0;
+
+		float dist = delta_x*delta_x+delta_y*delta_y;///*+(zp->z-z)*(zp->z-z)*/;
+		if (dist < closest_dist)
+		{
+			closest_zp = zp;
+			closest_dist = dist;
+		}
+		iterator.Advance();
+	}
+	if(closest_dist > max_distance2)
+		closest_zp = NULL;
+
+	return closest_zp;
+}
+
+bool Database::LoadStaticZonePoints(LinkedList<ZonePoint*>* zone_point_list, const char* zonename)
+{
+	char errbuf[MYSQL_ERRMSG_SIZE];
+	char *query = 0;
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	zone_point_list->Clear();
+	zone->numzonepoints = 0;
+	MakeAnyLenString(&query, "SELECT x, y, z, target_x, target_y, "
+		"target_z, target_zone_id, heading, target_heading, number, "
+		"target_instance, client_version_mask FROM zone_points "
+		"WHERE zone='%s' order by number", zonename);
+	if (RunQuery(query, strlen(query), errbuf, &result))
+	{
+		safe_delete_array(query);
+		while((row = mysql_fetch_row(result)))
+		{
+			ZonePoint* zp = new ZonePoint;
+			zp->x = atof(row[0]);
+			zp->y = atof(row[1]);
+			zp->z = atof(row[2]);
+			zp->target_x = atof(row[3]);
+			zp->target_y = atof(row[4]);
+			zp->target_z = atof(row[5]);
+			zp->target_zone_id = atoi(row[6]);
+			zp->heading = atof(row[7]);
+			zp->target_heading = atof(row[8]);
+			zp->number = atoi(row[9]);
+			zone_point_list->Insert(zp);
+			zone->numzonepoints++;
+		}
+		mysql_free_result(result);
+	}
+	else
+	{
+		cerr << "Error1 in LoadStaticZonePoints query '" << query << "' " << errbuf << endl;
+		safe_delete_array(query);
+		return false;
+	}
+return true;
 }
 
 //bool Database::PopulateZoneLists(char* zone_name, NPCType* &npc_type_array, uint32 &max_npc_type, LinkedList<Spawn*>& spawn_list, LinkedList<ZonePoint*>& zone_point_list, LinkedList<Spawn2*> &spawn2_list, SpawnGroupList* spawn_group_list)
@@ -561,33 +648,6 @@ bool Database::PopulateZoneLists(char* zone_name, LinkedList<ZonePoint*>* zone_p
 	char *query = 0;
 	MYSQL_RES *result;
 	MYSQL_ROW row;
-
-	MakeAnyLenString(&query, "SELECT x,y,z,target_x,target_y,target_z,target_zone,heading FROM zone_points WHERE zone='%s'", zone_name);
-	if (RunQuery(query, strlen(query), errbuf, &result))
-	{
-		safe_delete_array(query);//delete[] query;
-		while(row = mysql_fetch_row(result))
-		{
-			ZonePoint* zp = new ZonePoint;
-			zp->x = atof(row[1]);
-			zp->y = atof(row[0]);
-			zp->z = atof(row[2]);
-			zp->target_x = atof(row[4]);
-			zp->target_y = atof(row[3]);
-			zp->target_z = atof(row[5]);
-			strncpy(zp->target_zone, row[6], 16);
-			zp->heading = atoi(row[7]);
-			zone_point_list->Insert(zp);
-		}
-		mysql_free_result(result);
-	}
-	else
-	{
-		cerr << "Error1 in PopulateZoneLists query '" << query << "' " << errbuf << endl;
-		safe_delete_array(query);//delete[] query;
-		return false;
-	}
-	// CODER new spawn code
 	query = 0;
 
 	if (RunQuery(query, MakeAnyLenString(&query, "SELECT DISTINCT(spawngroupID), spawngroup.name FROM spawn2,spawngroup WHERE spawn2.spawngroupID=spawngroup.ID and zone='%s'", zone_name), errbuf, &result))
@@ -601,7 +661,7 @@ bool Database::PopulateZoneLists(char* zone_name, LinkedList<ZonePoint*>* zone_p
 	}
 	else
 	{
-		cerr << "Error2 in PopulateZoneLists query '" << query << "' " << errbuf << endl;
+		cerr << "Error1 in PopulateZoneLists query '" << query << "' " << errbuf << endl;
 		safe_delete_array(query);//delete[] query;
 		return false;
 	}
@@ -630,7 +690,7 @@ bool Database::PopulateZoneLists(char* zone_name, LinkedList<ZonePoint*>* zone_p
 	}
 	else
 	{
-		cerr << "Error3 in PopulateZoneLists query '" << query << "' " << errbuf << endl;
+		cerr << "Error2 in PopulateZoneLists query '" << query << "' " << errbuf << endl;
 		safe_delete_array(query);//delete[] query;
 		return false;
 	}

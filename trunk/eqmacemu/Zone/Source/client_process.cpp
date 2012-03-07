@@ -1237,8 +1237,12 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 
 	zonesummon_ignorerestrictions = false;
 
-	cout << "Player at x:" << GetX() << " y:" << GetY() << " z:" << GetZ() << endl;
-	ZonePoint* zone_point = zone->GetClosestZonePoint(GetY(), GetX(), GetZ(), Database::Instance()->GetZoneName(zc->zoneID));
+	cout << "Player at x:" << x_pos << " y:" << y_pos << " z:" << z_pos << endl;
+	ZonePoint* zone_point = zone->GetClosestZonePoint(x_pos, y_pos, z_pos, zc->zoneID, this);
+
+	tarx=zonesummon_x;
+	tary=zonesummon_y;
+	tarz=zonesummon_z;
 
 	//Yeahlight: First, check if our client is zoning via ZonePC
 	if(this->usingSoftCodedZoneLine)
@@ -1367,6 +1371,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 			zone->StartShutdownTimer(AUTHENTICATION_TIMEOUT * 1000);
 		}
 		else {
+			Database::Instance()->SetAuthentication(account_id, zc->char_name, Database::Instance()->GetZoneName(tarzone), ip); // We have to tell the world server somehow?
 			ServerPacket* pack = new ServerPacket(ServerOP_ZoneToZoneRequest, sizeof(ZoneToZone_Struct));
 			ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
 			ztz->response = 0;
@@ -1378,12 +1383,16 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 			worldserver.SendPacket(pack);
 			safe_delete(pack);
 		}
-		//Database::Instance()->SetAuthentication(account_id, zc->char_name, Database::Instance()->GetZoneName(tarzone), ip); // We have to tell the world server somehow?
+		
 	}
 	else
 	{
-		cerr << "Zone '" << Database::Instance()->GetZoneName(zc->zoneID) << "' is not available" << endl;
-
+		if(zc->zoneID > 0){
+			cerr << "Zone '" << Database::Instance()->GetZoneName(zc->zoneID) << "' is not available" << endl;
+		}
+		else {
+			cerr << "Zone is not available" << endl;
+		}
 		outapp = new APPLAYER(OP_CancelTrade, 0);
 		QueuePacket(outapp);
 		safe_delete(outapp);//delete outapp;
@@ -4828,12 +4837,17 @@ void Client::ProcessOP_ClickDoor(APPLAYER* pApp)
 	if(pApp->size != sizeof(ClickDoor_Struct)){
 		  cout << "Wrong size on OP_ClickDoor. Got: " << pApp->size << ", Expected: " << sizeof(ClickDoor_Struct) << endl;
 		  DumpPacket(pApp);
-	  }
+	}
 
 	bool debugFlag = true;
 
-	 ClickDoor_Struct* cd = (ClickDoor_Struct*)pApp->pBuffer;
-      Doors* currentdoor = entity_list.FindDoor(cd->doorid);
+	ClickDoor_Struct* cd = (ClickDoor_Struct*)pApp->pBuffer;
+
+	if(cd->doorid == 0){
+		cd->doorid = 1;
+	}
+
+    Doors* currentdoor = entity_list.FindDoor(cd->doorid);
 		if(!currentdoor)
 		{
 			Message(RED,"Unable to find door, please notify a GM.");
@@ -4844,7 +4858,6 @@ void Client::ProcessOP_ClickDoor(APPLAYER* pApp)
 		}
 		if(currentdoor->GetDoorID() == cd->doorid)
 		{
-			//currentdoor->HandleClick(this, cd->keyinhand);
 			currentdoor->HandleClick(this, cd->keyid);
 		}
 		else
@@ -6085,7 +6098,7 @@ void Client::Process_ClientConnection4(APPLAYER *app)
 		}
 		else
 		{
-			EQC::Common::PrintF(CP_CLIENT, "Doors failed to load.");
+			EQC::Common::PrintF(CP_ZONESERVER,"Doors failed to spawn.");
 		}
 		this->Handle_Connect5Objects();
 
