@@ -337,6 +337,7 @@ public:
 	// Wizzel: Load zone appearance infomation from the database
 	void	GetZoneCFG(int16 zoneID, uint8* sky, int8* fog_red, int8* fog_green, int8* fog_blue, float* fog_minclip, float* fog_maxclip, float* minclip, float* maxclip, int8* ztype, float* safe_x, float* safe_y, float* safe_z, float* underworld, char** zlong_name);
 	//void	GetZoneCFG(int16 zoneID, uint8* sky, int8* fog_red, int8* fog_green, int8* fog_blue, float* fog_minclip, float* fog_maxclip, float* minclip, float* maxclip, int8* ztype, float* safe_x, float* safe_y, float* safe_z, float* underworld);
+	bool	LoadStaticZonePoints(LinkedList<ZonePoint*>* zone_point_list,const char* zonename);
 
 protected:
 	void	AddLootDropToNPC(int32 lootdrop_id, ItemList* itemlist, int8 EquipmentList[], int32 EquipmentColorList[]);

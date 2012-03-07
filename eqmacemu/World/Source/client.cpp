@@ -320,7 +320,7 @@ namespace EQC
 
 			if (zs)
 			{
-				// if we can get the zone server, notifiy world we're comming, so it knows not to shutdown
+				// if we can get the zone server, notifiy world we're coming, so it knows not to shutdown
 				zs->TriggerBootup();
 			}
 			else

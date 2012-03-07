@@ -102,8 +102,8 @@ struct PlayerProfile_Struct
 /*2870*/	sint16	spell_memory[8];	// Player spells memorized
 /*2886*/	int8	unknown2886[14];			// ***Placeholder [16]
 /*2900*/	int16	unknown2900;
-/*2902*/	float	x;					// Player X
-/*2906*/	float	y;					// Player Y
+/*2902*/	float	y;					// Player X
+/*2906*/	float	x;					// Player Y
 /*2910*/	float	z;					// Player Z
 /*2914*/	float	heading;			// Player Heading
 /*2918*/	int8	unknown2920[6];		// ***Placeholder

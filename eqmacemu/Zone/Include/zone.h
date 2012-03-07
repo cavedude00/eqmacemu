@@ -24,11 +24,13 @@ struct ZonePoint
 	float x;
 	float y;
 	float z;
+	float heading;
+	int16 number;
 	float target_x;
 	float target_y;
 	float target_z;
-	char  target_zone[16];
-	int8  heading;
+	float target_heading;
+	int16 target_zone_id;
 };
 
 struct zoneNode 
@@ -97,7 +99,8 @@ public:
 	void	LoadZoneDoors(const char* zone);
 
 	int32	CountSpawn2();
-	ZonePoint* GetClosestZonePoint(float x, float y, float z, char* to_name);
+	ZonePoint* GetClosestZonePoint(float x, float y, float z, int32	to, Client *client, float max_distance = 40000.0f);
+	ZonePoint* GetClosestZonePointWithoutZone(float x, float y, float z, Client *client, float max_distance = 40000.0f);
 	SpawnGroupList* spawn_group_list;
 
 //	NPCType* GetNPCType(uint16 id);
@@ -192,6 +195,11 @@ public:
 	float	GetSpeed() { return speed; }
 	void	SetSpeed(float in) { speed = in; }
 
+	
+//	LinkedList<Spawn*> spawn_list;
+	LinkedList<ZonePoint*> zone_point_list;
+	int32	numzonepoints;
+
 protected:
 	friend class database;
 	LinkedList<Spawn2*> spawn2_list; // CODER new spawn list
@@ -207,9 +215,6 @@ private:
 	bool	is_daytime; // Kibanu - Time of Day
 
 	Timer*	autoshutdown_timer;
-
-//	LinkedList<Spawn*> spawn_list;
-	LinkedList<ZonePoint*> zone_point_list;
 	
 	Mutex	MZoneLock;
 	bool	bulkOnly;
