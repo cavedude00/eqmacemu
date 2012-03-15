@@ -141,7 +141,8 @@ public:
 	virtual void SetLevel(uint8 set_level, bool show_message = true);
 	void	GoToBind(bool death = false);
 	void	SetBindPoint();
-	void	MovePC(const char* zonename, float x, float y, float z, bool ignorerestrictions = false, bool useSummonMessage = true);
+	void	MovePC(char* zonename, float x, float y, float z, bool ignorerestrictions = false, bool useSummonMessage = true);
+	void	MovePC(int32 zoneid, float x, float y, float z, bool ignorerestrictions = false, bool useSummonMessage = true);
 	void	ZonePC(char* zonename, float x, float y, float z);
 	void	TeleportPC(char* zonename, float x, float y, float z, float heading = 0);
 	// Harakiri teleport and translocate is bit different in the client, the translocate seems only be used for the spell

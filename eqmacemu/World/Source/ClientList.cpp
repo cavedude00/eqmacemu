@@ -140,5 +140,19 @@ namespace EQC
 					EQC_FREEZE_DEBUG(__LINE__, __FILE__);
 			}
 		}
+		Client* ClientList::FindCharacter(const char* name) 
+		{
+			LinkedListIterator<Client*> iterator(list);
+
+			iterator.Reset();
+			while(iterator.MoreElements())
+			{
+				if (strcasecmp(iterator.GetData()->GetCharName(), name) == 0) {
+					return iterator.GetData();
+				}
+				iterator.Advance();
+			}
+			return 0;
+		}
 	}
 }

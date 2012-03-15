@@ -33,6 +33,7 @@ extern WorldServer		worldserver;
 extern NetConnection	net;
 extern PetitionList		petition_list;
 extern SpellsHandler	spells_handler;
+extern int32			numclients;
 extern volatile bool	RunLoops;
 extern void CatchSignal(int);
 
@@ -978,73 +979,72 @@ void WorldServer::Process()
 			{
 				if(pack->size != sizeof(ZoneToZone_Struct)) 
 					break;
-				if (!ZoneLoaded) 
+				if (!ZoneLoaded)
 					break;
 				ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
 			
-				if(ztz->current_zone_id == zone->GetZoneID())
+				if(ztz->current_zone_id == zone->GetZoneID()) 
 				{
+					// it's a response
 					Entity* entity = entity_list.GetClientByName(ztz->name);
-					if(entity == 0 || !entity->IsClient())
+					if(entity == 0)
 						break;
 
 					APPLAYER *outapp;
 					outapp = new APPLAYER(OP_ZoneChange,sizeof(ZoneChange_Struct));
 					ZoneChange_Struct* zc2=(ZoneChange_Struct*)outapp->pBuffer;
 
-					if(ztz->response == 0 || ztz->response == -1)
+					if(ztz->response == 0 || ztz->response == -1) 
 					{
 						zc2->success = ZONE_ERROR_NOTREADY;
-						SetZone(Database::Instance()->GetZoneName(ztz->current_zone_id));
+						entity->CastToMob()->SetZone(ztz->current_zone_id);
 					}
-					else
+					else 
 					{
 						strncpy(zc2->char_name,entity->CastToMob()->GetName(),64);
 						zc2->zoneID=ztz->requested_zone_id;
 						zc2->success = 1;
 					}
 					entity->CastToClient()->QueuePacket(outapp);
-					safe_delete(outapp);
+					delete outapp;
 
-					Client* client = entity_list.GetClientByName(zc2->char_name);
 					switch(ztz->response)
 					{
-						case -1:
+						case -1: 
 						{
-							client->Message(RED, "The zone is currently full, please try again later.");
+							entity->CastToMob()->Message(RED,"The zone is currently full, please try again later.");
 							break;
 						}
-						case 0:
+						case 0:	
 						{
-							client->Message(RED, "All zone servers are taken at this time, please try again later.");
+							entity->CastToMob()->Message(RED,"All zone servers are taken at this time, please try again later.");
 							break;
 						}
-
 					}
 				}
-				else
+				else 
 				{
-					/*sint32 max = database.GetMaxClientsInZone(zone->GetZoneID());
-
-					if(max != 0 && numclients >= max)
-					ztz->response = -1;
-					else*/
-					ztz->response = 1;
-					// since they asked about comming, lets assume they are on their way and not shut down.
-					zone->StartShutdownTimer(AUTHENTICATION_TIMEOUT * 1000);
-		
+					// it's a request
+					if(zone->GetMaxClients() != 0 && numclients >= zone->GetMaxClients())
+						ztz->response = -1;
+					else 
+					{
+						ztz->response = 1;
+						// since they asked about coming, lets assume they are on their way and not shut down.
+						zone->StartShutdownTimer(AUTHENTICATION_TIMEOUT * 1000);
+					}
 					SendPacket(pack);
 					break;
 				}
+			break;
+		}
+			default:
+			{
+				cout << "Unknown ZSopcode:" << (int)pack->opcode;
+				cout << "size:" << pack->size << endl;
+				//DumpPacket(pack->pBuffer, pack->size);
 				break;
 			}
-				default:
-				{
-					cout << "Unknown ZSopcode:" << (int)pack->opcode;
-					cout << "size:" << pack->size << endl;
-					//DumpPacket(pack->pBuffer, pack->size);
-					break;
-				}
 		}
 
 		safe_delete(pack);//delete pack;
@@ -1052,6 +1052,5 @@ void WorldServer::Process()
 		if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
 			EQC_FREEZE_DEBUG(__LINE__, __FILE__);
 	}
-
 	return;
 }

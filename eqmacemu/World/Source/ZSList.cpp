@@ -201,6 +201,28 @@ namespace EQC
 				return 0;
 			}
 
+			ZoneServer* ZSList::FindByZoneID(int32 ZoneID) 
+			{
+				LinkedListIterator<ZoneServer*> iterator(list);
+
+				LockMutex lock(&MListLock);
+				iterator.Reset();
+
+				while(iterator.MoreElements())
+				{
+					if (Database::Instance()->LoadZoneID(iterator.GetData()->GetZoneName()) == ZoneID) 
+					{
+					ZoneServer* tmp = iterator.GetData();
+					return tmp;
+					}
+					iterator.Advance();
+					//Yeahlight: Zone freeze debug
+					if(ZONE_FREEZE_DEBUG && rand()%ZONE_FREEZE_DEBUG == 1)
+						EQC_FREEZE_DEBUG(__LINE__, __FILE__);
+				}
+			return 0;
+			}
+
 			ZoneServer* ZSList::FindByID(int32 ZoneID) 
 			{
 				LinkedListIterator<ZoneServer*> iterator(list);
@@ -684,6 +706,7 @@ namespace EQC
 				}
 				safe_delete_array(buffer);//delete[] buffer;
 			}
+
 			int32 ZSList::TriggerBootup(char* zonename)
 			{
 				LinkedListIterator<ZoneServer*> iterator(list);

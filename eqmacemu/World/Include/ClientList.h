@@ -24,6 +24,7 @@ namespace EQC
 			void	Process();
 
 			void	ZoneBootup(ZoneServer* zs);
+			Client* FindCharacter(const char* name);
 		private:
 			LinkedList<Client*> list;
 		};

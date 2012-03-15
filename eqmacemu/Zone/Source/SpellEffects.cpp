@@ -480,8 +480,10 @@ void Mob::SpellEffect(Mob* caster, Spell* spell, int8 caster_level, bool partial
 			}
 			case SE_Teleport:
 			{
+				char teleport_zone_char[64];
 				if(this->IsClient())
-					this->CastToClient()->MovePC(teleport_zone, spell->GetSpellBase(1), spell->GetSpellBase(0), spell->GetSpellBase(2));
+					strcpy(teleport_zone_char, teleport_zone);
+					this->CastToClient()->MovePC(teleport_zone_char, spell->GetSpellBase(1), spell->GetSpellBase(0), spell->GetSpellBase(2), false, false);
 				CAST_CLIENT_DEBUG_PTR(caster)->Log(CP_SPELL, "Mob::SpellEffect(spell_name = %s): You casted a teleport spell to %s (%f, %f, %f).", spell->GetSpellName(), teleport_zone, spell->GetSpellBase(1), spell->GetSpellBase(0), spell->GetSpellBase(2));
 				break;
 			}
@@ -669,8 +671,9 @@ void Mob::SpellEffect(Mob* caster, Spell* spell, int8 caster_level, bool partial
 			case SE_CallOfHero:
 			{
 				//Yeahlight: Call of the Hero may only be used on PCs
+				int32 zoneid = 0;
 				if(this->IsClient())
-					this->CastToClient()->MovePC(0, caster->GetX(), caster->GetY(), caster->GetZ(), false, true);
+					this->CastToClient()->MovePC(zoneid, caster->GetX(), caster->GetY(), caster->GetZ(), false, true);
 				else
 					caster->Message(RED, "This spell may only be cast on players.");
 				CAST_CLIENT_DEBUG_PTR(caster)->Log(CP_SPELL, "Mob::ApplySpellsBonuses(spell name = %s): You casted a call of the hero spell, amount: %i.", spell->GetSpellName(), base);

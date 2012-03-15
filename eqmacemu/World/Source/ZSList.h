@@ -34,6 +34,7 @@ namespace EQC
 				ZSList();
 				~ZSList();
 				ZoneServer* FindByName(char* zonename);
+				ZoneServer* FindByZoneID(int32 ZoneID);
 				ZoneServer* FindByID(int32 ZoneID);
 
 				void	SendChannelMessage(char* from, char* to, int8 chan_num, int8 language, char* message, ...);

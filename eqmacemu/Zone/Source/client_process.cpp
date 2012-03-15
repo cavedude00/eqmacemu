@@ -1240,10 +1240,6 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	cout << "Player at x:" << x_pos << " y:" << y_pos << " z:" << z_pos << endl;
 	ZonePoint* zone_point = zone->GetClosestZonePoint(x_pos, y_pos, z_pos, zc->zoneID, this);
 
-	tarx=zonesummon_x;
-	tary=zonesummon_y;
-	tarz=zonesummon_z;
-
 	//Yeahlight: First, check if our client is zoning via ZonePC
 	if(this->usingSoftCodedZoneLine)
 	{
@@ -1286,7 +1282,9 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		tarx = zonesummon_x;
 		tary = zonesummon_y;
 		tarz = zonesummon_z;
-		cout << "Zoning to specified cords: " << Database::Instance()->GetZoneName(tarzone) << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
+		char* zone_name = Database::Instance()->GetZoneName(tarzone, true);
+//		if(Database::Instance()->GetZoneShortName(tarzone,zone_name)){
+		cout << "Zoning to specified cords: " << zone_name << ", x=" << tarx << ", y=" << tary << ", z=" << tarz << endl;
 		zonesummon_x = -2;
 		zonesummon_y = -2;
 		zonesummon_z = -2;
@@ -1358,7 +1356,8 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		pp.current_zone = tarzone;
 		this->Save();
 
-		if (pp.current_zone == zone->GetZoneID()) {
+		if (pp.current_zone == zone->GetZoneID()) 
+		{
 			// no need to ask worldserver if we're zoning to ourselves (most likely to a bind point), also fixes a bug since the default response was failure
 			APPLAYER* outapp = new APPLAYER(OP_ZoneChange,sizeof(ZoneChange_Struct));
 			ZoneChange_Struct* zc2 = (ZoneChange_Struct*) outapp->pBuffer;
@@ -1383,7 +1382,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 			worldserver.SendPacket(pack);
 			safe_delete(pack);
 		}
-		
+		return;
 	}
 	else
 	{
@@ -1398,13 +1397,13 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		safe_delete(outapp);//delete outapp;
 
 		outapp = new APPLAYER(OP_ZoneChange, sizeof(ZoneChange_Struct));
-		memset(outapp->pBuffer, 0, sizeof(ZoneChange_Struct));
 		ZoneChange_Struct *zc2 = (ZoneChange_Struct*)outapp->pBuffer;
 		strcpy(zc2->char_name, zc->char_name);
 		zc2->zoneID = zc->zoneID;
 		zc2->success = myerror;
 		memset(zc2->unknown0073,0xff,sizeof(zc2->unknown0073));
 		QueuePacket(outapp);
+
 		safe_delete(outapp);//delete outapp;
 
 		int8 stuffdata[16] = {0xE6, 0x02, 0x10, 0x00, 0x00, 0x00, 0x68, 0x42, 0x00, 0x00, 0xDB, 0xC3, 0xFA, 0xFE, 0x00, 0xC2};
@@ -1418,8 +1417,10 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 		isZoning = false;
 		isZoningZP = false;
 		usingSoftCodedZoneLine = false;
-		//MovePC(0, zone->GetSafeX(), zone->GetSafeY(), zone->GetSafeZ(), false, false);
+		int32 zoneid = 0;
+		MovePC(zoneid, zone->GetSafeX(), zone->GetSafeY(), zone->GetSafeZ(), false, false);
 	}
+	return;
 }
 
 //Yeahlight: TODO: What?? What does any of this mean? We only PMClose() GMs? Why?
@@ -3360,7 +3361,8 @@ void Client::ProcessOP_GMSummon(APPLAYER* pApp){
 			this->Message(BLACK, "Local: Summoning %s to %i, %i, %i", gms->charname, gms->x, gms->y, gms->z);
 			if (st->IsClient() && (st->CastToClient()->GetAnon() != 1 || this->Admin() >= st->CastToClient()->Admin()))
 			{
-				st->CastToClient()->MovePC(0, gms->x, gms->y, gms->z);
+				int32 zoneid = 0;
+				st->CastToClient()->MovePC(zoneid, gms->x, gms->y, gms->z);
 			}
 			else
 			{
@@ -3875,7 +3877,8 @@ void Client::ProcessOP_GMGoto(APPLAYER* pApp){
 
 	if (gt != 0) 
 	{
-		this->MovePC(0, gt->GetX(), gt->GetY(), gt->GetZ());
+		int32 zoneid = 0;
+		this->MovePC(zoneid, gt->GetX(), gt->GetY(), gt->GetZ());
 	}
 	else if (!worldserver.Connected())
 	{
@@ -4840,34 +4843,33 @@ void Client::ProcessOP_ClickDoor(APPLAYER* pApp)
 	}
 
 	bool debugFlag = true;
-
 	ClickDoor_Struct* cd = (ClickDoor_Struct*)pApp->pBuffer;
+	Doors* currentdoor = entity_list.FindDoor(cd->doorid);
 
-	if(cd->doorid == 0){
+	/*if(cd->doorid == 0)
+	{
 		cd->doorid = 1;
-	}
-
-    Doors* currentdoor = entity_list.FindDoor(cd->doorid);
-		if(!currentdoor)
-		{
-			Message(RED,"Unable to find door, please notify a GM.");
-			if(debugFlag && GetDebugMe())
-				Message(WHITE,"Debug: You (%i) clicked a door: #%i, parameter: %i. Door was last clicked at %i", cd->playerid, cd->doorid, 0, 0);
-				DumpPacket(pApp);
-			return;
-		}
-		if(currentdoor->GetDoorID() == cd->doorid)
-		{
-			currentdoor->HandleClick(this, cd->keyid);
-		}
-		else
-		{
-		Message(RED,"Unable to find door, please notify a GM (DoorID: %i).",currentdoor->GetDoorID());
+	}*/
+	if(!currentdoor)
+	{
+		Message(RED,"Unable to find door, please notify a GM.");
 		if(debugFlag && GetDebugMe())
 			Message(WHITE,"Debug: You (%i) clicked a door: #%i, parameter: %i. Door was last clicked at %i", cd->playerid, cd->doorid, 0, 0);
 			DumpPacket(pApp);
 		return;
-		}
+	}
+	if(currentdoor->GetDoorID() == cd->doorid)
+	{
+		currentdoor->HandleClick(this, cd->keyid);
+	}
+	else
+	{
+	Message(RED,"Unable to find door, please notify a GM (DoorID: %i).",currentdoor->GetDoorID());
+	if(debugFlag && GetDebugMe())
+		Message(WHITE,"Debug: You (%i) clicked a door: #%i, parameter: %i. Door was last clicked at %i", cd->playerid, cd->doorid, 0, 0);
+		DumpPacket(pApp);
+	return;
+	}
 }
 
 
@@ -6097,9 +6099,9 @@ void Client::Process_ClientConnection4(APPLAYER *app)
 			QueuePacket(outapp);
 		}
 		else
-		{
 			EQC::Common::PrintF(CP_ZONESERVER,"Doors failed to spawn.");
-		}
+//		safe_delete(outapp); cavedude: Causes crash?
+
 		this->Handle_Connect5Objects();
 
 		client_state = CLIENT_CONNECTING5;

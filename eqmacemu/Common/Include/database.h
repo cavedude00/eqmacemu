@@ -100,7 +100,7 @@ public:
 	bool	DeletePlayerCorpse(int32 dbid);
 	bool	LoadPlayerCorpses(char* zonename);
 	bool	LoadObjects(vector<Object_Struct*>* object_list, char* zonename);
-	bool	GetZoneLongName(char* short_name, char** long_name, char* file_name = 0, float* safe_x = 0, float* safe_y = 0, float* safe_z = 0);
+	bool	GetZoneLongName(char* short_name, char** long_name, char* file_name = 0, float* safe_x = 0, float* safe_y = 0, float* safe_z = 0, int32* maxclients = 0);
 	int32	GetAuthentication(char* char_name, char* zone_name, int32 ip);
 	bool	SetAuthentication(int32 account_id, char* char_name, char* zone_name, int32 ip);
 	bool	GetAuthentication(int32 account_id, char* char_name, char* zone_name, int32 ip);

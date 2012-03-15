@@ -1406,14 +1406,14 @@ bool Database::EditGuild(int32 guilddbid, int8 ranknum, GuildRankLevel_Struct* g
 	return false;
 }
 
-bool Database::GetZoneLongName(char* short_name, char** long_name, char* file_name, float* safe_x, float* safe_y, float* safe_z)
+bool Database::GetZoneLongName(char* short_name, char** long_name, char* file_name, float* safe_x, float* safe_y, float* safe_z, int32* maxclients)
 {
 	char errbuf[MYSQL_ERRMSG_SIZE];
     char *query = 0;
     MYSQL_RES *result;
     MYSQL_ROW row;
 
-	if (RunQuery(query, MakeAnyLenString(&query, "SELECT long_name, file_name, safe_x, safe_y, safe_z FROM zone WHERE short_name='%i'", short_name), errbuf, &result))
+	if (RunQuery(query, MakeAnyLenString(&query, "SELECT long_name, file_name, safe_x, safe_y, safe_z, maxclients FROM zone WHERE short_name='%i'", short_name), errbuf, &result))
 	{
 		safe_delete_array(query);//delete[] query;
 		if (mysql_num_rows(result) == 1) {
@@ -1433,6 +1433,8 @@ bool Database::GetZoneLongName(char* short_name, char** long_name, char* file_na
 				*safe_y = atof(row[3]);
 			if (safe_z != 0)
 				*safe_z = atof(row[4]);
+			if (maxclients)
+				*maxclients = atoi(row[5]);
 			mysql_free_result(result);
 			return true;
 		}

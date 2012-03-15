@@ -177,7 +177,7 @@ Zone::Zone(char* in_short_name, char* in_address, int16 in_port)
 	address = strcpy(new char[strlen(in_address)+1], in_address);
 	port = in_port;
 
-	Database::Instance()->GetZoneLongName(short_name, &long_name, file_name, &psafe_x, &psafe_y, &psafe_z);
+	Database::Instance()->GetZoneLongName(short_name, &long_name, file_name, &psafe_x, &psafe_y, &psafe_z, &pMaxClients);
 
 	if (long_name == 0)
 	{
@@ -608,8 +608,8 @@ bool Database::LoadStaticZonePoints(LinkedList<ZonePoint*>* zone_point_list, con
 	zone_point_list->Clear();
 	zone->numzonepoints = 0;
 	MakeAnyLenString(&query, "SELECT x, y, z, target_x, target_y, "
-		"target_z, target_zone_id, heading, target_heading, number, "
-		"target_instance, client_version_mask FROM zone_points "
+		"target_z, target_zone_id, heading, target_heading, number "
+		"FROM zone_points "
 		"WHERE zone='%s' order by number", zonename);
 	if (RunQuery(query, strlen(query), errbuf, &result))
 	{

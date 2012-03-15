@@ -1864,7 +1864,8 @@ bool NPC::SummonTarget(Mob* target)
 
 	if(target->IsClient())
 	{
-		target->CastToClient()->MovePC(0, this->GetX(), this->GetY(), this->GetZ() + 5);
+		int32 zoneid = 0;
+		target->CastToClient()->MovePC(zoneid, this->GetX(), this->GetY(), this->GetZ() + 5);
 	}
 	else
 	{

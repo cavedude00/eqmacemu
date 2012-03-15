@@ -33,7 +33,7 @@ Harakiri - your commands go here
 // list all commands available for admin level
 void command_help(Client *c, const Seperator *sep);
 // goto xyz in current zone
-void command_goto(Client *c, const Seperator *sep);
+void command_moveto(Client *c, const Seperator *sep);
 // set level of target
 void command_level(Client *c, const Seperator *sep);
 // do damage to current target
