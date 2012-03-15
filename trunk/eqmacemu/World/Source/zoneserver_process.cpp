@@ -197,7 +197,7 @@ void ZoneServer::ProcessServerOP_ZoneShutdown(ServerPacket* pack)
 {
 	ServerZoneStateChange_struct* s = (ServerZoneStateChange_struct *) pack->pBuffer;
 	ZoneServer* zs = 0;
-	char* zonename = "";
+	char zonename[64];
 	strcpy(zonename, Database::Instance()->GetZoneName(s->zoneid));
 	if (s->ZoneServerID != 0)
 	{
@@ -418,35 +418,59 @@ void ZoneServer::ProcessServerOP_Lock(ServerPacket* pack)
 
 void ZoneServer::ProcessServerOP_ZoneToZoneRequest(ServerPacket* pack)
 {
-	if(pack->size != sizeof(ZoneToZone_Struct))
+	if (pack->size != sizeof(ZoneToZone_Struct)) 
+	{
+		cout << "Wrong size on ServerOP_ZoneToZoneRequest. Got: " << pack->size << ", Expected: " << sizeof(ZoneToZone_Struct) << endl;
 		return;
+	}
 	ZoneToZone_Struct* ztz = (ZoneToZone_Struct*) pack->pBuffer;
 	ZoneServer* zsc = 0;
-	if(zoneID = ztz->current_zone_id)
+	if (GetZoneID() == ztz->current_zone_id)
+	{
 		zsc = this;
+	}
 	else
-		zsc = zoneserver_list.FindByID(ztz->requested_zone_id);
-		if(zsc == 0)
+		zsc = zoneserver_list.FindByZoneID(ztz->current_zone_id);
+	if(zsc == 0)
+		return;
+	
+	if(GetZoneID() == ztz->current_zone_id) 
+	{
+		/*if (ztz->admin < 80 && ztz->ignorerestrictions < 2 && zoneserver_list.IsZoneLocked(ztz->requested_zone_id))
+		{
+			ztz->response = 0;
+			zsc->SendPacket(pack);
 			return;
-	if(zoneID = ztz->current_zone_id){
-		ZoneServer* zs = zoneserver_list.FindByID(ztz->requested_zone_id);
-		if(zs) {
+		}*/
+		ZoneServer* zs = zoneserver_list.FindByZoneID(ztz->requested_zone_id);
+		if(zs) 
+		{
 			// send to the zoneserver hosting the zone for further processing
+			EQC::Common::PrintF(CP_WORLDSERVER, "Found a zone already booted for %s\n", ztz->name);
 			zs->SendPacket(pack);
 		}
-		else {
-			if (zoneserver_list.TriggerBootup(Database::Instance()->GetZoneName(ztz->requested_zone_id))) {
+		else 
+		{
+			char zonename[16];
+			strcpy(zonename,Database::Instance()->GetZoneName(ztz->requested_zone_id,true));
+			if (zoneserver_list.TriggerBootup(zonename)) 
+			{
+				EQC::Common::PrintF(CP_WORLDSERVER, "Successfully booted a zone for %s\n", ztz->name);
 				// bootup successful, ready to rock
 				ztz->response = 1;
 			}
-			else {
+			else 
+			{
+				EQC::Common::PrintF(CP_WORLDSERVER, "FAILED to boot a zone for %s\n", ztz->name);
 				// bootup failed, send back error code 0
 				ztz->response = 0;
 			}
 			zsc->SendPacket(pack);
 		}
 	}
-	else {
+	else 
+	{
+		EQC::Common::PrintF(CP_WORLDSERVER, "Processing ZTZ for ingress to zone for client %s\n", ztz->name);
 		// Send the response back to the original zoneserver
 		zsc->SendPacket(pack);
 	}

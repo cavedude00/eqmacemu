@@ -95,6 +95,7 @@ public:
 	float	safe_x() { return psafe_x; }
 	float	safe_y() { return psafe_y; }
 	float	safe_z() { return psafe_z; }
+	inline const int32& GetMaxClients() { return pMaxClients; }
 
 	void	LoadZoneDoors(const char* zone);
 
@@ -212,6 +213,7 @@ private:
 	char*	address;
 	int16	port;
 	float	psafe_x, psafe_y, psafe_z;
+	int32	pMaxClients;
 	bool	is_daytime; // Kibanu - Time of Day
 
 	Timer*	autoshutdown_timer;

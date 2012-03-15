@@ -59,6 +59,11 @@ namespace EQC
 				return zone_name;
 			}
 
+			char* GetCharName()	
+			{
+				return char_name;
+			}
+
 			int32 GetZoneID()	
 			{
 				return zoneID;

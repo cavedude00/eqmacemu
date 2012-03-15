@@ -94,7 +94,8 @@ void Doors::HandleClick(Client* sender, int16 key)
 						else
 						{
 							//Yeahlight: Locked door TPs player to different location in same zone
-							sender->MovePC(0, destX, destY, destZ);
+							int32 zoneid = 0;
+							sender->MovePC(zoneid, destX, destY, destZ);
 						}
 					}
 					//Yeahlight Door is a legit "door" and needs to be opened for players
@@ -171,7 +172,8 @@ void Doors::HandleClick(Client* sender, int16 key)
 				else
 				{
 					//Yeahlight: Door TPs player to different location in same zone
-					sender->MovePC(0, destX, destY, destZ);
+					int32 zoneid = 0;
+					sender->MovePC(zoneid, destX, destY, destZ);
 				}
 			}
 			//Yeahlight: Normal door, open for all other players

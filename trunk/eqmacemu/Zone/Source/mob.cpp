@@ -4506,3 +4506,10 @@ void Mob::SetNextIncHPEvent( int inchpevent )
 { 
 	nextinchpevent = inchpevent;
 }
+
+void Mob::SetZone(int32 zone_id)
+{
+	if(IsClient())
+		CastToClient()->pp.current_zone = zone_id;
+		Save();
+}

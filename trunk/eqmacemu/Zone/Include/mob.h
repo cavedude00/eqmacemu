@@ -487,6 +487,7 @@ public:
 	void SetNextIncHPEvent( int inchpevent );
 	void SetCastingSpellLocationX(float x) { casting_spell_x_location =x; }
 	void SetCastingSpellLocationY(float y) { casting_spell_y_location =y; }	
+	void SetZone(int32 zone_id);
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////

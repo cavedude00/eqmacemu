@@ -524,7 +524,7 @@ void Client::QueuePacket(APPLAYER* app, bool ack_req)
 
 void Client::ReceiveData(uchar* buf, int len)
 {
-	timeout_timer->Start();
+	timeout_timer->Start(); //cavedude: Often when something goes wrong, this timer crashes the zone making debugging annoying.
 	MPacketManager.lock();
 	packet_manager.ParceEQPacket(len, buf);
 	MPacketManager.unlock();
@@ -658,21 +658,49 @@ void Client::SendExpUpdatePacket(int32 set_exp)
 	this->QueuePacket(&app);
 }
 
-void Client::MovePC(const char* zonename, float x, float y, float z, bool ignorerestrictions, bool useSummonMessage)
+void Client::MovePC(char* zonename, float x, float y, float z, bool ignorerestrictions, bool useSummonMessage)
 {
+	int32 zoneid = 0;
+
+	if(strcasecmp(zonename, "0") != 0)
+	{
+		zoneid = Database::Instance()->LoadZoneID(zonename);
+	}
+	MovePC(zoneid, x, y, z, ignorerestrictions, useSummonMessage);
+}
+
+void Client::MovePC(int32 zoneid, float x, float y, float z, bool ignorerestrictions, bool useSummonMessage)
+{
+	char zonename[16] = "0";
+	if(zoneid != 0)
+	{
+		if(!Database::Instance()->GetZoneShortName(zoneid, zonename))
+		{
+			Message(BLACK, "Debug: Can't get zone short name in MovePC zoneid: %i.", zoneid);
+			return;
+		}
+	}
+
 	CAST_CLIENT_DEBUG_PTR(this)->Log(CP_UPDATES, "Client::MovePC(zonename = %s, x = %f, y = %f, z = %f, ignore_restrictions = %i)", zonename, x, y, z, ignorerestrictions);
 	zonesummon_ignorerestrictions = ignorerestrictions;
 
-	int32 zoneid = Database::Instance()->LoadZoneID(zonename);
+	APPLAYER* outapp = new APPLAYER; 
 
 	//Yeahlight: We are using the GM summon struct, thus displaying, "You have been summoned!"
-	if(useSummonMessage)
+	if(useSummonMessage && zoneid != 0)
 	{
-		APPLAYER* outapp = new APPLAYER(OP_GMSummon, sizeof(GMSummon_Struct));
-		memset(outapp->pBuffer, 0, outapp->size);
-		GMSummon_Struct* gms = (GMSummon_Struct*) outapp->pBuffer;
+		outapp->size = sizeof(GMSummon_Struct);
+        outapp->pBuffer = new uchar[outapp->size];
+        memset(outapp->pBuffer, 0, outapp->size);
+        GMSummon_Struct* gms = (GMSummon_Struct*) outapp->pBuffer;
+
 		strcpy(gms->charname, this->GetName());
-		strcpy(gms->gmname, this->GetName());
+        strcpy(gms->gmname, this->GetName());
+
+        outapp->opcode = OP_GMSummon;     
+		gms->x = (sint32) x;
+		gms->y = (sint32) y;
+		gms->z = (sint32) z;
 
 		if (zonename == 0 || strcmp(zone->GetShortName(), zonename) == 0)
 		{
@@ -689,31 +717,54 @@ void Client::MovePC(const char* zonename, float x, float y, float z, bool ignore
 				zonesummon_z = z;
 			}
 		}
-		gms->x = (sint32) x;
-		gms->y = (sint32) y;
-		gms->z = (sint32) z;
-		int8 tmp[4] = { 0xE0, 0xE0, 0x56, 0x00 };
-		memcpy(gms->unknown2, tmp, 4);
-		QueuePacket(outapp);
-		safe_delete(outapp);//delete outapp;
 	}
-	//Yeahlight: We will not be using the GM summon struct, so force a change locally
-	else
+	// #goto
+	if(zoneid == 0)
 	{
-		APPLAYER* app = new APPLAYER(OP_ClientUpdate, sizeof(SpawnPositionUpdate_Struct));
-		SpawnPositionUpdate_Struct* spu = (SpawnPositionUpdate_Struct*)app->pBuffer;
-		memset(spu, 0, sizeof(SpawnPositionUpdate_Struct));
+		outapp->size = sizeof(SpawnPositionUpdate_Struct);
+		outapp->pBuffer = new uchar[outapp->size];
+		memset(outapp->pBuffer, 0, outapp->size);
+		SpawnPositionUpdate_Struct* spu = (SpawnPositionUpdate_Struct*) outapp->pBuffer;
+
+		outapp->opcode = OP_ClientUpdate;
 		spu->x_pos = x;
 		spu->y_pos = y;
 		spu->z_pos = z;
 		spu->heading = GetHeading();
 		spu->spawn_id = this->GetID();
-		QueuePacket(app);
-		safe_delete(app);
+	}
+	else
+	{
+		outapp->size = sizeof(GMGoto_Struct);
+        outapp->pBuffer = new uchar[outapp->size];
+        memset(outapp->pBuffer, 0, outapp->size);
+        GMGoto_Struct* gmg = (GMGoto_Struct*) outapp->pBuffer;
+
+        strcpy(gmg->charname, this->GetName());
+        strcpy(gmg->gmname, this->GetName());
+
+        outapp->opcode = OP_GMGoto;
+        gmg->x = (sint32) x;
+        gmg->y = (sint32) y;
+        gmg->z = (sint32) z;
+
+        if (zonename == 0) {
+            gmg->zoneID = zone->GetZoneID();
+        }
+        else {
+            gmg->zoneID = zoneid;
+
+            strcpy(zonesummon_name, zonename);
+            zonesummon_x = x;
+            zonesummon_y = y;
+            zonesummon_z = z;
+		}
 	}
 	if(GetDebugMe())
-		Message(LIGHTEN_BLUE, "Debug: Moving you to %.2f, %.2f, %.2f", x, y, z);
+		Message(LIGHTEN_BLUE, "Debug: Moving you to %i: %.2f, %.2f, %.2f", zoneid, x, y, z);
 	SendPosUpdate(false, PC_UPDATE_RANGE, false);
+	QueuePacket(outapp);
+	safe_delete(outapp);//delete outapp;
 }
 
 // Sends out a OP_LevelUpdate packet -Dark-Prince 
@@ -3802,7 +3853,8 @@ void Client::ScanForZoneLines()
 					this->Message(WHITE,"Debug: You have come in contact with zoneline node: %i",zone->thisZonesZoneLines[i]->id);
 				if(strcmp(zone->GetShortName(), zone->thisZonesZoneLines[i]->target_zone) == 0)
 				{
-					this->MovePC(0, zone->thisZonesZoneLines[i]->target_x, zone->thisZonesZoneLines[i]->target_y, zone->thisZonesZoneLines[i]->target_z, false, false);
+					int32 zoneid = 0;
+					this->MovePC(zoneid, zone->thisZonesZoneLines[i]->target_x, zone->thisZonesZoneLines[i]->target_y, zone->thisZonesZoneLines[i]->target_z, false, false);
 				}
 				else
 				{
@@ -4091,9 +4143,9 @@ uint32 Client::GetTotalLevelExp()
 {
 	int16 playersLevel = GetLevel();
 	//Yeahlight: There is no level 61, so prevent the array from going out of bounds
-	if(playersLevel >= 60)
+	if(playersLevel >= 65)
 		return 2140000000;
-	uint32 exp_needed[61];
+	uint32 exp_needed[66];
 	for(int i = 1; i <= playersLevel + 1; i++)
 		exp_needed[i] = GetEXPForLevel(i);
 	return exp_needed[playersLevel + 1] - exp_needed[playersLevel];

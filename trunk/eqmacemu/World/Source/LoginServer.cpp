@@ -381,7 +381,7 @@ namespace EQC
 				port = from.sin_port;
 				in.s_addr = from.sin_addr.s_addr;
 
-				timeout_timer->Start();
+				timeout_timer->Start(); // cavedude: possible crash on death
 				int16 base = 0;
 				int16 size = 0;
 				while (base < status)
