@@ -197,15 +197,13 @@ void ZoneServer::ProcessServerOP_ZoneShutdown(ServerPacket* pack)
 {
 	ServerZoneStateChange_struct* s = (ServerZoneStateChange_struct *) pack->pBuffer;
 	ZoneServer* zs = 0;
-	char zonename[64];
-	strcpy(zonename, Database::Instance()->GetZoneName(s->zoneid));
 	if (s->ZoneServerID != 0)
 	{
 		zs = zoneserver_list.FindByID(s->ZoneServerID);
 	}
-	else if (zonename[0] != 0)
+	else if (s->zoneid != 0)
 	{
-		zs = zoneserver_list.FindByName(zonename);
+		zs = zoneserver_list.FindByZoneID(s->zoneid);
 	}
 	else
 	{

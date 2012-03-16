@@ -144,6 +144,7 @@ float	heading;
 int8	opentype;
 int16	lockpick;
 int16	keyRequired;
+int16	size;
 int8	triggerID;
 int8	triggerType;
 bool	doorIsOpen;
