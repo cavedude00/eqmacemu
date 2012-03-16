@@ -32,7 +32,7 @@ bool SharedMemory::LoadDoors(){
 			memset(&getPtr()->door_array, 0, sizeof(getPtr()->door_array));
 			mysql_free_result(result);
 
-			MakeAnyLenString(&query, "SELECT name,pos_x,pos_y,pos_z,heading,opentype,doorid,triggerdoor,triggertype,door_param,incline,doorisopen,invert_state,lockpick,keyitem,dest_zone,dest_x,dest_y,dest_z,dest_heading,id,zone FROM doors");
+			MakeAnyLenString(&query, "SELECT name,pos_x,pos_y,pos_z,heading,opentype,doorid,triggerdoor,triggertype,door_param,incline,doorisopen,invert_state,lockpick,keyitem,dest_zone,dest_x,dest_y,dest_z,dest_heading,id,zone,size FROM doors");
 
 			if (Database::Instance()->RunQuery(query, strlen(query), errbuf, &result))
 			{
@@ -64,6 +64,7 @@ bool SharedMemory::LoadDoors(){
 					getPtr()->door_array[id].destY = (float)atof(row[17]);
 					getPtr()->door_array[id].destZ = (float)atof(row[18]);
 					getPtr()->door_array[id].destHeading = (float)atof(row[19]);
+					getPtr()->door_array[id].size = atoi(row[22]);
 					getPtr()->door_array[id].entity_id = 0;
 					getPtr()->door_array[id].pLastClick = 0;
 

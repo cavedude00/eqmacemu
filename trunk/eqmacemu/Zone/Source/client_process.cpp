@@ -6080,19 +6080,9 @@ void Client::Process_ClientConnection4(APPLAYER *app)
 	if (app->opcode == 0x0a40) //0x0a40
 	{
 		EQC::Common::PrintF(CP_CLIENT, "Zhdr request (Login 4)\n"); // This packet was empty...
-
 		this->SendNewZone(zone->newzone_data); // Send zone header
 		
-		APPLAYER* outapp;
-		outapp = new APPLAYER;
-		outapp->opcode = 0xd840; // Initiates Process_ClientConnection5
-		outapp->size = 0;
-		QueuePacket(outapp);
-		delete outapp;
-
-		//Send Bulk Spawns
-		entity_list.SendZoneSpawnsBulk(this);
-
+		APPLAYER* outapp = new APPLAYER;
 		// Doors and objects
 		if (entity_list.MakeDoorSpawnPacket(outapp)) 
 		{
@@ -6100,9 +6090,16 @@ void Client::Process_ClientConnection4(APPLAYER *app)
 		}
 		else
 			EQC::Common::PrintF(CP_ZONESERVER,"Doors failed to spawn.");
-//		safe_delete(outapp); cavedude: Causes crash?
+		safe_delete(outapp);
 
 		this->Handle_Connect5Objects();
+
+		//Send Bulk Spawns
+		entity_list.SendZoneSpawnsBulk(this);
+
+		outapp = new APPLAYER(0xd840); // Initiates Process_ClientConnection5
+		QueuePacket(outapp);
+		safe_delete(outapp);
 
 		client_state = CLIENT_CONNECTING5;
 	}

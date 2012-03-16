@@ -1756,24 +1756,22 @@ enum MESSAGEBOARD_CATEGORY
 	GUILDS 
 };
 
-struct Door_Struct{
-/*0000*/ char    name[16];      // Filename of Door
-/*0016*/ float   yPos;          // y loc
-/*0020*/ float   xPos;          // x loc
-/*0024*/ float   zPos;          // z loc
-/*0028*/ float	 heading;		// y rotation (verified by Sp0tter).
-/*0032*/ float	 incline;		// x rotation (verified by Sp0tter).
-/*0036*/ float	 padding;
-/*0038*/ uint8   doorid;
-/*0039*/ uint8	 opentype;      //Opentype (verified by Wizzel)
-/*0040*/ uint8	 doorIsOpen;    //Yeahlight: Door is open
-/*0041*/ uint8	 inverted;	    //Yeahlight: Door starts at inverted state. This flags needs to be ON for traps to animate and has other odd effects on other types of doors.
-/*0042*/ int16	 parameter;     //Yeahlight: Specific distance door (most likely a lift/button) will travel
-/*0044*/ int8	 unknown0044;
-/*0045*/ int8    auto_return;
-/*0046*/ int8	 unknown0046;
-
-
+struct Door_Struct
+{
+/*0000*/ char    name[16];            // Filename of Door // Was 10char long before... added the 6 in the next unknown to it: Daeken M. BlackBlade
+/*0016*/ float   yPos;               // y loc
+/*0020*/ float   xPos;               // x loc
+/*0024*/ float   zPos;               // z loc
+/*0028*/ float	 heading;
+/*0032*/ float   incline;
+/*0036*/ int16	 size;
+/*0038*/ uint8	 doorid;             // door's id #
+/*0039*/ uint8	 opentype;
+/*0040*/ uint8	 doorIsOpen;
+/*0041*/ uint16	 inverted;		//FFFF
+/*0043*/ uint16	 parameter; 
+/*0045*/ int8	 unknown[2];
+};
 
 /******Useful Open Types*******/
 //53: Spell Particle Effect
@@ -1861,7 +1859,6 @@ struct Door_Struct{
 144: Water fall (same as 128)
 145: ?? (Blue sparkles raining down randomly)
 146: ?? (Same as 145 but smaller)*/
-};
 
 struct DoorSpawns_Struct	//SEQ
 {

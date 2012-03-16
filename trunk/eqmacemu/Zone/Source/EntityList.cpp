@@ -1669,13 +1669,13 @@ bool EntityList::MakeDoorSpawnPacket(APPLAYER* app){
 				nd->doorIsOpen = iterator.GetData()->CastToDoors()->IsDoorOpen();
 				nd->inverted = iterator.GetData()->CastToDoors()->GetInvertedState();
 				nd->parameter = iterator.GetData()->CastToDoors()->GetParameter();
-				nd->opentype = iterator.GetData()->CastToDoors()->GetOpenType();
+				nd->size = iterator.GetData()->CastToDoors()->GetSize();
 
 				memcpy(buffer2+length,buffer1,44);
 				length = length + 44;
 
 				qty++;
-				EQC::Common::PrintF(CP_ZONESERVER,"doorid %i name %s xPos %f yPos %f.",nd->doorid, nd->name, nd->xPos, nd->yPos);
+				EQC::Common::PrintF(CP_ZONESERVER,"doorid %i name %s xPos %f yPos %f size %i.",nd->doorid, nd->name, nd->xPos, nd->yPos, nd->size);
 				}
 			}
 		}
@@ -1686,8 +1686,6 @@ bool EntityList::MakeDoorSpawnPacket(APPLAYER* app){
 		if (qty == 0)
 			return false;
 
-		APPLAYER *outapp;
-		outapp = new APPLAYER;
 		app->opcode = OP_SpawnDoor;
 		app->pBuffer = new uchar[7000];
 		length = DeflatePacket(buffer2,length,app->pBuffer+2,7000);

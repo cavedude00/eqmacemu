@@ -27,6 +27,7 @@ Doors::Doors(const Door* door)
 	triggered=false;
 	parameter = door->parameter;
 	inverted = door->inverted;
+	size = door->size;
 	SetOpenState(false);
 
 	close_timer.Disable();
@@ -89,13 +90,13 @@ void Doors::HandleClick(Client* sender, int16 key)
 						if(strcmp(zone->GetShortName(), dest_zone) != 0)
 						{
 							//Yeahlight: Locked door TPs player to different zone
-							sender->MovePC(dest_zone, destX, destY, destZ);
+							sender->MovePC(dest_zone, destY, destX, destZ);
 						}
 						else
 						{
 							//Yeahlight: Locked door TPs player to different location in same zone
 							int32 zoneid = 0;
-							sender->MovePC(zoneid, destX, destY, destZ);
+							sender->MovePC(zoneid, destY, destX, destZ);
 						}
 					}
 					//Yeahlight Door is a legit "door" and needs to be opened for players
@@ -167,13 +168,13 @@ void Doors::HandleClick(Client* sender, int16 key)
 				if(strcmp(zone->GetShortName(), dest_zone) != 0)
 				{
 					//Yeahlight: Door TPs player to different zone
-					sender->MovePC(dest_zone, destX, destY, destZ);
+					sender->MovePC(dest_zone, destY, destX, destZ);
 				}
 				else
 				{
 					//Yeahlight: Door TPs player to different location in same zone
 					int32 zoneid = 0;
-					sender->MovePC(zoneid, destX, destY, destZ);
+					sender->MovePC(zoneid, destY, destX, destZ);
 				}
 			}
 			//Yeahlight: Normal door, open for all other players
@@ -184,14 +185,12 @@ void Doors::HandleClick(Client* sender, int16 key)
 					od->doorid = doorid;
 					od->action = 0x02;
 					doorIsOpen = 1;
-					sender->Message(LIGHTEN_BLUE, "Regular Door: IsOpen");
 				}
 				else
 				{
 					od->doorid = doorid;
 					od->action = 0x03;
 					doorIsOpen = 0;
-					sender->Message(LIGHTEN_BLUE, "Regular Door: Is Not Open");
 				}
 				entity_list.QueueClients(sender, outapp, false);
 			}

@@ -31,6 +31,7 @@ public:
 	bool	triggered;
 	uint8	GetInvertedState() { return inverted; }
 	int16	GetParameter() { return parameter; }
+	int16	GetSize() { return size; }
 	float	GetIncline() { return incline; }
 
 	int16	GetKeyItem() { return keyRequired; }
@@ -66,6 +67,7 @@ bool	doorIsOpen;
 int32	pLastClick;
 uint8	inverted;
 int16	parameter;
+int16	size;
 float	incline;
 Timer	close_timer;
 Timer*	PickLock_timer;
