@@ -5973,7 +5973,7 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 		sze->helmet = item->common.material;
 		sze->helmet_color = item->common.color;
 	}
-	sze->npc_armor_graphic = 0xff;  // tell client to display PC's gear
+	sze->npc_armor_graphic = 0xFF;  // tell client to display PC's gear
 
 	// Quagmire - Found guild id =)
 	// havent found the rank yet tho

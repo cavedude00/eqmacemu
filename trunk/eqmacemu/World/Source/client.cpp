@@ -151,8 +151,9 @@ namespace EQC
 
 
 			// Create the buffer & struct
-			uchar* pBuffer = new uchar[sizeof(CharacterSelect_Struct)];
-			CharacterSelect_Struct* cs_struct = (CharacterSelect_Struct*)pBuffer;
+			APPLAYER *outapp;
+			outapp = new APPLAYER(OP_SendCharInfo, sizeof(CharacterSelect_Struct));
+			CharacterSelect_Struct* cs_struct = (CharacterSelect_Struct*)outapp->pBuffer;
 
 			// get the char info from the database and place in cs_struct
 			Database::Instance()->GetCharSelectInfo(account_id, cs_struct,&weapons); //TODO: Add validation if the command succeeded
