@@ -147,19 +147,20 @@ namespace EQC
 		// The Char Info is returned from Database::Instance()->GetCharSelectInfos
 		void Client::SendCharInfo()
 		{
-			// has to ber a bete way of doing this!
+			APPLAYER *outapp = new APPLAYER(OP_SendCharInfo, sizeof(CharacterSelect_Struct));
+			
+			if (outapp->size != sizeof(CharacterSelect_Struct))
+			{
+				cout << "Wrong size on CharacterSelect_Struct. Got: " << outapp->size << ", Expected: " << sizeof(CharacterSelect_Struct) << endl;
+			} 
 
-
-			// Create the buffer & struct
-			APPLAYER *outapp;
-			outapp = new APPLAYER(OP_SendCharInfo, sizeof(CharacterSelect_Struct));
-			CharacterSelect_Struct* cs_struct = (CharacterSelect_Struct*)outapp->pBuffer;
-
-			// get the char info from the database and place in cs_struct
-			Database::Instance()->GetCharSelectInfo(account_id, cs_struct,&weapons); //TODO: Add validation if the command succeeded
-
-			// pas to network to send it off
-			this->network->SendCharInfo(cs_struct);
+			else
+			{
+				CharacterSelect_Struct* cs_struct = (CharacterSelect_Struct*)outapp->pBuffer;
+				Database::Instance()->GetCharSelectInfo(account_id, cs_struct,&weapons); 
+				this->network->QueuePacket(outapp);
+			}
+			safe_delete(outapp);
 		}
 
 		bool Client::Process()

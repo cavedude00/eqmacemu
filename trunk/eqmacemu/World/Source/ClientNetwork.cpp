@@ -191,24 +191,6 @@ namespace EQC
 				safe_delete(outpacket);//delete outpacket;
 			}
 
-			void ClientNetwork::SendCharInfo(CharacterSelect_Struct* cs_struct)
-			{
-				APPLAYER *outpacket = new APPLAYER(OP_SendCharInfo, sizeof(CharacterSelect_Struct));
-
-				if (outpacket->size != sizeof(CharacterSelect_Struct)) // 20/10/2007 - froglok23 - added size checking sanity check
-				{
-					cout << "Wrong size on CharacterSelect_Struct. Got: " << outpacket->size << ", Expected: " << sizeof(CharacterSelect_Struct) << endl;
-				} 
-				else
-				{
-					memset(outpacket->pBuffer, 0, outpacket->size);
-					outpacket->pBuffer = (uchar*)cs_struct;
-
-					this->QueuePacket(outpacket);
-				}
-				safe_delete(outpacket);//delete outpacket;
-			}
-
 			void ClientNetwork::SendGuildsList(GuildsList_Struct* gs_struct)
 			{
 				// Quagmire - tring to send list of guilds
