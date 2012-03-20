@@ -46,7 +46,6 @@ namespace EQC
 				void SendServerMOTD(ServerMOTD_Struct* smotd);
 				void SendExpansionInfo(int flag);
 				void SendTimeOfDay();
-				void SendCharInfo(CharacterSelect_Struct* cs_struct);
 				void SendGuildsList(GuildsList_Struct* gs_struct);
 				void SendWearChangeRequestSlot(WearChange_Struct* wc,int16 itemid);
 
