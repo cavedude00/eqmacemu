@@ -97,11 +97,11 @@ bool Zone::Bootup(char* zone_name)
 	Database::Instance()->LoadNPCTypes(zone_name);
 	SetConsoleTitleA(bfr);
 	entity_list.WriteEntityIDs();
-	//zone->weather_type=Database::Instance()->GetZoneW(zone->short_name); // Tazadar : we load the weather of the zone (snow/rain/nothing)
+	zone->weather_type=Database::Instance()->GetZoneW(zone->short_name); // Tazadar : we load the weather of the zone (snow/rain/nothing)
 	//cout << "Default weather type for zone is " << (long)zone->weather_type << endl; // Tazadar : if the load failed
-	//zone->weather_timer=0; //Tazadar:We initialise the timer
-	//zone->zone_weather=zone->weather_type;	//Tazadar:We put the weather type to start
-	//zone->weatherProc(); //Tazadar:We start the timer once the zone is up 
+	zone->weather_timer=0; //Tazadar:We initialise the timer
+	zone->zone_weather=zone->weather_type;	//Tazadar:We put the weather type to start
+	zone->weatherProc(); //Tazadar:We start the timer once the zone is up 
 
 	// Kibanu - Set Time of Day
 	zone->SetTimeOfDay( Database::Instance()->IsDaytime() );
@@ -1172,11 +1172,11 @@ void Zone::weatherProc()
 	if(time(0)>=weather_timer && weather_type != 0x00)
 	{
 		if(zone_weather==0)
-			//weather_timer=time(0)+(rand()%(20))+30;//to test the weather
-			weather_timer=time(0)+(rand()%(2400-30))+30;//real time (dunno if its the correct classic time)
+			weather_timer=time(0)+(rand()%(20))+30;//to test the weather
+			//weather_timer=time(0)+(rand()%(2400-30))+30;//real time (dunno if its the correct classic time)
 		else
-			//weather_timer=time(0)+(rand()%(20))+30;//to test the weather
-			weather_timer=time(0)+(rand()%(3600-30))+30;//real time (dunno if its the correct classic time)
+			weather_timer=time(0)+(rand()%(20))+30;//to test the weather
+			//weather_timer=time(0)+(rand()%(3600-30))+30;//real time (dunno if its the correct classic time)
 		if(zone_weather>0)
 			zone_weather=0;
 		else
@@ -1196,7 +1196,7 @@ void Zone::weatherProc()
 ********************************************************************/
 void Zone::weatherSend()
 {
-	/*switch(zone_weather)
+	switch(zone_weather)
 	{
 	case 0:
 	entity_list.Message(0, BLACK, "The sky clears.");
@@ -1210,7 +1210,7 @@ void Zone::weatherSend()
 	default:
 	entity_list.Message(0, BLACK, "Strange weather patterns form in the sky. (%i)", zone_weather);
 	break;
-	}*/
+	}
 	APPLAYER* outapp = new APPLAYER(OP_Weather, 8);
 	memset(outapp->pBuffer, 0, 8);
 	if(zone_weather>0){
