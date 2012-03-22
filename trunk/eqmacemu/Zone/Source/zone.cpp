@@ -1172,11 +1172,11 @@ void Zone::weatherProc()
 	if(time(0)>=weather_timer && weather_type != 0x00)
 	{
 		if(zone_weather==0)
-			weather_timer=time(0)+(rand()%(20))+30;//to test the weather
-			//weather_timer=time(0)+(rand()%(2400-30))+30;//real time (dunno if its the correct classic time)
+			//weather_timer=time(0)+(rand()%(20))+30;//to test the weather
+			weather_timer=time(0)+(rand()%(2400-30))+30;//real time (dunno if its the correct classic time)
 		else
-			weather_timer=time(0)+(rand()%(20))+30;//to test the weather
-			//weather_timer=time(0)+(rand()%(3600-30))+30;//real time (dunno if its the correct classic time)
+			//weather_timer=time(0)+(rand()%(20))+30;//to test the weather
+			weather_timer=time(0)+(rand()%(3600-30))+30;//real time (dunno if its the correct classic time)
 		if(zone_weather>0)
 			zone_weather=0;
 		else
