@@ -134,7 +134,7 @@ int command_init(void) {
 	int GM_ADMIN = 0;
 	int NORMAL_ACESS = 0;
 	if
-	(	command_add("moveto","[x] [y] [z] - Teleport to the provided coordinates or to your target",GM_MASTER_ACESSS,command_moveto) ||
+	(	command_add("goto","[x] [y] [z] - Teleport to the provided coordinates or to your target",GM_MASTER_ACESSS,command_goto) ||
 		command_add("level","[level] - Set your or your target's level",GM_MASTER_ACESSS,command_level) ||
 		command_add("damage","[x] - Inflicts damage upon target.",EQC_Alpha_Tester,command_damage) ||
 		command_add("heal","[x] - (PC only) Completely heals your target.",EQC_Alpha_Tester,command_heal) ||
@@ -183,7 +183,6 @@ int command_init(void) {
 		command_add("diffitem","[itemid] compares blob item with nonblob item",EQC_Alpha_Tester,command_diffitem) ||
 		command_add("di",NULL,EQC_Alpha_Tester,command_diffitem) ||
 
-		command_add("teleport","[zone] ([x] [y] [z]) ([heading]) teleports you to the specific parameters",EQC_Alpha_Tester,command_teleport) ||
 		command_add("translocate","[zone] ([x] [y] [z]) translocates you to the specific parameters",EQC_Alpha_Tester,command_translocate) ||
 
 		command_add("givemoney","[copper] [silver] [gold] [plat] - Gives specified amount of money to the target player.",GM_MANAGEMENT_ACESSS,command_givemoney) ||
@@ -533,14 +532,14 @@ void command_help(Client *c, const Seperator *sep)
 
 }
 
-void command_moveto(Client *c, const Seperator *sep)
+void command_goto(Client *c, const Seperator *sep)
 {
 		int32 zoneid = 0;
 		if (sep->arg[1][0] == 0 && c->GetTarget() != 0) {
 			c->MovePC(zoneid, c->GetTarget()->GetX(), c->GetTarget()->GetY(), c->GetTarget()->GetZ(), false, false);
 		}
 		else if (!(sep->IsNumber(1) && sep->IsNumber(2) && sep->IsNumber(3))) {
-			c->Message(BLACK, "Usage: #moveto [x y z].");
+			c->Message(BLACK, "Usage: #goto [x y z].");
 		}
 		else {
 			c->MovePC(zoneid, atof(sep->arg[2]), atof(sep->arg[1]), atof(sep->arg[3]), false, false);
@@ -786,12 +785,13 @@ void command_zone(Client *c, const Seperator *sep)
 	}
 	if (sep->IsNumber(2) && sep->IsNumber(3) && sep->IsNumber(4))
 	{
-			x = atof(sep->arg[2]);
-			y = atof(sep->arg[3]);
+			x = atof(sep->arg[3]);
+			y = atof(sep->arg[2]);
 			z = atof(sep->arg[4]);
 			c->SetZoningX(x);
 			c->SetZoningY(y);
 			c->SetZoningZ(z);
+			cerr << "Got a zone request for ID: " << zoneid << " x: " << x  << " y: " << y << " z: " << z << endl;
 	}
 	else if (sep->arg[1][0] == 0)
 	{
@@ -803,9 +803,10 @@ void command_zone(Client *c, const Seperator *sep)
 	{
 		if(Database::Instance()->GetSafePointsByID(zoneid, &x, &y, &z, 0, 0))
 		{
-			c->SetZoningX((sint32)x);
-			c->SetZoningY((sint32)y);
-			c->SetZoningZ((sint32)z);
+		c->SetZoningX((sint32)x);
+		c->SetZoningY((sint32)y);
+		c->SetZoningZ((sint32)z);
+		cerr << "Got a zone request using safe points for ID: " << zoneid << " x: " << x  << " y: " << y << " z: " << z << endl;
 		}
 		else
 		{
@@ -813,10 +814,9 @@ void command_zone(Client *c, const Seperator *sep)
 			return;
 		}
 	}
-	c->SetUsingSoftCodedZoneLine(true);
+	c->SetUsingSoftCodedZoneLine(false);
 	c->SetIsZoning(true);
 	c->SetHeading(0.0f);
-	cerr << "Got a zone request for ID: " << zoneid << " x: " << x  << " y: " << y << " z: " << z << endl;
 	c->Message(BLACK, "Got a zone request for %i", zoneid);
 	c->MovePC(zoneid, x, y, z, true, false);
 }
@@ -1075,37 +1075,6 @@ void command_diffitem(Client *c, const Seperator *sep)
 			}
 		}
 	}
-
-void command_teleport(Client *c, const Seperator *sep)
-{
-
-		if (sep->arg[1][0] == 0)
-		{
-			c->Message(BLACK, "Usage: #teleport [zonename] ([x] [y] [z])");
-		}
-		else  {
-
-			float x = 0;
-			float y = 0;
-			float z = 0;
-			float heading = 0;
-
-			if (sep->IsNumber(2) && sep->IsNumber(3) && sep->IsNumber(3)) {
-				x = atof(sep->arg[2]);
-				y = atof(sep->arg[3]);
-				z = atof(sep->arg[4]);
-			}
-			if (sep->IsNumber(4)) {
-				heading = atof(sep->arg[5]);
-			}
-
-			c->Message(BLACK, "Teleporting you to zone name = %s, x = %f, y = %f, z = %f", sep->arg[1], x, y, z);
-
-		//	c->MovePC(sep->arg[1], x, y, z,heading);
-			//c->TeleportPC(sep->arg[1], x, y, z,heading);
-		}
-
-}
 
 void command_translocate(Client *c, const Seperator *sep)
 {

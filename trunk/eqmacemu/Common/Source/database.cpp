@@ -4334,7 +4334,7 @@ bool Database::LoadZoneRules(char* zonename, int8& bindCondition, int8& levCondi
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 
-	if(RunQuery(query, MakeAnyLenString(&query, "SELECT can_bind, can_lev, castoutdoor FROM zone_rules WHERE short_name = '%s'", zonename), errbuf, &result))
+	if(RunQuery(query, MakeAnyLenString(&query, "SELECT canbind, canlevitate, castoutdoor FROM zone WHERE short_name = '%s'", zonename), errbuf, &result))
 	{
 		safe_delete_array(query);
 		row = mysql_fetch_row(result);

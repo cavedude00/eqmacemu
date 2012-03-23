@@ -1243,11 +1243,10 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	//Yeahlight: First, check if our client is zoning via ZonePC
 	if(this->usingSoftCodedZoneLine)
 	{
-		
 		tarx = zoningX;
 		tary = zoningY;
 		tarz = zoningZ;
-		EQC::Common::Log(EQCLog::Debug,CP_CLIENT,"Client::ProcessOP_ZoneChange(Zoning with soft coded values zone name = %s, x = %f, y = %f, z = %f, heading = %f)", Database::Instance()->GetZoneName(zc->zoneID), tarx, tary, tarz);
+		EQC::Common::Log(EQCLog::Debug,CP_CLIENT,"Client::ProcessOP_ZoneChange(Zoning with soft coded values zone name = %s, x = %f, y = %f, z = %f, heading = %f)", Database::Instance()->GetZoneName(zc->zoneID), tarx, tary, tarz, tempHeading);
 
 	}
 	// -1, -1, -1 = code for zone safe point
@@ -1291,14 +1290,14 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 	}
 	else if(zone_point != 0)
 	{
-		cout << "Zone point found at x:" << zone_point->x << " y:" << zone_point->y << " z:" << zone_point->z << endl;
-		tarx = zone_point->target_x;
-		tary = zone_point->target_y;
+		cout << "Zone point found at x:" << zone_point->x << " y:" << zone_point->y << " z:" << zone_point->z << " H: " << zone_point->heading << endl;
+		tarx = zone_point->target_y;
+		tary = zone_point->target_x;
 		tarz = zone_point->target_z;
 		this->isZoningZP = true;
 		//Yeahlight: If we are not using a custom coordinate, then use the current heading
 		if(tarx != 0 && tary != 0 && tarz != 0)
-			this->tempHeading = zone_point->heading;
+			this->tempHeading = zone_point->target_heading;
 		else
 			this->tempHeading = heading;
 		this->zoningX = tarx;
@@ -1390,7 +1389,7 @@ void Client::ProcessOP_ZoneChange(APPLAYER* pApp)
 			cerr << "Zone '" << Database::Instance()->GetZoneName(zc->zoneID) << "' is not available" << endl;
 		}
 		else {
-			cerr << "Zone is not available" << endl;
+			cerr << "Zone is not available. ID: " << zc->zoneID << endl;
 		}
 		outapp = new APPLAYER(OP_CancelTrade, 0);
 		QueuePacket(outapp);

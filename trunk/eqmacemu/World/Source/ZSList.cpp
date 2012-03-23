@@ -423,7 +423,11 @@ namespace EQC
 				iterator.Reset();
 				while(iterator.MoreElements())
 				{
-					if (strcasecmp(iterator.GetData()->zone(), Database::Instance()->GetZoneName(zone)) == 0)
+					if(!iterator.GetData())
+					{
+						return;
+					}
+					else if (iterator.GetData()->zone() == zone)
 					{
 						if (name == 0)
 						{
@@ -445,8 +449,6 @@ namespace EQC
 						EQC_FREEZE_DEBUG(__LINE__, __FILE__);
 				}
 			}
-
-
 
 			ClientListEntry* ZSList::FindCharacter(char* name)
 			{
@@ -496,7 +498,11 @@ namespace EQC
 				iterator.Reset();
 				while(iterator.MoreElements())
 				{
-					if (strcasecmp(iterator.GetData()->name(), name) == 0) 
+					if(!iterator.GetData())
+					{
+						return;
+					}
+					else if (strcasecmp(iterator.GetData()->name(), name) == 0) 
 					{
 						iterator.GetData()->Update(zoneserver, name, accountid, accountname, admin, zone, level, class_, race, anon, tellsoff, guilddbid, guildeqid, LFG);
 						return;
@@ -536,13 +542,15 @@ namespace EQC
 
 				Guild_Struct* guilds = guild_mgr.GetGuildList();
 
+				char zonename[16];
+				Database::Instance()->GetZoneShortName(iterator.GetData()->zone(),zonename);
 				while(iterator.MoreElements())
 				{
 					if (whom == 0 || (
 						(iterator.GetData()->Admin() >= 80 || whom->gmlookup == 0xFFFF) && 
 						(whom->wclass == 0xFFFF || iterator.GetData()->class_() == whom->wclass) && 
 						(whom->wrace == 0xFFFF || iterator.GetData()->race() == whom->wrace) && 
-						(whomlen == 0 || strncasecmp(iterator.GetData()->zone(),whom->whom, whomlen) == 0 || strncasecmp(iterator.GetData()->name(),whom->whom, whomlen) == 0 || (iterator.GetData()->GuildEQID() != 0xFFFFFFFF && strncasecmp(guilds[iterator.GetData()->GuildEQID()].name, whom->whom, whomlen) == 0) || (admin >= 100 && strncasecmp(iterator.GetData()->AccountName(), whom->whom, whomlen) == 0))
+						(whomlen == 0 || strncasecmp(zonename,whom->whom, whomlen) == 0 || strncasecmp(iterator.GetData()->name(),whom->whom, whomlen) == 0 || (iterator.GetData()->GuildEQID() != 0xFFFFFFFF && strncasecmp(guilds[iterator.GetData()->GuildEQID()].name, whom->whom, whomlen) == 0) || (admin >= 100 && strncasecmp(iterator.GetData()->AccountName(), whom->whom, whomlen) == 0))
 						)) 
 					{
 						line[0] = 0;
@@ -609,7 +617,7 @@ namespace EQC
 						{ 
 							if (admin >= 100 && admin >= iterator.GetData()->Admin())
 							{
-								sprintf(line, "  %s[RolePlay %i %s] %s (%s)%s zone: %s%s%s", tmpgm, iterator.GetData()->level(), EQC::Common::GetClassName(iterator.GetData()->class_()), iterator.GetData()->name(), EQC::Common::GetRaceName(iterator.GetData()->race()), tmpguild, iterator.GetData()->zone(), LFG, accinfo);
+								sprintf(line, "  %s[RolePlay %i %s] %s (%s)%s zone: %i%s%s", tmpgm, iterator.GetData()->level(), EQC::Common::GetClassName(iterator.GetData()->class_()), iterator.GetData()->name(), EQC::Common::GetRaceName(iterator.GetData()->race()), tmpguild, iterator.GetData()->zone(), LFG, accinfo);
 							}
 							else if (iterator.GetData()->Admin() >= 100 && admin < 100)
 							{
@@ -625,7 +633,7 @@ namespace EQC
 						{ 
 							if (admin >= 100 && admin >= iterator.GetData()->Admin())
 							{
-								sprintf(line, "  %s[ANON %i %s] %s (%s)%s zone: %s%s%s", tmpgm, iterator.GetData()->level(), EQC::Common::GetClassName(iterator.GetData()->class_()), iterator.GetData()->name(), EQC::Common::GetRaceName(iterator.GetData()->race()), tmpguild, iterator.GetData()->zone(), LFG, accinfo);
+								sprintf(line, "  %s[ANON %i %s] %s (%s)%s zone: %i%s%s", tmpgm, iterator.GetData()->level(), EQC::Common::GetClassName(iterator.GetData()->class_()), iterator.GetData()->name(), EQC::Common::GetRaceName(iterator.GetData()->race()), tmpguild, iterator.GetData()->zone(), LFG, accinfo);
 							}
 							else if (iterator.GetData()->Admin() >= 100) 
 							{
@@ -639,7 +647,7 @@ namespace EQC
 						}
 						else
 						{
-							sprintf(line, "  %s[%i %s] %s (%s)%s zone: %s%s%s", tmpgm, iterator.GetData()->level(), EQC::Common::GetClassName(iterator.GetData()->class_()), iterator.GetData()->name(), EQC::Common::GetRaceName(iterator.GetData()->race()), tmpguild, iterator.GetData()->zone(), LFG, accinfo);
+							sprintf(line, "  %s[%i %s] %s (%s)%s zone: %i%s%s", tmpgm, iterator.GetData()->level(), EQC::Common::GetClassName(iterator.GetData()->class_()), iterator.GetData()->name(), EQC::Common::GetRaceName(iterator.GetData()->race()), tmpguild, iterator.GetData()->zone(), LFG, accinfo);
 						}
 
 						connection->SendEmoteMessage(to, 0, 10, line);

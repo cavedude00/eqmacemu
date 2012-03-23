@@ -381,7 +381,7 @@ namespace EQC
 				port = from.sin_port;
 				in.s_addr = from.sin_addr.s_addr;
 
-				timeout_timer->Start(); // cavedude: possible crash on death
+				timeout_timer->Start(); // cavedude: pok crash
 				int16 base = 0;
 				int16 size = 0;
 				while (base < status)
@@ -449,7 +449,7 @@ namespace EQC
 
 		void LoginServer::SendStatus() 
 		{
-			statusupdate_timer->Start();
+			statusupdate_timer->Start(); //cavedude: another pok crash
 			ServerPacket* pack = new ServerPacket(ServerOP_LSStatus, sizeof(ServerLSStatus_Struct));
 			
 			pack->pBuffer = new uchar[pack->size];
