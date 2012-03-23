@@ -1675,13 +1675,13 @@ bool EntityList::MakeDoorSpawnPacket(APPLAYER* app){
 				length = length + 44;
 
 				qty++;
-				EQC::Common::PrintF(CP_ZONESERVER,"doorid %i name %s xPos %f yPos %f size %i.",nd->doorid, nd->name, nd->xPos, nd->yPos, nd->size);
+			//	EQC::Common::PrintF(CP_ZONESERVER,"doorid %i name %s xPos %f yPos %f size %i.",nd->doorid, nd->name, nd->xPos, nd->yPos, nd->size);
 				}
 			}
 		}
 		iterator.Advance();
 	}
-		EQC::Common::PrintF(CP_ZONESERVER,"MakeDoorPacket() packet length:%i", length);
+		//EQC::Common::PrintF(CP_ZONESERVER,"MakeDoorPacket() packet length:%i", length);
 
 		if (qty == 0)
 			return false;

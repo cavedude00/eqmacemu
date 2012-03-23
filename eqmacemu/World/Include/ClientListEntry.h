@@ -27,7 +27,7 @@ public:
 		paccountid = in_accountid;
 		strcpy(paccountname, in_accountname);
 		padmin = in_admin;
-		strcpy(pzone, Database::Instance()->GetZoneName(in_zone));
+		pzone = in_zone;
 		plevel = level;
 		pclass_ = class_;
 		prace = race;
@@ -63,7 +63,7 @@ public:
 		paccountid = in_accountid;
 		strcpy(paccountname, in_accountname);
 		padmin = in_admin;
-		strcpy(pzone, Database::Instance()->GetZoneName(in_zone));
+		pzone = in_zone;
 		plevel = level;
 		pclass_ = class_;
 		prace = race;
@@ -85,7 +85,7 @@ public:
 		return pname;
 	}
 
-	char* zone()
+	int32 zone()
 	{
 		return pzone;
 	}
@@ -147,11 +147,11 @@ public:
 
 private:
 	ZoneServer* pzoneserver;
-	char pzone[30];
+	int32 pzone;
 	int8 padmin;
-	char pname[30];
+	char pname[64];
 	int32 paccountid;
-	char paccountname[30];
+	char paccountname[64];
 	int8 plevel;
 	int8 pclass_;
 	int8 prace;

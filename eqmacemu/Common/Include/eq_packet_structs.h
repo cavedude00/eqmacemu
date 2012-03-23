@@ -684,13 +684,14 @@ struct Attack_Struct
 */
 struct Action_Struct
 {
-/*000*/	int32	target;			// Comment: 
-/*004*/	int32	source;			// Comment: 
-/*008*/	int8	type;			// Comment: 
-/*009*/	int8	unknown005;		// Comment: 
-/*010*/	int16	spell;			// Comment: 
-/*012*/	sint32	damage;			// Comment: 
-/*016*/	int8	unknown4[12];	// Comment: 
+	// len = 24
+/*000*/	int16	target;
+/*002*/	int16	source;
+/*004*/	int8	type;
+/*005*/	int8	unknown005;
+/*006*/	int16	spell;
+/*008*/	sint32	damage;
+/*012*/	int8	unknown4[12];
 };
 
 /************************************************************** 
@@ -1150,28 +1151,26 @@ struct GMSummon_Struct {
 /* 30*/	char    gmname[64];
 /* 60*/ int32	success;
 /* 61*/	int32	zoneID;
-#ifndef INVERSEXY
 /*92*/	sint32  x;
 /*96*/	sint32  y;
-#else
-	sint32 y;
-	sint32 x;
-#endif
 /*100*/ sint32  z;
 /*104*/	int8 unknown2[4]; // E0 E0 56 00
 };
 
-struct GMGoto_Struct { // x,y is swapped as compared to summon and makes sense as own packet
-/*  0*/	char    charname[64];
-/* 30*/	char    gmname[64];
-/* 60*/ int32	success;
-/* 61*/	int32	zoneID;
 
-/*92*/	sint32  x;
-/*96*/	sint32  y;
+struct GMGoto_Struct { // x,y is swapped as compared to summon and makes sense as own packet
+/*  0*/ char    charname[64];
+/* 30*/ char    gmname[64];
+/* 60*/ int32   success;
+/* 61*/ int32   zoneID;
+
+/*92*/  sint32  x;
+/*96*/  sint32  y;
 /*100*/ sint32  z;
-/*104*/	int32 unknown2; // E0 E0 56 00
+/*104*/ int32 unknown2; // E0 E0 56 00
 };
+
+
 
 /*struct GMGoto_Struct 
 {

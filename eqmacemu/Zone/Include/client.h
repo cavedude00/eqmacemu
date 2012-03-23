@@ -144,7 +144,6 @@ public:
 	void	MovePC(char* zonename, float x, float y, float z, bool ignorerestrictions = false, bool useSummonMessage = true);
 	void	MovePC(int32 zoneid, float x, float y, float z, bool ignorerestrictions = false, bool useSummonMessage = true);
 	void	ZonePC(char* zonename, float x, float y, float z);
-	void	TeleportPC(char* zonename, float x, float y, float z, float heading = 0);
 	// Harakiri teleport and translocate is bit different in the client, the translocate seems only be used for the spell
 	void	TranslocatePC(char* zonename, float x, float y, float z);	
 	void	SendTranslocateConfirmation(Mob* caster, Spell* spell);

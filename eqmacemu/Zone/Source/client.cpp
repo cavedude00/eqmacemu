@@ -184,7 +184,7 @@ Client::Client(int32 in_ip, int16 in_port, int in_send_socket)
 	stunned = false;
 
 	myNetworkFootprint = 0;
-	debugMe = false; // Harakiri default false, YL debug is annoying =p
+	debugMe = true; // Harakiri default false, YL debug is annoying =p
 	myEyeOfZomm = NULL;
 	mySaveChance = 0;
 	feared = false;
@@ -293,7 +293,6 @@ Client::~Client()
 bool Client::Save() 
 {
 //	pp.logtime = time(0); // We save the logtime to use that for no rent items
-
 	if(Connected())
 	{
 		//Yeahlight: Player hit hardcoded (*.s3d) zoneline
@@ -381,7 +380,6 @@ bool Client::Save()
 				pp.buffs[i].level = 0;
 			}
 		}
-
  		if (!Database::Instance()->SetPlayerProfile(account_id, name, &pp))
 		{
 			cerr << "Failed to update player profile" << endl;
@@ -3688,73 +3686,6 @@ void Client::CreateZoneLineNode(char* zoneName, char* connectingZoneName, int16 
 }
 
 //o--------------------------------------------------------------
-//| TeleportPC; Harakiri, September 16, 2009
-//o--------------------------------------------------------------
-//| Teleports the player, the client automatically issues a changezone
-//| request if the player is not already in the zone
-//| when the player is already in the zone, the client automatically 
-//| moves the player
-//| This method should now used for all moving/zoning EXCEPT translocate
-//| The teleportPC function in the game client at offset 00495996
-//| will call the same function as zonePC at offset 004DC1B5
-//| when the player is not already in the zone
-//| note: for negative x y the client always adds +1 to the coords when
-//| moving in the same zone
-//o--------------------------------------------------------------
-void Client::TeleportPC(char* zonename, float x, float y, float z, float heading)
-{	
-	EQC::Common::Log(EQCLog::Debug,CP_CLIENT,"Client::TeleportPC(zone name = %s, x = %f, y = %f, z = %f, heading = %f)", zonename, x, y, z,heading);
-	APPLAYER* outapp = new APPLAYER(OP_TeleportPC, sizeof(TeleportPC_Struct));	
-	if(outapp->size != sizeof(TeleportPC_Struct))
-	{
-		cout << "Wrong size on OP_TeleportPC. Got: " << outapp->size << ", Expected: " << sizeof(TeleportPC_Struct) << endl;
-	}
-	// if not in this zone, memorize coords, client will issue a ProcessOP_ZoneChange shortly
-	if(strcmp(zone->GetShortName(), zonename) != 0)
-	{
-		this->usingSoftCodedZoneLine = true;
-		this->isZoning = true;
-		this->zoningX = (sint32)x;
-		this->zoningY = (sint32)y;
-		this->zoningZ = (sint32)z;
-		this->tempHeading = (int8)heading;
-	// reset
-	} else {	
-		this->isZoningZP = false;
-		this->isZoning = false;
-		this->usingSoftCodedZoneLine = false;
-	}
-	
-	
-
-	TeleportPC_Struct* tls = (TeleportPC_Struct*)outapp->pBuffer;
-	memset(outapp->pBuffer, 0, sizeof(TeleportPC_Struct));
-	strcpy(tls->zone, zonename);			
-	tls->xPos = x;
-	tls->yPos = y;	
-	
-	// Harakiri - the client does not sometimes like going to 0 z at a specific point in a zone
-	// example in qeynos2 standing infront of the gates and going to 0 0 0 will teleport to a random location sometimes
-	// the closer you walk to 0 0 0 tho, teleport 0 0 0 will always work
-	// however, i figured if z is not 0, like a small value, it will always work
-	// translocate does not have this issue tho, only teleport
-	if(z==0) {
-		// workaround
-		tls->zPos = 0.1f;
-	} else {
-		tls->zPos = z;
-	}
-
-	if(heading!=0) {
-		tls->heading = heading*2; // Harakiri client will divide this by 2
-	}
-
-	QueuePacket(outapp);
-	safe_delete(outapp);
-	
-}
-
-//o--------------------------------------------------------------
 //| TranslocatePC; Harakiri, September 16, 2009
 //o--------------------------------------------------------------
 //| Difference to TeleportPC, 
@@ -3769,8 +3700,6 @@ void Client::TeleportPC(char* zonename, float x, float y, float z, float heading
 void Client::TranslocatePC(char* zonename, float x, float y, float z)
 {			
 
-	
-	
 	// if not in this zone, memorize coords, client will issue a ProcessOP_ZoneChange shortly
 	if(strcmp(zone->GetShortName(), zonename) != 0)
 	{

@@ -33,7 +33,7 @@ Harakiri - your commands go here
 // list all commands available for admin level
 void command_help(Client *c, const Seperator *sep);
 // goto xyz in current zone
-void command_moveto(Client *c, const Seperator *sep);
+void command_goto(Client *c, const Seperator *sep);
 // set level of target
 void command_level(Client *c, const Seperator *sep);
 // do damage to current target
@@ -72,8 +72,6 @@ void command_clearcursor(Client *c, const Seperator *sep);
 void command_reloadperl(Client *c, const Seperator *sep);
 // diff an item from blob and nonblob table
 void command_diffitem(Client *c, const Seperator *sep);
-// teleport to zone + x + y + z + heading
-void command_teleport(Client *c, const Seperator *sep);
 // translocate to zone + x + y + z
 void command_translocate(Client *c, const Seperator *sep);
 // summon an item from the nonblob tabel
