@@ -95,7 +95,7 @@ namespace EQC
 				case FAIRY:
 				  result = "Fairy";
 				  break;
-				case FROGLOK:
+				case OLD_FROGLOK:
 				  result = "Froglok";
 				  break;
 				case FROGLOK_GHOUL:
@@ -646,6 +646,441 @@ namespace EQC
 				  break;
 				case WETFANG_MINNOW:
 				  result = "Wetfang Minnow";
+				  break;
+				case THOUGHT_HORROR:
+				  result = "Thought Horror";
+				  break;
+				case TEGI:
+				  result = "Tegi";
+				  break;
+				case HORSE:
+				  result = "Horse";
+				  break;
+				case SHISSAR:
+				  result = "Shissar";
+				  break;
+				case FUNGAL_FIEND:
+				  result = "Fungal Fiend";
+				  break;
+				case VAMPIRE_VOLATALIS:
+				  result = "Vampire Volatalis";
+				  break;
+				case STONEGRABBER:
+				  result = "Stonegrabber";
+				  break;
+				case SCARLET_CHEETAH:
+				  result = "Scarlet Cheetah";
+				  break;
+				case ZELNIAK:
+				  result = "Zelniak";
+				  break;
+				case LIGHTCRAWLER:
+				  result = "Lightcrawler";
+				  break;
+				case SHADE:
+				  result = "Shade";
+				  break;
+				case SUNFLOWER:
+				  result = "Sunflower";
+				  break;
+				case SUN_REVENANT:
+				  result = "Sun Revenant";
+				  break;
+				case SHRIEKER:
+				  result = "Shrieker";
+				  break;
+				case GALORIAN:
+				  result = "Galorian";
+				  break;
+				case NETHERBIAN:
+				  result = "Netherbian";
+				  break;
+				case AKHEVA:
+				  result = "Akheva";
+				  break;
+				case SPIRE_SPIRIT:
+				  result = "Spire Spirit";
+				  break;
+				case SONIC_WOLF:
+				  result = "Sonic Wolf";
+				  break;
+				case GROUND_SHAKER:
+				  result = "Ground Shaker";
+				  break;
+				case VAH_SHIR_SKELETON:
+				  result = "Vah Shir Skeleton";
+				  break;
+				case MUTANT_HUMANOID:
+				  result = "Mutant Humanoid";
+				  break;
+				case SERU:
+				  result = "Seru";
+				  break;
+				case RECUSO:
+				  result = "Recuso";
+				  break;
+				case VAH_SHIR_KING:
+				  result = "Vah Shir King";
+				  break;
+				case VAH_SHIR_GUARD:
+				  result = "Vah Shir Guard";
+				  break;
+				case TELEPORT_MAN:
+				  result = "Teleport Man";
+				  break;
+				case LUJEIN:
+				  result = "Lujein";
+				  break;
+				case NAIAD:
+				  result = "Naiad";
+				  break;
+				case NYMPH:
+				  result = "Nymph";
+				  break;
+				case ENT:
+				  result = "Ent";
+				  break;
+				case FLY_MAN:
+				  result = "Fly Man";
+				  break;
+				case TAREW_MARR:
+				  result = "Tarew Marr";
+				  break;
+				case SOL_RO:
+				  result = "Sol Ro";
+				  break;
+				case CLOCKWORK_GOLEM:
+				  result = "Clockwork Golem";
+				  break;
+				case CLOCKWORK_BRAIN:
+				  result = "Clockwork Brain";
+				  break;
+				case SPECTRAL_BANSHEE:
+				  result = "Spectral Banshee";
+				  break;
+				case GUARD_OF_JUSTICE:
+				  result = "Guard of Justice";
+				  break;
+				case UNKNOWN_252:
+				  result = "Unknown 252";
+				  break;
+				case DISEASE_BOSS:
+				  result = "Disease Boss";
+				  break;
+				case SOL_RO_GUARD:
+				  result = "Sol Ro Guard";
+				  break;
+				case NEW_BERTOX:
+				  result = "New Bertox";
+				  break;
+				case NEW_TRIBUNAL:
+				  result = "New Tribunal";
+				  break;
+				case TERRIS_THULE:
+				  result = "Terris Thule";
+				  break;
+				case VEGEROG:
+				  result = "Vegerog";
+				  break;
+				case CROCODILE:
+				  result = "Crocodile";
+				  break;
+				case BAT:
+				  result = "Bat";
+				  break;
+				case SLARGHILUG:
+				  result = "Slarghilug";
+				  break;
+				case TRANQUILION:
+				  result = "Tranquilion";
+				  break;
+				case TIN_SOLDIER:
+				  result = "Tin Soldier";
+				  break;
+				case NIGHTMARE_WRAITH:
+				  result = "Nightmare Wraith";
+				  break;
+				case MALARIAN:
+				  result = "Malarian";
+				  break;
+				case KNIGHT_OF_PESTILENCE:
+				  result = "Knight of Pestilence";
+				  break;
+				case LEPERTOLOTH:
+				  result = "Lepertoloth";
+				  break;
+				case BUBONIAN_BOSS:
+				  result = "Bubonian Boss";
+				  break;
+				case BUBONIAN_UNDERLING:
+				  result = "Bubonian Underling";
+				  break;
+				case PUSLING:
+				  result = "Pusling";
+				  break;
+				case WATER_MEPHIT:
+				  result = "Water Mephit";
+				  break;
+				case STORMRIDER:
+				  result = "Stormrider";
+				  break;
+				case JUNK_BEAST:
+				  result = "Junk Beast";
+				  break;
+				case BROKEN_CLOCKWORK:
+				  result = "Broken Clockwork";
+				  break;
+				case GIANT_CLOCKWORK:
+				  result = "Giant Clockwork";
+				  break;
+				case CLOCKWORK_BEETLE:
+				  result = "Clockwork Beetle";
+				  break;
+				case NIGHTMARE_GOBLIN:
+				  result = "Nightmare Goblin";
+				  break;
+				case KARANA:
+				  result = "Karana";
+				  break;
+				case BLOOD_RAVEN:
+				  result = "Blood Raven";
+				  break;
+				case NIGHTMARE_GARGOYLE:
+				  result = "Nightmare Gargoyle";
+				  break;
+				case MOUTHS_OF_INSANITY:
+				  result = "Mouths of Insanity";
+				  break;
+				case SKELETAL_HORSE:
+				  result = "Skeletal Horse";
+				  break;
+				case SARYN:
+				  result = "Saryn";
+				  break;
+				case FENNIN_RO:
+				  result = "Fennin Ro";
+				  break;
+				case TORMENTOR:
+				  result = "Tormentor";
+				  break;
+				case NECRO_PRIEST:
+				  result = "Necro Priest";
+				  break;
+				case NIGHTMARE:
+				  result = "Nightmare";
+				  break;
+				case NEW_RALLOS_ZEK:
+				  result = "New Rallos Zek";
+				  break;
+				case VALLON_ZEK:
+				  result = "Vallon Zek";
+				  break;
+				case TALLON_ZEK:
+				  result = "Tallon Zek";
+				  break;
+				case AIR_MEPHIT:
+				  result = "Air Mephit";
+				  break;
+				case EARTH_MEPHIT:
+				  result = "Earth Mephit";
+				  break;
+				case FIRE_MEPHIT:
+				  result = "Fire Mephit";
+				  break;
+				case NIGHTMARE_MEPHIT:
+				  result = "Nightmare Mephit";
+				  break;
+				case ZEBUXORUK:
+				  result = "Zebuxoruk";
+				  break;
+				case MITHANIEL_MARR:
+				  result = "Mithaniel Marr";
+				  break;
+				case UNDEAD_KNIGHT:
+				  result = "Undead Knight";
+				  break;
+				case THE_RATHE:
+				  result = "The Rathe";
+				  break;
+				case XEGONY:
+				  result = "Xegony";
+				  break;
+				case FIEND:
+				  result = "Fiend";
+				  break;
+				case TEST_OBJECT:
+				  result = "Test Object";
+				  break;
+				case CRAB:
+				  result = "Crab";
+				  break;
+				case PHOENIX:
+				  result = "Phoenix";
+				  break;
+				case POP_DRAGON:
+				  result = "PoP Dragon";
+				  break;
+				case POP_BEAR:
+				  result = "PoP Bear";
+				  break;
+				case STORM_TAARID:
+				  result = "Storm Taarid";
+				  break;
+				case STORM_SATUUR:
+				  result = "Storm Satuur";
+				  break;
+				case STORM_KURAALN:
+				  result = "Storm Kuraaln";
+				  break;
+				case STORM_VOLAAS:
+				  result = "Storm Volaas";
+				  break;
+				case STORM_MANA:
+				  result = "Storm Mana";
+				  break;
+				case STORM_FIRE:
+				  result = "Storm Fire";
+				  break;
+				case STORM_CELESTIAL:
+				  result = "Storm Celestial";
+				  break;
+				case WAR_WRAITH:
+				  result = "War Wraith";
+				  break;
+				case WRULON:
+				  result = "Wrulon";
+				  break;
+				case KRAKEN:
+				  result = "Kraken";
+				  break;
+				case POISON_FROG:
+				  result = "Poison Frog";
+				  break;
+				case QUEZTOCOATAL:
+				  result = "Queztocoatal";
+				  break;
+				case VALORIAN:
+				  result = "Valorian";
+				  break;
+				case WAR_BOAR:
+				  result = "War Boar";
+				  break;
+				case POP_EFREETI:
+				  result = "PoP Efreeti";
+				  break;
+				case WAR_BOAR_UNARMORED:
+				  result = "War Boar Unarmored";
+				  break;
+				case BLACK_KNIGHT:
+				  result = "Black Knight";
+				  break;
+				case ANIMATED_ARMOR:
+				  result = "Animated Armor";
+				  break;
+				case UNDEAD_FOOTMAN:
+				  result = "Undead Footman";
+				  break;
+				case RALLOS_ZEK_MINION:
+				  result = "Rallos Zek Minion";
+				  break;
+				case ARACHNID:
+				  result = "Arachnid";
+				  break;
+				case CRYSTAL_SPIDER:
+				  result = "Crystal Spider";
+				  break;
+				case ZEB_CAGE:
+				  result = "Zeb Cage";
+				  break;
+				case BOT_PORTAL:
+				  result = "Bot Portal";
+				  break;
+				case FROGLOK:
+				  result = "Froglok";
+				  break;
+				case TROLL_BUCCANEER:
+				  result = "Troll Buccaneer";
+				  break;
+				case TROLL_FREEBOOTER:
+				  result = "Troll Freebooter";
+				  break;
+				case TROLL_SEA_ROVER:
+				  result = "Troll Sea Rover";
+				  break;
+				case SPECTRE_PIRATE_BOSS:
+				  result = "Spectre Pirate Boss";
+				  break;
+				case PIRATE_BOSS:
+				  result = "Pirate Boss";
+				  break;
+				case PIRATE_DARK_SHAMAN:
+				  result = "Pirate Dark Shaman";
+				  break;
+				case PIRATE_OFFICER:
+				  result = "Pirate Officer";
+				  break;
+				case GNOME_PIRATE:
+				  result = "Gnome Pirate";
+				  break;
+				case DARK_ELF_PIRATE:
+				  result = "Dark Elf Pirate";
+				  break;
+				case OGRE_PIRATE:
+				  result = "Ogre Pirate";
+				  break;
+				case HUMAN_PIRATE:
+				  result = "Human Pirate";
+				  break;
+				case ERUDITE_PIRATE:
+				  result = "Erudite Pirate";
+				  break;
+				case POISON_DART_FROG:
+				  result = "Poison Dart Frog";
+				  break;
+				case TROLL_ZOMBIE:
+				  result = "Troll Zombie";
+				  break;
+				case LUGGALD_LAND:
+				  result = "Luggald Land";
+				  break;
+				case LUGGALD_ARMORED:
+				  result = "Luggald Armored";
+				  break;
+				case LUGGALD_ROBED:
+				  result = "Luggald Robed";
+				  break;
+				case LUGGALD_MOUNT:
+				  result = "Luggald Mount";
+				  break;
+				case FROGLOK_SKELETON:
+				  result = "Froglok Skeleton";
+				  break;
+				case UNDEAD_FROGLOK:
+				  result = "Undead Froglok";
+				  break;
+				case CHOSEN_WARRIOR:
+				  result = "Chosen Warrior";
+				  break;
+				case CHOSEN_WIZARD:
+				  result = "Chosen Wizard";
+				  break;
+				case VEKSAR:
+				  result = "Veksar";
+				  break;
+				case GREATER_VEKSAR:
+				  result = "Greater Veksar";
+				  break;
+				case VEKSAR_BOSS:
+				  result = "Veksar Boss";
+				  break;
+				case CHOKADAI:
+				  result = "Chokadai";
+				  break;
+				case UNDEAD_CHOKADAI:
+				  result = "Undead Chokadai";
+				  break;
+				case UNDEAD_VEKSAR:
+				  result = "Undead Veksar";
 				  break;
 				default:
 				  result = "UNKNOWN RACE";

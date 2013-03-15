@@ -43,7 +43,7 @@
 #define KERRA				23		// Comment: Kerra
 #define FISH				24		// Comment: Fish				Texture 0: Blue, 1: Red, 2: Green
 #define FAIRY				25		// Comment: Fairy				Texture 0: Normal
-#define FROGLOK				26		// Comment: Froglok Guard		Texture 0: Normal
+#define OLD_FROGLOK			26		// Comment: Froglok Guard		Texture 0: Normal
 #define FROGLOK_GHOUL		27		// Comment: Froglok				Texture 0: Normal, 1:Undead
 #define FUNGUSMAN			28		// Comment: Fungus Man		Texture 0: Normal(Red/White), 1:Diseased (Purple), 2:Green Striped
 #define GARGOYLE			29		// Comment: Gargoyle	
@@ -230,7 +230,7 @@
 #define BLACK_AND_WHITE_DRAGONS 195
 #define GHOST_DRAGON		196
 #define RONNIE_TEST			197	// Harakiri this is the actual value from the client, some dev made some tests =)
-#define SLEEPER				197		// Comment: Sleeper from ST / Harakiri: no idea if this is right
+#define SLEEPER				198		// Comment: Sleeper from ST / Harakiri: no idea if this is right
 #define PRISMATIC_DRAGON	198
 #define SHIKNAR				199
 #define ROCKHOPPER			200
@@ -247,9 +247,151 @@
 #define WATER_ELEMENTAL		211
 #define FIRE_ELEMENTAL		212
 #define WETFANG_MINNOW		213
-
-#define UNTARGETABLE2		216		// Comment: A model displaying no name
-#define CUBE				244		// Comment: Some cube model
+#define THOUGHT_HORROR		214
+#define TEGI				215
+#define HORSE				216		// Comment: A model displaying no name
+#define SHISSAR				217
+#define FUNGAL_FIEND		218
+#define VAMPIRE_VOLATALIS	219
+#define STONEGRABBER		220
+#define SCARLET_CHEETAH		221
+#define ZELNIAK				222
+#define LIGHTCRAWLER		223
+#define SHADE				224
+#define SUNFLOWER			225
+#define SUN_REVENANT		226
+#define SHRIEKER			227
+#define GALORIAN			228
+#define NETHERBIAN			229
+#define AKHEVA				230
+#define SPIRE_SPIRIT		231
+#define SONIC_WOLF			232
+#define GROUND_SHAKER		233
+#define VAH_SHIR_SKELETON	234
+#define MUTANT_HUMANOID		235
+#define SERU				236
+#define RECUSO				237
+#define VAH_SHIR_KING		238
+#define VAH_SHIR_GUARD		239
+#define TELEPORT_MAN		240
+#define LUJEIN				241
+#define NAIAD				242
+#define NYMPH				243
+#define ENT					244
+#define FLY_MAN				245
+#define TAREW_MARR			246
+#define SOL_RO				247
+#define CLOCKWORK_GOLEM		248
+#define CLOCKWORK_BRAIN		249
+#define SPECTRAL_BANSHEE	250
+#define GUARD_OF_JUSTICE	251
+#define UNKNOWN_252			252
+#define DISEASE_BOSS		253
+#define SOL_RO_GUARD		254
+#define NEW_BERTOX			255
+#define NEW_TRIBUNAL		256
+#define TERRIS_THULE		257
+#define VEGEROG				258
+#define CROCODILE			259
+#define BAT					260
+#define SLARGHILUG			261
+#define TRANQUILION			262
+#define TIN_SOLDIER			263
+#define NIGHTMARE_WRAITH	264
+#define MALARIAN			265
+#define KNIGHT_OF_PESTILENCE 266
+#define LEPERTOLOTH			267
+#define BUBONIAN_BOSS		268
+#define BUBONIAN_UNDERLING	269
+#define PUSLING				270
+#define WATER_MEPHIT		271
+#define STORMRIDER			272
+#define JUNK_BEAST			273
+#define BROKEN_CLOCKWORK	274
+#define GIANT_CLOCKWORK		275
+#define CLOCKWORK_BEETLE	276
+#define NIGHTMARE_GOBLIN	277
+#define KARANA				278
+#define BLOOD_RAVEN			279
+#define NIGHTMARE_GARGOYLE	280
+#define MOUTHS_OF_INSANITY	281
+#define SKELETAL_HORSE		282
+#define SARYN				283
+#define FENNIN_RO			284
+#define TORMENTOR			285
+#define NECRO_PRIEST		286
+#define NIGHTMARE			287
+#define NEW_RALLOS_ZEK		288
+#define VALLON_ZEK			289
+#define TALLON_ZEK			290
+#define AIR_MEPHIT			291
+#define EARTH_MEPHIT		292
+#define FIRE_MEPHIT			293
+#define NIGHTMARE_MEPHIT	294
+#define ZEBUXORUK			295
+#define MITHANIEL_MARR		296
+#define UNDEAD_KNIGHT		297
+#define THE_RATHE			298
+#define XEGONY				299
+#define FIEND				300
+#define TEST_OBJECT			301
+#define CRAB				302
+#define PHOENIX				303
+#define POP_DRAGON			304
+#define POP_BEAR			305
+#define STORM_TAARID		306
+#define STORM_SATUUR		307
+#define STORM_KURAALN		308
+#define STORM_VOLAAS		309
+#define STORM_MANA			310
+#define STORM_FIRE			311
+#define STORM_CELESTIAL		312
+#define WAR_WRAITH			313
+#define WRULON				314
+#define KRAKEN				315
+#define POISON_FROG			316
+#define QUEZTOCOATAL		317
+#define VALORIAN			318
+#define WAR_BOAR			319
+#define POP_EFREETI			320
+#define WAR_BOAR_UNARMORED	321
+#define BLACK_KNIGHT		322
+#define ANIMATED_ARMOR		323
+#define UNDEAD_FOOTMAN		324
+#define RALLOS_ZEK_MINION	325
+#define ARACHNID			326
+#define CRYSTAL_SPIDER		327
+#define ZEB_CAGE			328
+#define BOT_PORTAL			329
+#define FROGLOK				330
+#define TROLL_BUCCANEER		331
+#define TROLL_FREEBOOTER	332
+#define TROLL_SEA_ROVER		333
+#define SPECTRE_PIRATE_BOSS	334
+#define PIRATE_BOSS			335
+#define PIRATE_DARK_SHAMAN	336
+#define PIRATE_OFFICER		337
+#define GNOME_PIRATE		338
+#define DARK_ELF_PIRATE		339
+#define OGRE_PIRATE			340
+#define HUMAN_PIRATE		341
+#define ERUDITE_PIRATE		342
+#define POISON_DART_FROG	343
+#define TROLL_ZOMBIE		344
+#define LUGGALD_LAND		345
+#define LUGGALD_ARMORED		346
+#define LUGGALD_ROBED		347
+#define LUGGALD_MOUNT		348
+#define FROGLOK_SKELETON	349
+#define UNDEAD_FROGLOK		350
+#define CHOSEN_WARRIOR		351
+#define CHOSEN_WIZARD		352
+#define VEKSAR				353
+#define GREATER_VEKSAR		354
+#define VEKSAR_BOSS			355
+#define CHOKADAI			356
+#define UNDEAD_CHOKADAI		357
+#define UNDEAD_VEKSAR		358
 
 namespace EQC
 {

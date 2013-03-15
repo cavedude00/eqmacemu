@@ -84,7 +84,7 @@
       </Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>WS2_32.lib;MySQLClient.lib;Zlib.lib;perl510.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>WS2_32.lib;MySQLClient.lib;Zlib.lib;perl512.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\build\debug\Zone.exe</OutputFile>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -111,7 +111,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>WS2_32.lib;MySQLClient.lib;Zlib.lib;perl510.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>WS2_32.lib;MySQLClient.lib;Zlib.lib;perl512.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>

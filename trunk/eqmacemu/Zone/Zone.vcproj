@@ -69,7 +69,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="WS2_32.lib MySQLClient.lib Zlib.lib perl510.lib"
+				AdditionalDependencies="WS2_32.lib MySQLClient.lib Zlib.lib perl512.lib"
 				OutputFile="..\build\debug\Zone.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="LIBCMT"
@@ -147,7 +147,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="WS2_32.lib MySQLClient.lib Zlib.lib perl510.lib"
+				AdditionalDependencies="WS2_32.lib MySQLClient.lib Zlib.lib perl512.lib"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="true"
