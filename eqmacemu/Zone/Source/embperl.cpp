@@ -42,7 +42,7 @@ The code was ported over from EQEMU 7.0
 #include "EQCUtils.hpp"
 
 #ifdef WIN32
-#pragma comment(lib, "perl510.lib")
+#pragma comment(lib, "perl512.lib")
 #endif
 
 // Harakiri map commands
