@@ -21,7 +21,7 @@
 #define LoginServer_AuthStale				60000	// Comment: 
 #define AUTHCHANGE_TIMEOUT					900		// Comment: in seconds
 #define	WORLD_KICK_TIMER					180000  // Comment: Yeahlight: How often World issues a world kick purge on stuck accounts in the database (3 minutes)
-#define TOTAL_NUMBER_OF_ZONES				130		// Comment: Yeahlight: Our total number of bootable zones
+#define TOTAL_NUMBER_OF_ZONES				170		// Comment: Yeahlight: Our total number of bootable zones
 
 #define ServerOP_KeepAlive			0x0001	// packet to test if port is still open
 #define ServerOP_ChannelMessage		0x0002	// broadcast/guildsay
