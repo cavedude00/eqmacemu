@@ -1151,8 +1151,8 @@ struct GMSummon_Struct {
 /* 30*/	char    gmname[64];
 /* 60*/ int32	success;
 /* 61*/	int32	zoneID;
-/*92*/	sint32  x;
-/*96*/	sint32  y;
+/*92*/	sint32  y;
+/*96*/	sint32  x;
 /*100*/ sint32  z;
 /*104*/	int8 unknown2[4]; // E0 E0 56 00
 };
@@ -1163,9 +1163,8 @@ struct GMGoto_Struct { // x,y is swapped as compared to summon and makes sense a
 /* 30*/ char    gmname[64];
 /* 60*/ int32   success;
 /* 61*/ int32   zoneID;
-
-/*92*/  sint32  x;
-/*96*/  sint32  y;
+/*92*/  sint32  y;
+/*96*/  sint32  x;
 /*100*/ sint32  z;
 /*104*/ int32 unknown2; // E0 E0 56 00
 };
@@ -1762,7 +1761,7 @@ struct Door_Struct
 /*0020*/ float   xPos;               // x loc
 /*0024*/ float   zPos;               // z loc
 /*0028*/ float	 heading;
-/*0032*/ float   incline;
+/*0032*/ int32   incline;
 /*0036*/ int16	 size;
 /*0038*/ uint8	 doorid;             // door's id #
 /*0039*/ uint8	 opentype;
