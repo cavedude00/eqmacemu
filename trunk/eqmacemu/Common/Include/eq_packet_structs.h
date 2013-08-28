@@ -66,7 +66,7 @@ enum TSpawnAppearanceType : int16 {		// Cofruben: Better this way..
 	SAT_NPC_Name			= 30	// Comment: change PC's name's color to NPC color (unreversable)
 };
 
-enum TBodyType : int16 {	// Cofruben: 16/08/08.
+typedef enum {	// Cofruben: 16/08/08.
 	BT_Humanoid			= 1,
 	BT_Lycanthrope		= 2,
 	BT_Undead			= 3,
@@ -75,6 +75,7 @@ enum TBodyType : int16 {	// Cofruben: 16/08/08.
 	BT_Extraplanar		= 6,
 	BT_Magical			= 7,	//this name might be a bit off, 
 	BT_SummonedUndead	= 8,
+	BT_RaidGiant		= 9,
 	BT_NoTarget			= 11,	// can't target this bodytype
 	BT_Vampire			= 12,
 	BT_Atenha_Ra		= 13,
@@ -99,7 +100,8 @@ enum TBodyType : int16 {	// Cofruben: 16/08/08.
 	BT_Trigger			= 65,   //Yeahlight: Body type to completely hide the spawn
 	BT_InvisMan			= 66,	//seen on 'InvisMan'
 	BT_Special			= 67
-};
+} bodyType ;
+
 
 enum TSpawnAppearancePositionParameter : int32 {
 	SAPP_Sitting_To_Standing	= 100,
@@ -182,13 +184,8 @@ struct ServerZoneEntry_Struct {
 /*0069*/	int8	sze_unknown0069;	// ***Placeholder
 /*0070*/	int16	unknown0070;		// ***Placeholder
 /*0072*/	int32	zone;				// Current Zone
-#ifndef INVERSEXY
-/*0076*/	float	x;					// X Position (Not Inversed)
-/*0080*/	float	y;					// Y Position (Not Inversed)
-#else
-/*0076*/	float	y;					// Y Position (Inversed)
-/*0080*/	float	x;					// X Position (Inversed)
-#endif
+/*0076*/	float	x;					// x Position
+/*0080*/	float	y;					// y Position
 /*0084*/	float	z;					// Z Position
 /*0088*/	float	heading;			// Heading
 /*0092*/	int32	unknown0092[18];	// ***Placeholder
@@ -402,13 +399,8 @@ struct Spawn_Struct
 /*0000*/	int8	animation;
 /*0001*/	int8	heading;			// Current Heading
 /*0002*/	int8	deltaHeading;		// Delta Heading
-#ifndef INVERSEXY
-/*0003*/	sint16	x_pos;				// X Position
-/*0005*/	sint16	y_pos;				// Y Position
-#else
-/*0003*/	sint16	y_pos;				// Y Position
-/*0005*/	sint16	x_pos;				// X Position
-#endif
+/*0003*/	sint16	x_pos;				// Y Position
+/*0005*/	sint16	y_pos;				// X Position
 /*0007*/	sint16	z_pos;				// Z Position
 /*0009*/	sint32	deltaY:10,			// Velocity Y
 					spacer1:1,			// Placeholder
@@ -424,7 +416,7 @@ struct Spawn_Struct
 /*0036*/	int32	equipcolors[7];
 /*0064*/	int8	unknown0064[8];
 /*0072*/	uint16	spawn_id;			// Id of new spawn
-/*0074*/	int8	traptype;			// 65 is disarmable trap, 66 and 67 are invis triggers/traps
+/*0074*/	int8	bodytype;			// bodytype
 /*0075*/	int8	unknown0075;
 /*0076*/	sint16	cur_hp;				// Current hp's of Spawn
 /*0078*/	int16	GuildID;			// GuildID - previously Current hp's of Spawn
@@ -666,7 +658,10 @@ struct Beg_Struct
 struct ZoneChange_Struct {
 /*000*/	char	char_name[64];     // Character Name
 /*064*/	int32	zoneID;
-/*068*/ int8	unknown1[4];
+/*068*/ int8	y;
+/*069*/ int8	x;
+/*070*/ int8	z;
+/*071*/ int8	zone_reason;
 /*072*/	sint8	success;		// =0 client->server, =1 server->client, -X=specific error
 /*073*/	int8	unknown0073[3]; // =0 ok, =ffffff error
 };

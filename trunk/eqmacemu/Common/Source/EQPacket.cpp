@@ -164,9 +164,16 @@ namespace EQC
 				{
 					dwARSP = ntohs(*intptr++);
 					size+=2;
+
+				}
+				bool bDumpPacket = false;
+				if (HDR.b3_Unknown)
+				{
+					size+=2;
+					intptr++;
 				}
 				// Agz: Dont know what this HDR.b4_Unknown data is, gets sent when there is packetloss
-				bool bDumpPacket = false;
+				
 				if (HDR.b4_Unknown)
 				{
 					// cout << "DEBUG: HDR.b4_Unknown" << endl;

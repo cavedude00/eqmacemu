@@ -28,6 +28,7 @@ struct NPCType
     int8    gender;
     int8    race;
     int8    class_;
+	int8	bodytype;
     int8    deity;
     int8    level;
 	int32   npc_id; // rembrant, Dec. 20, 2001
@@ -38,8 +39,7 @@ struct NPCType
 	uint32	merchanttype;
     int8    light;
     int8    equipment[9];
-	TBodyType	body_type;		//Cofruben: 16/08/08.
-
+	
 	int16	AC;
 	int16	Mana;
 	int16	ATK;

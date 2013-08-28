@@ -38,7 +38,7 @@ NPC::NPC(NPCType* d, Spawn2* in_respawn, float x, float y, float z, float headin
        d->class_,
        d->deity,
        d->level,
-	   d->body_type,
+	   (bodyType)d->bodytype,
 	   d->npc_id, // rembrant, Dec. 20, 2001
 	   d->skills, // socket 12-29-01
 	   d->size,

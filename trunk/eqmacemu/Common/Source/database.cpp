@@ -787,7 +787,7 @@ fclose(fp);
 	if (!GetSafePointsByID(pp.current_zone, &pp.x, &pp.y, &pp.z)) {
 		pp.x = 0;
 		pp.y = 0;
-		pp.z = 5;
+		pp.z = 0;
 	}
 	pp.bind_point_zone = pp.current_zone;
 
@@ -2312,7 +2312,7 @@ bool Database::LoadNPCTypes(char* zone_name) {
 					npc_type_array[atoi(row[0])]->walkspeed = atof(row[10]);
 					npc_type_array[atoi(row[0])]->loottable_id = atoi(row[11]);
 					npc_type_array[atoi(row[0])]->merchanttype = atoi(row[12]);
-					npc_type_array[atoi(row[0])]->body_type = (TBodyType)atoi(row[13]);
+					npc_type_array[atoi(row[0])]->bodytype = atoi(row[13]);
 					npc_type_array[atoi(row[0])]->min_dmg = atoi(row[14]);
 					npc_type_array[atoi(row[0])]->max_dmg = atoi(row[15]);
 					npc_type_array[atoi(row[0])]->MR = atoi(row[16]);
@@ -3067,6 +3067,19 @@ void Database::GetBook(char* txtfile, char* txtout)
 
 
 	safe_delete_array(query);//delete[] query;
+}
+
+int32 Database::GetZoneID(const char* zonename) {
+	if (zonename_array == 0)
+		return 0;
+	if (zonename == 0)
+		return 0;
+	for (unsigned int i=0; i<=max_zonename; i++) {
+		if (zonename_array[i] != 0 && strcasecmp(zonename_array[i], zonename) == 0) {
+			return i;
+		}
+	}
+	return 0;
 }
 
 bool Database::UpdateZoneSafeCoords(char* zonename, float x=0, float y=0, float z=0)
@@ -4425,7 +4438,7 @@ bool Database::LoadBoatData(const char* boatname, NPCType& boat,bool& lineroute)
 			boat.level = 99; 
 			boat.texture = atoi(row[2]);
 			boat.runspeed = 1.25;
-			boat.body_type =  (TBodyType)atoi(row[3]);
+			boat.bodytype =  atoi(row[3]);
 			boat.size =  atoi(row[4]);
 			lineroute = (bool)atoi(row[5]);
 		}
