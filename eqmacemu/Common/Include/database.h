@@ -104,7 +104,7 @@ public:
 	int32	GetAuthentication(char* char_name, char* zone_name, int32 ip);
 	bool	SetAuthentication(int32 account_id, char* char_name, char* zone_name, int32 ip);
 	bool	GetAuthentication(int32 account_id, char* char_name, char* zone_name, int32 ip);
-	
+	int32 Database::GetZoneID(const char* zonename);
 	bool	GetDebugList(int32 char_id, TDebugList* l);
 	void	SetDebugList(int32 char_id, TDebugList* l);
 

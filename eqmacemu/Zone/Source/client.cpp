@@ -4309,7 +4309,7 @@ void Client::SendCharmPermissions()
 	strcpy(npcNamePrefix, this->GetName());
 	strcat(npcNamePrefix, npcNameSuffix);
 	strcpy(npc_type->name, npcNamePrefix);
-	npc_type->body_type = BT_Trigger;
+	npc_type->bodytype = BT_Trigger;
 	npc_type->level = 1;
 	npc_type->race = 127;
 	npc_type->class_ = 1;

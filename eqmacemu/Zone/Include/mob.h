@@ -154,7 +154,7 @@ public:
 	    int8    in_class,
 	    int8    in_deity,
 	    int8    in_level,
-		TBodyType
+		bodyType
 				in_body_type,
 		int32   in_npctype_id, // rembrant, Dec. 20, 2001
 		int16*	in_skills, // socket 12-29-01
@@ -240,8 +240,8 @@ public:
 	virtual sint16	GetFR()				{ return BaseStats.FR + itembonuses.FR + spellbonuses.FR; }
 	virtual sint16	GetDR()				{ return BaseStats.DR + itembonuses.DR + spellbonuses.DR; }
 	virtual sint16	GetPR()				{ return BaseStats.PR + itembonuses.PR + spellbonuses.PR; }
-	virtual TBodyType
-					GetBodyType()		{ return this->body_type; }	// Cofruben: 16/08/08.
+	virtual bodyType
+					GetBodyType()		{ return this->bodytype; }	// Cofruben: 16/08/08.
 	float			GetX()				{ return x_pos; }
 	float			GetY()				{ return y_pos; }
 	float			GetZ()				{ if(this->IsClient()) return (z_pos/10); else return z_pos; }
@@ -317,7 +317,7 @@ public:
 	virtual void	SetLevel(uint8 in_level)		{ level = in_level; }
 	virtual sint32	SetMana(sint32 amount);
 	virtual void	SetSkill(int in_skill_num, int8 in_skill_id) { skills[in_skill_num] = in_skill_id; }
-	virtual void	SetBodyType(TBodyType bt)		{ this->body_type = bt; }	// Cofruben: 16/08/08.
+	virtual void	SetBodyType(bodyType bt)		{ this->bodytype = bt; }	// Cofruben: 16/08/08.
 
 	
 	// Actions
@@ -528,7 +528,7 @@ protected:
 	int8	base_gender;
 	int16	base_race;
 	int8    class_;
-	TBodyType	body_type;		// Cofruben 16/08/08.
+	bodyType	bodytype;		// Cofruben 16/08/08.
 	int8    deity;
 	int8    level;
 	int32   npctype_id; // rembrant, Dec. 20, 2001

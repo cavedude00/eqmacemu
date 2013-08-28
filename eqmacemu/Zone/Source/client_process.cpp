@@ -5823,11 +5823,11 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 					//Fixed XYZ
 					pp.x = zone->safe_x();
 					pp.y = zone->safe_y();
-					pp.z = zone->safe_z()/10;
+					pp.z = zone->safe_z();
 	}
 	x_pos = pp.x;
 	y_pos = pp.y;
-	z_pos = pp.z;
+	z_pos = pp.z/10;
 	heading = pp.heading * 2;
 	race = pp.race;
 	base_race = pp.race;
@@ -5942,8 +5942,8 @@ void Client::Process_ClientConnection2(APPLAYER *app)
 	pp.current_zone = zone->GetZoneID();
 
 	outapp = new APPLAYER(OP_ZoneEntry, sizeof(ServerZoneEntry_Struct));
-	ServerZoneEntry_Struct *sze = (ServerZoneEntry_Struct*)outapp->pBuffer;
-	memset(sze, 0, sizeof(ServerZoneEntry_Struct));
+	ServerZoneEntry_Struct* sze = (ServerZoneEntry_Struct*)outapp->pBuffer;
+	
 	strcpy(sze->name, name);
 	strcpy(sze->Surname, Surname);
 	sze->zone = zone->GetZoneID();

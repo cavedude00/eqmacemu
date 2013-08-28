@@ -41,7 +41,7 @@ Mob::Mob(char*   in_name,
          int8    in_class,
          int8    in_deity,
          int8    in_level,
-		 TBodyType
+		 bodyType
 				in_body_type,
          int32	 in_npctype_id, // rembrant, Dec. 20, 2001
          int16*	 in_skills, // socket 12-29-01
