@@ -1,0 +1,1 @@
+This project aims to emulate the EverQuest Mac server software, with the hopeful possibility of cross platform support for both server and client.
